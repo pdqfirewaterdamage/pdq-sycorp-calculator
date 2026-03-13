@@ -798,11 +798,12 @@ const dehuEquip = [
   {name:'Dri-Eaz Evolution', pints:84, cfm:400, amps:6.2},
   {name:'Dri-Eaz 2800i', pints:130, cfm:410, amps:8.2},
   {name:'Dri-Eaz LGR 3500i', pints:170, cfm:413, amps:9.5},
-  {name:'Dri-Eaz LGR 6000', pints:82, cfm:235, amps:5.8},
+  {name:'Dri-Eaz LGR 6000 (D6)', pints:100, cfm:235, amps:5.8},
   {name:'Phoenix R200', pints:140, cfm:325, amps:8.0},
   {name:'Phoenix R175', pints:118, cfm:300, amps:7.5},
   {name:'Phoenix D385', pints:185, cfm:400, amps:10.0},
   {name:'Phoenix 200 MAX', pints:160, cfm:357, amps:9.0},
+  {name:'Phoenix DryMax (DM)', pints:120, cfm:300, amps:7.0},
   {name:'B-Air VG-1400', pints:84, cfm:180, amps:6.0}
 ];
 const allEquipPower = hepaEquip.map(e=>({name:e.name,amps:e.amps})).concat(
@@ -1107,12 +1108,14 @@ function calcDrying() {
   else { cfmNeeded = area * cfmFactors[dryClass]; }
   const m3hr = cfmNeeded * 1.69901;
   s('dr-cfm', cfmNeeded>0 ? r(cfmNeeded,0)+' cfm ('+r(m3hr,0)+' m\u00B3/hr)' : '--');
-  // AHAM
-  const ahamFactors = {1:0.15, 2:0.25, 3:0.4, 4:0.5};
-  const ahamPints = vol * ahamFactors[dryClass];
+  // PPD (Pints Per Day) per IICRC table: Base PPD = volume / 100
+  // Class 1: 1x base, Class 2: 2x base, Class 3: 2.5x base, Class 4: 3x base
+  const ppdFactors = {1:1, 2:2, 3:2.5, 4:3};
+  const basePPD = vol / 100;
+  const ahamPints = basePPD * ppdFactors[dryClass];
   const ahamLiters = ahamPints * 0.473176;
   const ahamGallons = ahamPints / 8;
-  s('dr-aham', vol>0 ? r(ahamPints,0)+' pt/day ('+r(ahamLiters,0)+' L | '+r(ahamGallons,1)+' gal)' : '--');
+  s('dr-aham', vol>0 ? r(ahamPints,0)+' PPD ('+r(ahamLiters,0)+' L | '+r(ahamGallons,1)+' gal)' : '--');
   // Dehus
   const numDehu = (vol>0 && equip) ? Math.ceil(ahamPints / equip.pints) : 0;
   s('dr-dehu', numDehu>0 ? numDehu : '--');
@@ -1350,8 +1353,8 @@ function addRoom(prefix) {
     const ei=parseInt(document.getElementById('dr-equip').value);
     const eq=dehuEquip[ei];
     const vol=l*w*h;
-    const ahamF={1:0.15,2:0.25,3:0.4,4:0.5};
-    const aham=vol*ahamF[dryClass];
+    const ppdF={1:1,2:2,3:2.5,4:3};
+    const aham=(vol/100)*ppdF[dryClass];
     const dehus=eq?Math.ceil(aham/eq.pints):0;
     roomData={l,w,h,label:l+'x'+w+'x'+h+' (Class '+dryClass+')',val:dehus+' dehus',numVal:dehus};
     drRooms.push(roomData);
