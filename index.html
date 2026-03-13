@@ -526,8 +526,15 @@ body { display: flex; flex-direction: column; }
     <!-- 3. DRYING EQUIPMENT -->
     <div class="screen calc-screen hidden" id="drying-screen">
       <div class="calc-section">
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Project</label><input class="calc-input" type="text" id="dr-project" placeholder="Project name"></div>
+          <div class="calc-input-group"><label>Room/Chamber</label><input class="calc-input" type="text" id="dr-room" placeholder="Room name"></div>
+        </div>
+      </div>
+      <div class="calc-section">
         <span class="calc-label">Water Damage Class</span>
         <div class="btn-row">
+          <button class="btn btn-blue btn-full" onclick="setDryClass(0,this)">None</button>
           <button class="btn btn-blue btn-full active" onclick="setDryClass(1,this)">Class 1</button>
           <button class="btn btn-blue btn-full" onclick="setDryClass(2,this)">Class 2</button>
           <button class="btn btn-blue btn-full" onclick="setDryClass(3,this)">Class 3</button>
@@ -550,16 +557,17 @@ body { display: flex; flex-direction: column; }
       <div class="output-box">
         <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="dr-vol">--</span></div>
         <div class="output-row"><span class="output-label">Standing Water</span><span class="output-value" id="dr-water">--</span></div>
-        <div class="output-row"><span class="output-label">PPD Needed</span><span class="output-value" id="dr-aham">--</span></div>
+        <div class="output-row"><span class="output-label">Pints Per Day to Remove</span><span class="output-value" id="dr-aham">--</span></div>
       </div>
       <div class="calc-section"><span class="calc-label" style="color:var(--yellow-text);font-size:15px;">Equipment Recommendations</span></div>
       <div class="output-box">
-        <div class="output-row"><span class="output-label">PHX Small (80 PPD)</span><span class="output-value" id="dr-phx-sm">--</span></div>
-        <div class="output-row"><span class="output-label">PHX XL (125 PPD)</span><span class="output-value" id="dr-phx-xl">--</span></div>
-        <div class="output-row"><span class="output-label">Dri-Eaz 6000 (100 PPD)</span><span class="output-value" id="dr-d6">--</span></div>
-        <div class="output-row"><span class="output-label">PHX DryMax (120 PPD)</span><span class="output-value" id="dr-dm">--</span></div>
-        <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Air Scrubbers (Dri-Eaz 500)</span><span class="output-value" id="dr-scrubbers">--</span></div>
-        <div class="output-row"><span class="output-label">Hydroxyl Generators</span><span class="output-value" id="dr-hydroxyl">--</span></div>
+        <div class="output-row"><span class="output-label">Quantity of Dehus Max.</span><span class="output-value" id="dr-dehu-max">--</span></div>
+        <div class="output-row"><span class="output-label">Qty PHX Small 80ppd</span><span class="output-value" id="dr-phx-sm">--</span></div>
+        <div class="output-row"><span class="output-label">Qty PHX XL 125ppd</span><span class="output-value" id="dr-phx-xl">--</span></div>
+        <div class="output-row"><span class="output-label">Qty Li6000 100ppd</span><span class="output-value" id="dr-d6">--</span></div>
+        <div class="output-row"><span class="output-label">Qty PHX DryMax 120ppd</span><span class="output-value" id="dr-dm">--</span></div>
+        <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Quantity of Air Scrubbers, Dri-Eze 500</span><span class="output-value" id="dr-scrubbers">--</span></div>
+        <div class="output-row"><span class="output-label">Quantity of Hydroxyl Generators</span><span class="output-value" id="dr-hydroxyl">--</span></div>
         <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Air Movers (by area)</span><span class="output-value" id="dr-am-area">--</span></div>
         <div class="output-row"><span class="output-label">Air Movers (by LF)</span><span class="output-value" id="dr-am-lf">--</span></div>
       </div>
@@ -1076,6 +1084,7 @@ function calcPsychDiff() {
 
 /* ===== 3. DRYING EQUIPMENT ===== */
 const classDescs = {
+  0:'No class selected \u2013 Air scrubbers and hydroxyl generators will still be calculated based on room volume.',
   1:'Class 1 \u2013 Minor Amount of Water: Affects only part of a room with minimal evaporation demand.',
   2:'Class 2 \u2013 Large Amount of Water: Affects an entire room or area; water has wicked into structural materials with moderate evaporation demand.',
   3:'Class 3 \u2013 Greatest Amount of Water: Water has saturated ceilings, walls, insulation, and flooring, creating the highest evaporation demand.',
@@ -1100,33 +1109,39 @@ function calcDrying() {
   s('dr-water', wh>0 ? r(galWater,1)+' gal ('+r(litWater,1)+' L)' : '--');
   // PPD (Pints Per Day) per IICRC table: Base PPD = volume / 100
   // Class 1: 1x base, Class 2: 2x base, Class 3: 2.5x base, Class 4: 3x base
-  const ppdFactors = {1:1, 2:2, 3:2.5, 4:3};
+  const ppdFactors = {0:0, 1:1, 2:2, 3:2.5, 4:3};
   const basePPD = vol / 100;
-  const ppdNeeded = basePPD * ppdFactors[dryClass];
-  s('dr-aham', vol>0 ? r(ppdNeeded,1)+' PPD' : '--');
+  const ppdNeeded = Math.ceil(basePPD * ppdFactors[dryClass]);
+  s('dr-aham', (vol>0 && dryClass>0) ? ppdNeeded : (vol>0 ? '0' : '--'));
   // Equipment recommendations - show qty for each common dehu type
-  const phxSm = vol>0 ? Math.max(Math.ceil(ppdNeeded / 80), 0) : 0;
-  const phxXl = vol>0 ? Math.max(Math.ceil(ppdNeeded / 125), 0) : 0;
-  const d6 = vol>0 ? Math.max(Math.ceil(ppdNeeded / 100), 0) : 0;
-  const dm = vol>0 ? Math.max(Math.ceil(ppdNeeded / 120), 0) : 0;
-  s('dr-phx-sm', phxSm>0 ? phxSm : '--');
-  s('dr-phx-xl', phxXl>0 ? phxXl : '--');
-  s('dr-d6', d6>0 ? d6 : '--');
-  s('dr-dm', dm>0 ? dm : '--');
-  // Air Scrubbers (Dri-Eaz 500 @ 500 cfm, 6 ACH)
+  const phxSm = ppdNeeded>0 ? Math.ceil(ppdNeeded / 80) : 0;
+  const phxXl = ppdNeeded>0 ? Math.ceil(ppdNeeded / 125) : 0;
+  const d6 = ppdNeeded>0 ? Math.ceil(ppdNeeded / 100) : 0;
+  const dm = ppdNeeded>0 ? Math.ceil(ppdNeeded / 120) : 0;
+  const dehuMax = Math.max(phxSm, phxXl, d6, dm);
+  s('dr-dehu-max', vol>0 ? dehuMax : '--');
+  s('dr-phx-sm', vol>0 ? phxSm : '--');
+  s('dr-phx-xl', vol>0 ? phxXl : '--');
+  s('dr-d6', vol>0 ? d6 : '--');
+  s('dr-dm', vol>0 ? dm : '--');
+  // Air Scrubbers (Dri-Eaz 500 @ 500 cfm, 6 ACH) - always calc based on volume
   const scrubberCfm = vol * 6 / 60;
   const numScrubbers = vol>0 ? Math.max(Math.ceil(scrubberCfm / 500), 1) : 0;
   s('dr-scrubbers', numScrubbers>0 ? numScrubbers : '--');
   // Hydroxyl Generators (same as scrubbers)
   s('dr-hydroxyl', numScrubbers>0 ? numScrubbers : '--');
-  // Air movers by area
-  const amAreaDiv = (dryClass===3) ? 50 : 70;
-  const amArea = area>0 ? Math.ceil(area/amAreaDiv) : 0;
-  s('dr-am-area', amArea>0 ? amArea : '--');
-  // Air movers by LF
-  const amLfDiv = (dryClass>=3) ? 7 : 10;
-  const amLf = perim>0 ? Math.ceil(perim/amLfDiv) : 0;
-  s('dr-am-lf', amLf>0 ? amLf : '--');
+  // Air movers by area (only when class is set)
+  if (dryClass > 0) {
+    const amAreaDiv = (dryClass===3) ? 50 : 70;
+    const amArea = area>0 ? Math.ceil(area/amAreaDiv) : 0;
+    s('dr-am-area', amArea>0 ? amArea : '--');
+    const amLfDiv = (dryClass>=3) ? 7 : 10;
+    const amLf = perim>0 ? Math.ceil(perim/amLfDiv) : 0;
+    s('dr-am-lf', amLf>0 ? amLf : '--');
+  } else {
+    s('dr-am-area', '--');
+    s('dr-am-lf', '--');
+  }
 }
 
 /* ===== 4. AIR MOVERS S500 ===== */
@@ -1345,9 +1360,12 @@ function addRoom(prefix) {
     const l=v('dr-l'),w=v('dr-w'),h=v('dr-h');
     if (!l||!w) return;
     const vol=l*w*h;
-    const ppdF={1:1,2:2,3:2.5,4:3};
-    const ppd=(vol/100)*ppdF[dryClass];
-    roomData={l,w,h,label:l+'x'+w+'x'+h+' (Class '+dryClass+')',val:r(ppd,1)+' PPD',numVal:ppd};
+    const ppdF={0:0,1:1,2:2,3:2.5,4:3};
+    const ppd=Math.ceil((vol/100)*(ppdF[dryClass]||0));
+    const proj=document.getElementById('dr-project').value||'';
+    const rm=document.getElementById('dr-room').value||'';
+    const lbl=(rm||proj?((rm||'Room')+' - '):'')+ l+'x'+w+'x'+h+(dryClass>0?' (Class '+dryClass+')':'');
+    roomData={l,w,h,label:lbl,val:ppd+' PPD',numVal:ppd};
     drRooms.push(roomData);
   } else if (prefix === 'btu') {
     const l=v('btu-l'),w=v('btu-w'),h=v('btu-h');
