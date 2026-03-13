@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>PDQ Sycorp Calculator - Water Damage Restoration</title>
+<style>
+:root {
+  --primary: #1B5E20;
+  --primary-dark: #0D3B13;
+  --brand-blue: #1565A8;
+  --brand-blue-dark: #0D4A7A;
+  --white: #FFFFFF;
+  --dark: #333333;
+  --dark2: #444444;
+  --blue: #1565A8;
+  --blue-dark: #0D4A7A;
+  --yellow: #FFD600;
+  --yellow-text: #FFD600;
+  --gray-border: #888888;
+  --input-bg: #FFFFFF;
+  --output-bg: #2A2A2A;
+  --green: #2E7D32;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: var(--font);
+  background: #222;
+  color: var(--white);
+  height: 100%;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+body { display: flex; flex-direction: column; }
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--primary) 100%);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 52px;
+  min-height: 52px;
+  z-index: 100;
+  position: relative;
+}
+.header-btn {
+  background: none; border: none; color: var(--white);
+  font-size: 24px; cursor: pointer; padding: 8px;
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+.header-btn:active { background: rgba(255,255,255,0.2); }
+.header-title {
+  flex: 1; text-align: center; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;
+}
+.header-btn.hidden { visibility: hidden; }
+
+/* SCREEN CONTAINER */
+.screen-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  transition: transform 0.3s ease, opacity 0.25s ease;
+}
+.screen.hidden {
+  display: none;
+}
+.screen.slide-out-left {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.screen.slide-in-right {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* HOME MENU */
+#home-screen {
+  background: var(--white);
+}
+.menu-list { list-style: none; }
+.menu-item {
+  display: flex; align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E0E0E0;
+  color: var(--dark);
+  font-size: 17px;
+  cursor: pointer;
+  user-select: none;
+}
+.menu-item:active { background: #F0F0F0; }
+.menu-item .menu-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  margin-right: 14px; font-size: 18px; color: var(--white); flex-shrink: 0;
+}
+.menu-item .menu-arrow { margin-left: auto; color: #CCC; font-size: 20px; }
+.mi-blue { background: var(--blue); }
+.mi-green { background: var(--green); }
+.mi-brand { background: var(--brand-blue); }
+.mi-orange { background: #FF9800; }
+.mi-purple { background: #7B1FA2; }
+.mi-teal { background: #00897B; }
+.mi-indigo { background: #3F51B5; }
+.mi-brown { background: #795548; }
+
+.home-footer {
+  text-align: center; padding: 20px 16px; color: #999; font-size: 13px; line-height: 1.6;
+  border-top: 1px solid #E0E0E0;
+}
+.home-footer a { color: var(--brand-blue); text-decoration: none; }
+
+/* CALCULATOR SCREENS */
+.calc-screen { background: var(--dark); padding: 12px 12px 80px; }
+.calc-section {
+  margin-bottom: 14px;
+}
+.calc-label {
+  font-size: 12px; color: #AAA; text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 6px; display: block;
+}
+.calc-row {
+  display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
+}
+.calc-input-group {
+  flex: 1; display: flex; flex-direction: column;
+}
+.calc-input-group label {
+  font-size: 11px; color: #AAA; margin-bottom: 3px;
+}
+.calc-input {
+  width: 100%; height: 44px; border-radius: 8px; border: 2px solid transparent;
+  padding: 0 12px; font-size: 16px; font-family: var(--font);
+  background: var(--input-bg); color: var(--dark);
+  outline: none;
+}
+.calc-input:focus { border-color: var(--blue); }
+.calc-input[readonly] {
+  background: var(--output-bg); color: var(--yellow-text);
+  border: 2px solid var(--gray-border);
+}
+.calc-select {
+  width: 100%; height: 44px; border-radius: 8px; border: 2px solid transparent;
+  padding: 0 8px; font-size: 14px; font-family: var(--font);
+  background: var(--input-bg); color: var(--dark); outline: none;
+  appearance: auto;
+}
+.calc-select:focus { border-color: var(--blue); }
+
+/* Output boxes */
+.output-box {
+  background: var(--output-bg);
+  border: 2px solid var(--gray-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+.output-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 4px 0;
+}
+.output-label { font-size: 13px; color: #CCC; }
+.output-value { font-size: 15px; color: var(--yellow-text); font-weight: 600; }
+
+/* Buttons */
+.btn-row {
+  display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+}
+.btn {
+  height: 44px; border-radius: 8px; border: none;
+  padding: 0 16px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+  display: flex; align-items: center; justify-content: center;
+  user-select: none; min-width: 44px;
+}
+.btn:active { opacity: 0.8; }
+.btn-blue { background: var(--blue); color: var(--white); }
+.btn-blue.active { background: var(--blue-dark); color: var(--yellow-text); border: 2px solid var(--yellow-text); }
+.btn-brand { background: var(--brand-blue); color: var(--white); }
+.btn-gray { background: #666; color: var(--white); }
+.btn-green { background: var(--green); color: var(--white); }
+.btn-full { flex: 1; }
+
+/* Bottom bar */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #1A1A1A;
+  display: flex; gap: 0; height: 56px;
+  border-top: 1px solid #555;
+  z-index: 50;
+  max-width: 480px; margin: 0 auto;
+}
+.bottom-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: none; border: none; color: #AAA; font-size: 10px; cursor: pointer;
+  font-family: var(--font); padding: 4px;
+}
+.bottom-btn:active { color: var(--white); background: #333; }
+.bottom-btn .bb-icon { font-size: 20px; margin-bottom: 2px; }
+.bottom-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+/* Slider */
+.slider-container { display: flex; align-items: center; gap: 10px; }
+.slider-container input[type="range"] {
+  flex: 1; height: 6px; -webkit-appearance: none; appearance: none;
+  background: #666; border-radius: 3px; outline: none;
+}
+.slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--blue); cursor: pointer;
+}
+.slider-val { font-size: 18px; font-weight: 700; color: var(--yellow-text); min-width: 36px; text-align: center; }
+
+/* Rooms panel */
+.rooms-panel {
+  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: none;
+}
+.rooms-panel.open { display: block; }
+.room-entry {
+  display: flex; align-items: center; gap: 8px; padding: 6px 0;
+  border-bottom: 1px solid #555; font-size: 14px; color: #CCC;
+}
+.room-entry:last-child { border-bottom: none; }
+.room-entry .room-name { flex: 1; }
+.room-entry .room-units { color: var(--yellow-text); font-weight: 600; }
+.room-entry .room-del { color: #F44; cursor: pointer; font-size: 18px; padding: 4px; }
+.rooms-total { color: var(--yellow-text); font-weight: 700; padding-top: 8px; font-size: 15px; }
+
+/* Specs panel */
+.specs-panel {
+  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: none;
+}
+.specs-panel.open { display: block; }
+.spec-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #555; font-size: 13px; }
+.spec-row:last-child { border-bottom: none; }
+.spec-name { color: #CCC; }
+.spec-val { color: var(--yellow-text); }
+
+/* Psychrometric columns */
+.psych-cols { display: flex; gap: 8px; }
+.psych-col { flex: 1; }
+.psych-col-header {
+  text-align: center; font-weight: 700; font-size: 16px; padding: 8px;
+  background: var(--blue); border-radius: 8px 8px 0 0; margin-bottom: 0;
+}
+.psych-col-body {
+  background: var(--dark2); border-radius: 0 0 8px 8px; padding: 10px;
+}
+.psych-field { margin-bottom: 8px; }
+.psych-field label { font-size: 11px; color: #AAA; display: block; margin-bottom: 3px; }
+.psych-field input {
+  width: 100%; height: 38px; border-radius: 6px; border: 2px solid transparent;
+  padding: 0 8px; font-size: 14px; font-family: var(--font);
+  background: var(--input-bg); color: var(--dark); outline: none;
+}
+.psych-field input:focus { border-color: var(--blue); }
+.psych-field input[readonly] {
+  background: var(--output-bg); color: var(--yellow-text); border: 2px solid var(--gray-border);
+  font-size: 13px;
+}
+
+/* Thirst/Depression box */
+.psych-diff {
+  margin-top: 12px;
+}
+
+/* Conversions */
+.conv-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  background: var(--dark2); border-radius: 8px; padding: 10px;
+}
+.conv-row input {
+  flex: 1; height: 40px; border-radius: 6px; border: 2px solid transparent;
+  padding: 0 8px; font-size: 15px; font-family: var(--font);
+  background: var(--input-bg); color: var(--dark); outline: none; min-width: 0;
+}
+.conv-row input:focus { border-color: var(--blue); }
+.conv-arrow { color: var(--yellow-text); font-size: 18px; flex-shrink: 0; }
+.conv-label { font-size: 11px; color: #AAA; text-align: center; min-width: 40px; flex-shrink: 0; }
+.conv-group { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.conv-group label { font-size: 10px; color: #AAA; }
+
+/* Definitions */
+.def-screen { background: var(--white); }
+.def-search {
+  width: calc(100% - 24px); margin: 12px; height: 44px; border-radius: 22px;
+  border: 2px solid #DDD; padding: 0 16px; font-size: 16px; font-family: var(--font);
+  outline: none;
+}
+.def-search:focus { border-color: var(--blue); }
+.def-list { padding: 0 12px 80px; }
+.def-item {
+  border-bottom: 1px solid #EEE; cursor: pointer; user-select: none;
+}
+.def-term {
+  padding: 14px 8px; font-size: 16px; color: var(--dark); font-weight: 600;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.def-term .def-arrow { color: #CCC; font-size: 14px; transition: transform 0.2s; }
+.def-item.open .def-arrow { transform: rotate(90deg); }
+.def-body {
+  padding: 0 8px 14px; font-size: 14px; color: #666; line-height: 1.5; display: none;
+}
+.def-item.open .def-body { display: block; }
+
+/* Warning */
+.warning-box {
+  background: #3D3000; border: 1px solid var(--yellow); border-radius: 8px;
+  padding: 8px 12px; color: var(--yellow); font-size: 13px; margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Max width wrapper */
+.app-wrap {
+  max-width: 480px; margin: 0 auto; width: 100%; height: 100%;
+  display: flex; flex-direction: column; position: relative;
+  background: #222;
+}
+
+/* Info modal */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6); z-index: 200; display: none;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--white); color: var(--dark); border-radius: 12px;
+  padding: 24px; max-width: 360px; width: 90%; text-align: center;
+}
+.modal-box h3 { margin-bottom: 12px; color: var(--brand-blue); }
+.modal-box p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
+.modal-box a { color: var(--brand-blue); }
+.modal-close {
+  margin-top: 16px; background: var(--brand-blue); color: var(--white);
+  border: none; padding: 10px 32px; border-radius: 8px; font-size: 15px;
+  cursor: pointer; font-family: var(--font);
+}
+
+/* S500 guidelines */
+.guide-box {
+  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px;
+  font-size: 13px; color: #CCC; line-height: 1.5;
+}
+.guide-box h4 { color: var(--yellow-text); margin-bottom: 6px; font-size: 14px; }
+
+/* Power rows */
+.power-equip-row {
+  background: var(--dark2); border-radius: 8px; padding: 10px; margin-bottom: 8px;
+}
+
+/* Ensure no horizontal scroll */
+.calc-screen, .def-screen, #home-screen { overflow-x: hidden; }
+
+@media (min-width: 481px) {
+  .bottom-bar { left: 50%; transform: translateX(-50%); }
+}
+</style>
+</head>
+<body>
+<div class="app-wrap" id="app">
+  <!-- HEADER -->
+  <div class="header">
+    <button class="header-btn" id="btn-home" onclick="goHome()" title="Home">&#8962;</button>
+    <div class="header-title" id="header-title">PDQ Sycorp Calculator</div>
+    <button class="header-btn" id="btn-info" onclick="showInfo()" title="Info">&#9432;</button>
+  </div>
+
+  <!-- SCREEN CONTAINER -->
+  <div class="screen-container">
+
+    <!-- HOME -->
+    <div class="screen" id="home-screen">
+      <ul class="menu-list">
+        <li class="menu-item" onclick="showScreen('airflow')">
+          <div class="menu-icon mi-blue">&#9729;</div>
+          Air Flow / HEPA Units
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('psychrometric')">
+          <div class="menu-icon mi-green">&#9832;</div>
+          Psychrometric
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('drying')">
+          <div class="menu-icon mi-orange">&#9748;</div>
+          Drying Equipment
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('airmovers')">
+          <div class="menu-icon mi-teal">&#9734;</div>
+          Air Movers (S500)
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('btu')">
+          <div class="menu-icon mi-brand">&#9832;</div>
+          Heating / Cooling BTU
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('power')">
+          <div class="menu-icon mi-purple">&#9889;</div>
+          Power Calculator
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('conversions')">
+          <div class="menu-icon mi-indigo">&#8644;</div>
+          Conversions
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('definitions')">
+          <div class="menu-icon mi-brown">&#128214;</div>
+          Definitions
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+      </ul>
+      <div class="home-footer">
+        <strong>PDQ Restoration</strong><br>
+        <a href="https://pdqfirewaterdamage.com" target="_blank">pdqfirewaterdamage.com</a><br>
+        <a href="tel:9733166014">973-316-6014</a>
+      </div>
+    </div>
+
+    <!-- 1. AIR FLOW / HEPA UNITS -->
+    <div class="screen calc-screen hidden" id="airflow-screen">
+      <div class="calc-section">
+        <span class="calc-label">Room Size (LWH) in Feet</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="af-l" placeholder="L" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="af-w" placeholder="W" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="af-h" value="8" placeholder="H" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Air Changes Per Hour</span>
+        <div class="slider-container">
+          <input type="range" id="af-ach" min="1" max="60" value="6">
+          <span class="slider-val" id="af-ach-val">6</span>
+        </div>
+        <div style="color:#AAA;font-size:12px;margin-top:4px;" id="af-ach-min">10.0 minutes per air change</div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Equipment</span>
+        <select class="calc-select" id="af-equip"></select>
+      </div>
+      <div class="output-box" id="af-outputs">
+        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="af-vol">--</span></div>
+        <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="af-cfm">--</span></div>
+        <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="af-units">--</span></div>
+      </div>
+      <div class="rooms-panel" id="af-rooms-panel">
+        <span class="calc-label">Saved Rooms</span>
+        <div id="af-rooms-list"></div>
+        <div class="rooms-total" id="af-rooms-total"></div>
+      </div>
+      <div class="specs-panel" id="af-specs-panel">
+        <span class="calc-label">Equipment Specs</span>
+        <div id="af-specs-list"></div>
+      </div>
+      <div class="bottom-bar" id="af-bottom">
+        <button class="bottom-btn disabled" title="Coming soon"><span class="bb-icon">&#9993;</span>Email</button>
+        <button class="bottom-btn" onclick="togglePanel('af-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
+        <button class="bottom-btn" onclick="togglePanel('af-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
+      </div>
+    </div>
+
+    <!-- 2. PSYCHROMETRIC -->
+    <div class="screen calc-screen hidden" id="psychrometric-screen">
+      <div class="psych-cols">
+        <div class="psych-col">
+          <div class="psych-col-header">In</div>
+          <div class="psych-col-body">
+            <div class="psych-field"><label>Temp &deg;F</label><input type="number" id="ps-in-f" inputmode="decimal"></div>
+            <div class="psych-field"><label>RH %</label><input type="number" id="ps-in-rh" inputmode="decimal"></div>
+            <div class="psych-field"><label>Temp &deg;C</label><input type="text" id="ps-in-c" readonly></div>
+            <div class="psych-field"><label>VP (in Hg)</label><input type="text" id="ps-in-vp-hg" readonly></div>
+            <div class="psych-field"><label>VP (kPa)</label><input type="text" id="ps-in-vp-kpa" readonly></div>
+            <div class="psych-field"><label>GPP</label><input type="text" id="ps-in-gpp" readonly></div>
+            <div class="psych-field"><label>g/kg</label><input type="text" id="ps-in-gkg" readonly></div>
+            <div class="psych-field"><label>Dew Pt &deg;F</label><input type="text" id="ps-in-dpf" readonly></div>
+            <div class="psych-field"><label>Dew Pt &deg;C</label><input type="text" id="ps-in-dpc" readonly></div>
+          </div>
+        </div>
+        <div class="psych-col">
+          <div class="psych-col-header">Out</div>
+          <div class="psych-col-body">
+            <div class="psych-field"><label>Temp &deg;F</label><input type="number" id="ps-out-f" inputmode="decimal"></div>
+            <div class="psych-field"><label>RH %</label><input type="number" id="ps-out-rh" inputmode="decimal"></div>
+            <div class="psych-field"><label>Temp &deg;C</label><input type="text" id="ps-out-c" readonly></div>
+            <div class="psych-field"><label>VP (in Hg)</label><input type="text" id="ps-out-vp-hg" readonly></div>
+            <div class="psych-field"><label>VP (kPa)</label><input type="text" id="ps-out-vp-kpa" readonly></div>
+            <div class="psych-field"><label>GPP</label><input type="text" id="ps-out-gpp" readonly></div>
+            <div class="psych-field"><label>g/kg</label><input type="text" id="ps-out-gkg" readonly></div>
+            <div class="psych-field"><label>Dew Pt &deg;F</label><input type="text" id="ps-out-dpf" readonly></div>
+            <div class="psych-field"><label>Dew Pt &deg;C</label><input type="text" id="ps-out-dpc" readonly></div>
+          </div>
+        </div>
+      </div>
+      <div class="psych-diff">
+        <div class="output-box">
+          <div class="output-row"><span class="output-label">Thirst (GPP diff)</span><span class="output-value" id="ps-thirst">--</span></div>
+          <div class="output-row"><span class="output-label">Temp Difference &deg;F</span><span class="output-value" id="ps-depression">--</span></div>
+        </div>
+      </div>
+      <div style="padding:8px 0;">
+        <button class="btn btn-gray btn-full disabled" style="opacity:0.5;">&#9993; Email (Coming Soon)</button>
+      </div>
+    </div>
+
+    <!-- 3. DRYING EQUIPMENT -->
+    <div class="screen calc-screen hidden" id="drying-screen">
+      <div class="calc-section">
+        <span class="calc-label">Water Damage Class</span>
+        <div class="btn-row">
+          <button class="btn btn-blue btn-full active" onclick="setDryClass(1,this)">Class 1</button>
+          <button class="btn btn-blue btn-full" onclick="setDryClass(2,this)">Class 2</button>
+          <button class="btn btn-blue btn-full" onclick="setDryClass(3,this)">Class 3</button>
+          <button class="btn btn-blue btn-full" onclick="setDryClass(4,this)">Class 4</button>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Room Size (LWH) in Feet</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="dr-l" placeholder="L" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="dr-w" placeholder="W" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="dr-h" value="8" placeholder="H" inputmode="decimal"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>% Coverage</label><input class="calc-input" type="number" id="dr-cov" value="100" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Water Height (in)</label><input class="calc-input" type="number" id="dr-wh" value="0" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Dehumidifier</span>
+        <select class="calc-select" id="dr-equip"></select>
+      </div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="dr-vol">--</span></div>
+        <div class="output-row"><span class="output-label">Standing Water</span><span class="output-value" id="dr-water">--</span></div>
+        <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="dr-cfm">--</span></div>
+        <div class="output-row"><span class="output-label">AHAM Needed</span><span class="output-value" id="dr-aham">--</span></div>
+        <div class="output-row"><span class="output-label"># Dehumidifiers</span><span class="output-value" id="dr-dehu">--</span></div>
+        <div class="output-row"><span class="output-label">Air Movers (by area)</span><span class="output-value" id="dr-am-area">--</span></div>
+        <div class="output-row"><span class="output-label">Air Movers (by LF)</span><span class="output-value" id="dr-am-lf">--</span></div>
+      </div>
+      <div class="rooms-panel" id="dr-rooms-panel">
+        <span class="calc-label">Saved Rooms</span>
+        <div id="dr-rooms-list"></div>
+        <div class="rooms-total" id="dr-rooms-total"></div>
+      </div>
+      <div class="specs-panel" id="dr-specs-panel">
+        <span class="calc-label">Dehumidifier Specs</span>
+        <div id="dr-specs-list"></div>
+      </div>
+      <div class="bottom-bar">
+        <button class="bottom-btn disabled"><span class="bb-icon">&#9993;</span>Email</button>
+        <button class="bottom-btn" onclick="togglePanel('dr-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
+        <button class="bottom-btn" onclick="togglePanel('dr-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
+      </div>
+    </div>
+
+    <!-- 4. AIR MOVERS S500 -->
+    <div class="screen calc-screen hidden" id="airmovers-screen">
+      <div class="calc-section">
+        <span class="calc-label">Room Size (LWH) in Feet</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="am-l" placeholder="L" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="am-w" placeholder="W" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="am-h" value="8" placeholder="H" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Water Damage Class</span>
+        <div class="btn-row" id="am-class-btns">
+          <button class="btn btn-blue btn-full active" onclick="setAmClass(1,this)">Class 1</button>
+          <button class="btn btn-blue btn-full" onclick="setAmClass(2,this)">Class 2</button>
+          <button class="btn btn-blue btn-full" onclick="setAmClass(3,this)">Class 3</button>
+          <button class="btn btn-blue btn-full" onclick="setAmClass(4,this)">Class 4</button>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Material Type</span>
+        <div class="btn-row" id="am-mat-btns">
+          <button class="btn btn-blue btn-full active" onclick="setAmMat('carpet',this)">Carpet/Pad</button>
+          <button class="btn btn-blue btn-full" onclick="setAmMat('hard',this)">Hard Floor</button>
+          <button class="btn btn-blue btn-full" onclick="setAmMat('struct',this)">Structural</button>
+        </div>
+      </div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Floor Area</span><span class="output-value" id="am-area">--</span></div>
+        <div class="output-row"><span class="output-label">Perimeter</span><span class="output-value" id="am-perim">--</span></div>
+        <div class="output-row"><span class="output-label">Air Movers (by area)</span><span class="output-value" id="am-by-area">--</span></div>
+        <div class="output-row"><span class="output-label">Air Movers (by LF)</span><span class="output-value" id="am-by-lf">--</span></div>
+      </div>
+      <div class="guide-box" id="am-guide">
+        <h4>Placement Guidelines</h4>
+        <div id="am-guide-text"></div>
+      </div>
+    </div>
+
+    <!-- 5. HEATING / COOLING BTU -->
+    <div class="screen calc-screen hidden" id="btu-screen">
+      <div class="calc-section">
+        <span class="calc-label">Room Size (LWH) in Feet</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="btu-l" placeholder="L" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="btu-w" placeholder="W" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="btu-h" value="8" placeholder="H" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Room Insulation</span>
+        <div class="btn-row" id="btu-ins-btns">
+          <button class="btn btn-blue btn-full" onclick="setBtuIns('poor',this)">Poor</button>
+          <button class="btn btn-blue btn-full active" onclick="setBtuIns('avg',this)">Average</button>
+          <button class="btn btn-blue btn-full" onclick="setBtuIns('good',this)">Good</button>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Temperature</span>
+        <div class="calc-row">
+          <div class="calc-input-group">
+            <label>Current &deg;F</label>
+            <input class="calc-input" type="number" id="btu-cur-f" inputmode="decimal">
+          </div>
+          <div class="calc-input-group">
+            <label>Current &deg;C</label>
+            <input class="calc-input" type="text" id="btu-cur-c" readonly>
+          </div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-input-group">
+            <label>Desired &deg;F</label>
+            <input class="calc-input" type="number" id="btu-des-f" inputmode="decimal">
+          </div>
+          <div class="calc-input-group">
+            <label>Desired &deg;C</label>
+            <input class="calc-input" type="text" id="btu-des-c" readonly>
+          </div>
+        </div>
+      </div>
+      <div class="warning-box">&#9888; Rough Estimate Only</div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="btu-vol">--</span></div>
+        <div class="output-row"><span class="output-label">BTU/Hr</span><span class="output-value" id="btu-btu">--</span></div>
+        <div class="output-row"><span class="output-label">Tons HVAC</span><span class="output-value" id="btu-tons">--</span></div>
+        <div class="output-row"><span class="output-label">Watts</span><span class="output-value" id="btu-watts">--</span></div>
+      </div>
+      <div class="rooms-panel" id="btu-rooms-panel">
+        <span class="calc-label">Saved Rooms</span>
+        <div id="btu-rooms-list"></div>
+        <div class="rooms-total" id="btu-rooms-total"></div>
+      </div>
+      <div style="padding-top:8px;">
+        <button class="btn btn-blue btn-full" onclick="togglePanel('btu-rooms-panel')">&#9633; MultiRoom</button>
+      </div>
+    </div>
+
+    <!-- 6. POWER CALCULATOR -->
+    <div class="screen calc-screen hidden" id="power-screen">
+      <div id="power-rows"></div>
+      <div style="padding:4px 0 8px;">
+        <button class="btn btn-blue btn-full" onclick="addPowerRow()" id="power-add-btn">+ Add Equipment</button>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Settings</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Cost/kWh (cents)</label><input class="calc-input" type="number" id="pw-cost" value="12" inputmode="decimal"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Hours/Day</label><input class="calc-input" type="number" id="pw-hours" value="24" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Days</label><input class="calc-input" type="number" id="pw-days" value="3" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Total Amps</span><span class="output-value" id="pw-amps">--</span></div>
+        <div class="output-row"><span class="output-label">Power Needed</span><span class="output-value" id="pw-kw">--</span></div>
+        <div class="output-row"><span class="output-label">Run Cost</span><span class="output-value" id="pw-runcost">--</span></div>
+      </div>
+    </div>
+
+    <!-- 7. CONVERSIONS -->
+    <div class="screen calc-screen hidden" id="conversions-screen" style="padding-bottom:20px;">
+      <span class="calc-label" style="margin-bottom:8px;display:block;">Temperature</span>
+      <div class="conv-row">
+        <div class="conv-group"><label>&deg;F</label><input type="number" id="cv-f" inputmode="decimal" oninput="cvCalc('f')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>&deg;C</label><input type="number" id="cv-c" inputmode="decimal" oninput="cvCalc('c')"></div>
+      </div>
+      <span class="calc-label" style="margin-bottom:8px;display:block;">Length</span>
+      <div class="conv-row">
+        <div class="conv-group"><label>Feet</label><input type="number" id="cv-ft" inputmode="decimal" oninput="cvCalc('ft')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>Meters</label><input type="number" id="cv-m" inputmode="decimal" oninput="cvCalc('m')"></div>
+      </div>
+      <div class="conv-row">
+        <div class="conv-group"><label>Inches</label><input type="number" id="cv-in" inputmode="decimal" oninput="cvCalc('in')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>Centimeters</label><input type="number" id="cv-cm" inputmode="decimal" oninput="cvCalc('cm')"></div>
+      </div>
+      <span class="calc-label" style="margin-bottom:8px;display:block;">Area</span>
+      <div class="conv-row">
+        <div class="conv-group"><label>Sq Ft</label><input type="number" id="cv-sqft" inputmode="decimal" oninput="cvCalc('sqft')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>Sq M</label><input type="number" id="cv-sqm" inputmode="decimal" oninput="cvCalc('sqm')"></div>
+      </div>
+      <span class="calc-label" style="margin-bottom:8px;display:block;">Volume</span>
+      <div class="conv-row">
+        <div class="conv-group"><label>Cu Ft</label><input type="number" id="cv-cuft" inputmode="decimal" oninput="cvCalc('cuft')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>Cu M</label><input type="number" id="cv-cum" inputmode="decimal" oninput="cvCalc('cum')"></div>
+      </div>
+      <div class="conv-row">
+        <div class="conv-group"><label>Gallons</label><input type="number" id="cv-gal" inputmode="decimal" oninput="cvCalc('gal')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>Liters</label><input type="number" id="cv-lit" inputmode="decimal" oninput="cvCalc('lit')"></div>
+      </div>
+      <span class="calc-label" style="margin-bottom:8px;display:block;">Weight</span>
+      <div class="conv-row">
+        <div class="conv-group"><label>Pounds</label><input type="number" id="cv-lb" inputmode="decimal" oninput="cvCalc('lb')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>Kilograms</label><input type="number" id="cv-kg" inputmode="decimal" oninput="cvCalc('kg')"></div>
+      </div>
+      <span class="calc-label" style="margin-bottom:8px;display:block;">Airflow</span>
+      <div class="conv-row">
+        <div class="conv-group"><label>CFM</label><input type="number" id="cv-cfm" inputmode="decimal" oninput="cvCalc('cfm')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>m&sup3;/hr</label><input type="number" id="cv-m3h" inputmode="decimal" oninput="cvCalc('m3h')"></div>
+      </div>
+      <span class="calc-label" style="margin-bottom:8px;display:block;">Pressure</span>
+      <div class="conv-row">
+        <div class="conv-group"><label>in Hg</label><input type="number" id="cv-inhg" inputmode="decimal" oninput="cvCalc('inhg')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>kPa</label><input type="number" id="cv-kpa" inputmode="decimal" oninput="cvCalc('kpa')"></div>
+      </div>
+      <span class="calc-label" style="margin-bottom:8px;display:block;">Moisture</span>
+      <div class="conv-row">
+        <div class="conv-group"><label>Grains</label><input type="number" id="cv-gr" inputmode="decimal" oninput="cvCalc('gr')"></div>
+        <span class="conv-arrow">&#8596;</span>
+        <div class="conv-group"><label>Grams</label><input type="number" id="cv-gm" inputmode="decimal" oninput="cvCalc('gm')"></div>
+      </div>
+    </div>
+
+    <!-- 8. DEFINITIONS -->
+    <div class="screen def-screen hidden" id="definitions-screen">
+      <input class="def-search" type="text" id="def-search" placeholder="Search terms..." oninput="filterDefs()">
+      <div class="def-list" id="def-list"></div>
+    </div>
+
+  </div><!-- /screen-container -->
+</div><!-- /app-wrap -->
+
+<!-- INFO MODAL -->
+<div class="modal-overlay" id="info-modal" onclick="if(event.target===this)closeInfo()">
+  <div class="modal-box">
+    <h3>PDQ Sycorp Calculator</h3>
+    <p>Water Damage Restoration Calculator</p>
+    <p><strong>PDQ Restoration</strong><br>
+    <a href="https://pdqfirewaterdamage.com" target="_blank">pdqfirewaterdamage.com</a><br>
+    <a href="tel:9733166014">973-316-6014</a></p>
+    <p style="font-size:12px;color:#999;">Calculations are estimates. Always verify with project-specific conditions and manufacturer specifications.</p>
+    <button class="modal-close" onclick="closeInfo()">Close</button>
+  </div>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const hepaEquip = [
+  {name:'Abatement BullDog', cfm:1950, amps:8, lbs:111},
+  {name:'Abatement CAP100', cfm:100, amps:1.2, lbs:11},
+  {name:'Abatement PAS5000', cfm:2000, amps:9, lbs:135},
+  {name:'BlueDri BD-AS-550', cfm:550, amps:2.4, lbs:33},
+  {name:'Dri-Eaz DefendAir HEPA 500', cfm:500, amps:3.8, lbs:50},
+  {name:'Dri-Eaz HEPA 700', cfm:700, amps:4, lbs:62},
+  {name:'Phoenix Guardian', cfm:1400, amps:6.3, lbs:92},
+  {name:'Phoenix Guardian R', cfm:1100, amps:5, lbs:75},
+  {name:'Phoenix MiniGuardian', cfm:300, amps:1.8, lbs:22},
+  {name:'Nikro PS600', cfm:600, amps:3, lbs:45},
+  {name:'Nikro PS2009', cfm:2000, amps:8, lbs:120}
+];
+const dehuEquip = [
+  {name:'Dri-Eaz Evolution', pints:84, cfm:400, amps:6.2},
+  {name:'Dri-Eaz 2800i', pints:130, cfm:410, amps:8.2},
+  {name:'Dri-Eaz LGR 3500i', pints:170, cfm:413, amps:9.5},
+  {name:'Dri-Eaz LGR 6000', pints:82, cfm:235, amps:5.8},
+  {name:'Phoenix R200', pints:140, cfm:325, amps:8.0},
+  {name:'Phoenix R175', pints:118, cfm:300, amps:7.5},
+  {name:'Phoenix D385', pints:185, cfm:400, amps:10.0},
+  {name:'Phoenix 200 MAX', pints:160, cfm:357, amps:9.0},
+  {name:'B-Air VG-1400', pints:84, cfm:180, amps:6.0}
+];
+const allEquipPower = hepaEquip.map(e=>({name:e.name,amps:e.amps})).concat(
+  dehuEquip.map(e=>({name:e.name+' (Dehu)',amps:e.amps}))
+);
+
+const definitions = [
+  ['Absorption','The process by which a material takes in and retains a liquid. Porous materials like carpet padding absorb water readily.'],
+  ['Adsorption','The adhesion of molecules to the surface of a solid material, as opposed to being absorbed into it. Desiccant dehumidifiers use adsorption.'],
+  ['AHAM','Association of Home Appliance Manufacturers. Sets testing standards for dehumidifier capacity ratings (pints per day).'],
+  ['Air Changes Per Hour (ACH)','The number of times the total volume of air in a space is replaced in one hour. Used to determine HEPA/air scrubber sizing.'],
+  ['Air Mover','A high-velocity fan used to accelerate evaporation from wet materials by directing airflow across surfaces.'],
+  ['Air Scrubber','A portable filtration system that draws in air, passes it through HEPA filters, and exhausts clean air. Used for contaminant removal and negative air.'],
+  ['Antimicrobial','A chemical agent that inhibits the growth of or destroys microorganisms. Applied to prevent mold and bacterial growth during water damage restoration.'],
+  ['ASTM','American Society for Testing and Materials. Develops standards for materials, products, and systems used in restoration.'],
+  ['Biocide','A chemical substance capable of killing living organisms. Used in restoration to destroy harmful microorganisms in Category 2 and 3 water losses.'],
+  ['BTU','British Thermal Unit. The amount of heat required to raise the temperature of one pound of water by one degree Fahrenheit.'],
+  ['Category 1 Water','Clean water from a sanitary source (broken supply line, rainwater). Poses no substantial risk from dermal, ingestion, or inhalation exposure.'],
+  ['Category 2 Water','Gray water with significant contamination (washing machine overflow, dishwasher discharge). May cause discomfort or illness if contacted or consumed.'],
+  ['Category 3 Water','Black water that is grossly contaminated (sewage, rising flood water, toilet overflow with feces). Contains pathogenic agents and toxins.'],
+  ['CFM','Cubic Feet per Minute. A measure of airflow volume used to rate air movers, air scrubbers, and dehumidifiers.'],
+  ['Class 1 Water Damage','Least amount of absorption. Affects only part of a room with low-porosity materials. Minimal moisture absorbed.'],
+  ['Class 2 Water Damage','Significant absorption. Water affects an entire room with carpet and cushion. Moisture wicks up walls less than 24 inches.'],
+  ['Class 3 Water Damage','Greatest absorption. Water may come from overhead, saturating ceilings, walls, insulation, carpet, cushion, and sub-floor.'],
+  ['Class 4 Water Damage','Specialty drying situations involving saturated materials with low permeance/porosity (hardwood, plaster, concrete, stone). Requires longer drying times and specialized methods.'],
+  ['Containment','Physical barriers (polyethylene sheeting) used to isolate work areas and prevent the spread of contaminants during restoration.'],
+  ['Dehumidifier','Equipment that removes moisture from the air. Types include refrigerant (LGR) and desiccant. Rated by pints of water removed per day.'],
+  ['Desiccant','A hygroscopic substance used as a drying agent. Desiccant dehumidifiers use materials like silica gel to adsorb moisture from air.'],
+  ['Dew Point','The temperature at which air becomes saturated and water vapor begins to condense. A key psychrometric measurement for monitoring drying progress.'],
+  ['Evaporation','The process by which liquid water changes to water vapor. The primary mechanism in structural drying, accelerated by airflow and heat.'],
+  ['Extraction','The physical removal of standing water or water from materials using pumps, wet vacuums, or weighted extraction tools.'],
+  ['Grains Per Pound (GPP)','A measure of specific humidity. The weight of moisture in grains (7000 grains = 1 pound) per pound of dry air. Key metric for monitoring drying.'],
+  ['HEPA','High Efficiency Particulate Air. A filter standard that captures 99.97% of particles 0.3 microns or larger. Required for mold remediation.'],
+  ['Humidity (Relative)','The ratio of water vapor present in air to the maximum amount possible at that temperature, expressed as a percentage.'],
+  ['Humidity (Specific)','The actual amount of water vapor in the air, measured in grains per pound (GPP) or grams per kilogram (g/kg).'],
+  ['Hygroscopic','Materials that readily attract and hold moisture from the surrounding environment (wood, drywall, concrete).'],
+  ['Hygrometer','An instrument used to measure the humidity of air or moisture content of materials. Essential for monitoring drying progress.'],
+  ['IICRC','Institute of Inspection, Cleaning and Restoration Certification. The certifying body that publishes S500 and S520 standards for water damage and mold remediation.'],
+  ['Injectidry','A specialty drying system that forces air into wall cavities, under floors, or into other enclosed spaces through small injector ports.'],
+  ['LGR (Low Grain Refrigerant)','A type of dehumidifier that uses a pre-cooling coil to achieve lower grain depression, making it more effective at removing moisture in typical restoration conditions.'],
+  ['Moisture Content','The amount of moisture in a material, typically expressed as a percentage of the material\'s dry weight. Measured with moisture meters.'],
+  ['Moisture Mapping','The systematic process of documenting moisture readings throughout a structure to define the scope of water damage and monitor drying progress.'],
+  ['Mold','Fungi that grow in the form of multicellular filaments (hyphae). Requires moisture, nutrients, and suitable temperature. Can begin growing within 24-48 hours of water exposure.'],
+  ['Negative Air','A containment technique where air is exhausted from an enclosed area faster than it enters, creating negative pressure that prevents contaminants from spreading.'],
+  ['NIOSH','National Institute for Occupational Safety and Health. Provides recommendations for PPE and exposure limits relevant to restoration work.'],
+  ['Psychrometric','Relating to the measurement and study of atmospheric conditions, particularly moisture in air. Psychrometric charts show relationships between temperature, humidity, dew point, and other properties.'],
+  ['PPE','Personal Protective Equipment. Safety gear including respirators, gloves, eye protection, and protective clothing used during restoration work.'],
+  ['Remediation','The process of correcting or reversing environmental damage, particularly removing mold contamination and restoring affected materials.'],
+  ['Restoration','The process of returning a property to its pre-loss condition after water, fire, mold, or other damage.'],
+  ['RH (Relative Humidity)','See Humidity (Relative). The percentage of moisture in air relative to the maximum at that temperature.'],
+  ['S500','IICRC Standard and Reference Guide for Professional Water Damage Restoration. The industry standard for water damage restoration procedures.'],
+  ['S520','IICRC Standard and Reference Guide for Professional Mold Remediation. The industry standard for mold remediation procedures.'],
+  ['Sanitizer','A chemical agent that reduces the number of microorganisms to a safe level. Less aggressive than a biocide or sterilizer.'],
+  ['SDS','Safety Data Sheet. Document providing information about chemical products including hazards, handling, storage, and emergency measures.'],
+  ['Sewage','Category 3 water containing human waste. Requires specialized protocols for safe cleanup including PPE, containment, and antimicrobial treatment.'],
+  ['Solvent','A liquid substance capable of dissolving other substances. Used in restoration for cleaning and deodorization.'],
+  ['Spores','Reproductive units of fungi (mold) that are released into the air and can remain dormant until conditions favor growth.'],
+  ['Subsurface Drying','Drying techniques targeting moisture trapped beneath surface materials (under tile, in wall cavities, beneath hardwood floors).'],
+  ['Thirst','The difference in specific humidity (GPP) between the indoor and outdoor environments. Indicates the drying potential of outside air.'],
+  ['Threshold Limit Values','Occupational exposure limits for airborne substances, relevant to restoration chemicals and contaminants.'],
+  ['Total Dissolved Solids','The concentration of dissolved substances in water. Higher TDS indicates greater contamination level.'],
+  ['Ultrasonic Cleaning','A cleaning method using high-frequency sound waves in a liquid solution to remove contaminants from objects and materials.'],
+  ['Vacuum Freeze-Dry','A document and artifact restoration technique that freezes wet materials and then removes moisture through sublimation under vacuum.'],
+  ['Vapor Pressure','The pressure exerted by water vapor in the air. The difference in vapor pressure drives moisture movement from wet to dry areas.'],
+  ['VCT','Vinyl Composition Tile. A common commercial flooring material that can trap moisture underneath, requiring specialty drying techniques.'],
+  ['Vinyl Asbestos Tile','Older flooring material containing asbestos fibers. Requires special handling and abatement procedures if disturbed during restoration.'],
+  ['VOC','Volatile Organic Compound. Chemical compounds that easily evaporate at room temperature. Can be released from water-damaged materials or restoration chemicals.'],
+  ['VP','See Vapor Pressure.'],
+  ['Water Migration','The movement of water through and along materials via gravity, capillary action, and wicking. Determines the extent of damage beyond the initial water source.'],
+  ['Wet Bulb','The temperature reading from a thermometer with its bulb wrapped in a wet wick. The difference between wet and dry bulb temperatures indicates the moisture content of the air.']
+];
+
+/* ===== STATE ===== */
+let currentScreen = 'home';
+let dryClass = 1;
+let amClass = 1;
+let amMat = 'carpet';
+let btuIns = 'avg';
+let powerRowCount = 0;
+const afRooms = [];
+const drRooms = [];
+const btuRooms = [];
+
+/* ===== INIT ===== */
+function init() {
+  // Populate HEPA dropdowns
+  const afSel = document.getElementById('af-equip');
+  hepaEquip.forEach((e,i) => {
+    const o = document.createElement('option'); o.value = i; o.textContent = e.name + ' (' + e.cfm + ' cfm)';
+    afSel.appendChild(o);
+  });
+  // Populate dehu dropdown
+  const drSel = document.getElementById('dr-equip');
+  dehuEquip.forEach((e,i) => {
+    const o = document.createElement('option'); o.value = i; o.textContent = e.name + ' (' + e.pints + ' pt/day)';
+    drSel.appendChild(o);
+  });
+  // Populate specs
+  renderAfSpecs();
+  renderDrSpecs();
+  // Populate definitions
+  renderDefs();
+  // Add power row
+  addPowerRow();
+  // Bind inputs
+  bindCalc('af-l af-w af-h af-equip', calcAirflow);
+  document.getElementById('af-ach').addEventListener('input', calcAirflow);
+  bindCalc('dr-l dr-w dr-h dr-cov dr-wh dr-equip', calcDrying);
+  bindCalc('am-l am-w am-h', calcAirMovers);
+  bindCalc('btu-l btu-w btu-h btu-cur-f btu-des-f', calcBtu);
+  bindCalc('pw-cost pw-hours pw-days', calcPower);
+  bindCalc('ps-in-f ps-in-rh', ()=>calcPsych('in'));
+  bindCalc('ps-out-f ps-out-rh', ()=>calcPsych('out'));
+  // Load saved state
+  loadState();
+  calcAirflow(); calcDrying(); calcAirMovers(); calcBtu(); calcPower();
+  calcPsych('in'); calcPsych('out');
+  updateAmGuide();
+}
+
+function bindCalc(ids, fn) {
+  ids.split(' ').forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', fn);
+  });
+}
+
+/* ===== NAVIGATION ===== */
+const screenNames = {
+  home:'PDQ Sycorp Calculator', airflow:'Air Flow / HEPA', psychrometric:'Psychrometric',
+  drying:'Drying Equipment', airmovers:'Air Movers (S500)',
+  btu:'Heating / Cooling BTU', power:'Power Calculator',
+  conversions:'Conversions', definitions:'Definitions'
+};
+
+function showScreen(name) {
+  if (name === currentScreen) return;
+  const oldEl = document.getElementById(currentScreen + '-screen');
+  const newEl = document.getElementById(name + '-screen');
+  oldEl.classList.add('slide-out-left');
+  newEl.classList.remove('hidden');
+  newEl.classList.add('slide-in-right');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      newEl.classList.remove('slide-in-right');
+      setTimeout(() => { oldEl.classList.add('hidden'); oldEl.classList.remove('slide-out-left'); }, 300);
+    });
+  });
+  currentScreen = name;
+  document.getElementById('header-title').textContent = screenNames[name] || 'PDQ Sycorp Calculator';
+  document.getElementById('btn-home').classList.toggle('hidden', name === 'home');
+  saveState();
+}
+
+function goHome() {
+  if (currentScreen === 'home') return;
+  const oldEl = document.getElementById(currentScreen + '-screen');
+  const newEl = document.getElementById('home-screen');
+  oldEl.classList.add('slide-out-left');
+  newEl.classList.remove('hidden');
+  newEl.classList.add('slide-in-right');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      newEl.classList.remove('slide-in-right');
+      setTimeout(() => { oldEl.classList.add('hidden'); oldEl.classList.remove('slide-out-left'); }, 300);
+    });
+  });
+  currentScreen = 'home';
+  document.getElementById('header-title').textContent = 'PDQ Sycorp Calculator';
+  document.getElementById('btn-home').classList.add('hidden');
+  saveState();
+}
+
+/* ===== INFO MODAL ===== */
+function showInfo() { document.getElementById('info-modal').classList.add('open'); }
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+/* ===== PANEL TOGGLE ===== */
+function togglePanel(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+/* ===== HELPERS ===== */
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function s(id, val) { document.getElementById(id).textContent = val; }
+function si(id, val) { document.getElementById(id).value = val; }
+function r(n, d) { return d === undefined ? Math.round(n*100)/100 : (Math.round(n * Math.pow(10,d)) / Math.pow(10,d)); }
+
+/* ===== 1. AIRFLOW CALC ===== */
+function calcAirflow() {
+  const l=v('af-l'), w=v('af-w'), h=v('af-h');
+  const ach = parseInt(document.getElementById('af-ach').value) || 6;
+  document.getElementById('af-ach-val').textContent = ach;
+  document.getElementById('af-ach-min').textContent = r(60/ach,1) + ' minutes per air change';
+  const ei = parseInt(document.getElementById('af-equip').value);
+  const equip = hepaEquip[ei];
+  const vol = l * w * h;
+  const volM3 = vol * 0.0283168;
+  const cfmNeeded = vol * ach / 60;
+  const m3hr = cfmNeeded * 1.69901;
+  const units = vol > 0 && equip ? Math.ceil(cfmNeeded / equip.cfm) : 0;
+  s('af-vol', vol > 0 ? r(vol,0) + ' ft\u00B3 (' + r(volM3,1) + ' m\u00B3)' : '--');
+  s('af-cfm', cfmNeeded > 0 ? r(cfmNeeded,0) + ' cfm (' + r(m3hr,0) + ' m\u00B3/hr)' : '--');
+  s('af-units', units > 0 ? units : '--');
+}
+
+function renderAfSpecs() {
+  const c = document.getElementById('af-specs-list');
+  c.innerHTML = hepaEquip.map(e =>
+    '<div class="spec-row"><span class="spec-name">'+e.name+'</span><span class="spec-val">'+e.cfm+' cfm | '+e.amps+'A | '+e.lbs+' lbs</span></div>'
+  ).join('');
+}
+
+/* ===== AF ROOMS ===== */
+document.querySelector('#af-bottom .bottom-btn:nth-child(2)').addEventListener('click', function() {
+  // handled by togglePanel
+});
+function addAfRoom() {
+  const l=v('af-l'), w=v('af-w'), h=v('af-h');
+  if (!l || !w) return;
+  const ach = parseInt(document.getElementById('af-ach').value) || 6;
+  const ei = parseInt(document.getElementById('af-equip').value);
+  const equip = hepaEquip[ei];
+  const vol = l*w*h;
+  const cfm = vol*ach/60;
+  const units = equip ? Math.ceil(cfm/equip.cfm) : 0;
+  afRooms.push({l,w,h,ach,equip:equip.name,units,cfm:r(cfm,0)});
+  renderAfRooms();
+}
+function renderAfRooms() {
+  const c = document.getElementById('af-rooms-list');
+  if (!afRooms.length) { c.innerHTML='<div style="color:#888;font-size:13px;">No rooms saved. Calculate and add rooms.</div>'; document.getElementById('af-rooms-total').textContent=''; return; }
+  c.innerHTML = afRooms.map((rm,i) =>
+    '<div class="room-entry"><span class="room-name">'+rm.l+'x'+rm.w+'x'+rm.h+'</span><span class="room-units">'+rm.units+' units ('+rm.cfm+' cfm)</span><span class="room-del" onclick="afRooms.splice('+i+',1);renderAfRooms();">&times;</span></div>'
+  ).join('');
+  const total = afRooms.reduce((s,r)=>s+r.units,0);
+  document.getElementById('af-rooms-total').textContent = 'Total: ' + total + ' units';
+}
+
+/* ===== 2. PSYCHROMETRIC ===== */
+function calcPsych(side) {
+  const tf = v('ps-'+side+'-f');
+  const rh = v('ps-'+side+'-rh');
+  if (!tf && !rh) {
+    ['c','vp-hg','vp-kpa','gpp','gkg','dpf','dpc'].forEach(f => si('ps-'+side+'-'+f,''));
+    calcPsychDiff(); return;
+  }
+  const tc = (tf-32)*5/9;
+  si('ps-'+side+'-c', r(tc,2));
+  if (rh > 0) {
+    const satVP = 0.49171 * Math.exp(0.0621846 * tc); // kPa
+    const actualVP = satVP * rh / 100;
+    const vpHg = actualVP * 0.295301;
+    si('ps-'+side+'-vp-hg', r(vpHg,4));
+    si('ps-'+side+'-vp-kpa', r(actualVP,4));
+    const gpp = 4354 * actualVP / (101.325 - actualVP);
+    const gkg = gpp / 7;
+    si('ps-'+side+'-gpp', r(gpp,1));
+    si('ps-'+side+'-gkg', r(gkg,2));
+    // Dew point Magnus
+    const gamma = Math.log(rh/100) + (17.67*tc)/(243.5+tc);
+    const dewC = 243.5*gamma/(17.67-gamma);
+    const dewF = dewC*9/5+32;
+    si('ps-'+side+'-dpf', r(dewF,1));
+    si('ps-'+side+'-dpc', r(dewC,1));
+  }
+  calcPsychDiff();
+}
+function calcPsychDiff() {
+  const inGpp = parseFloat(document.getElementById('ps-in-gpp').value);
+  const outGpp = parseFloat(document.getElementById('ps-out-gpp').value);
+  const inF = v('ps-in-f');
+  const outF = v('ps-out-f');
+  s('ps-thirst', (!isNaN(inGpp) && !isNaN(outGpp)) ? r(inGpp-outGpp,1)+' GPP' : '--');
+  s('ps-depression', (inF && outF) ? r(inF-outF,1)+' \u00B0F' : '--');
+}
+
+/* ===== 3. DRYING EQUIPMENT ===== */
+function setDryClass(c, btn) {
+  dryClass = c;
+  btn.parentElement.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  calcDrying();
+}
+function calcDrying() {
+  const l=v('dr-l'), w=v('dr-w'), h=v('dr-h'), cov=v('dr-cov')/100, wh=v('dr-wh');
+  const ei = parseInt(document.getElementById('dr-equip').value);
+  const equip = dehuEquip[ei];
+  const vol = l*w*h;
+  const area = l*w*cov;
+  const perim = 2*(l+w);
+  s('dr-vol', vol>0 ? r(vol,0)+' ft\u00B3' : '--');
+  // Standing water
+  const galWater = l*w*(wh/12)*7.48;
+  const litWater = galWater*3.785;
+  s('dr-water', wh>0 ? r(galWater,1)+' gal ('+r(litWater,1)+' L)' : '--');
+  // Airflow
+  const cfmFactors = {1:1, 2:1.5, 3:3, 4:1.5};
+  let cfmNeeded;
+  if (dryClass === 4) { cfmNeeded = vol * 1.5; }
+  else { cfmNeeded = area * cfmFactors[dryClass]; }
+  const m3hr = cfmNeeded * 1.69901;
+  s('dr-cfm', cfmNeeded>0 ? r(cfmNeeded,0)+' cfm ('+r(m3hr,0)+' m\u00B3/hr)' : '--');
+  // AHAM
+  const ahamFactors = {1:0.15, 2:0.25, 3:0.4, 4:0.5};
+  const ahamPints = vol * ahamFactors[dryClass];
+  const ahamLiters = ahamPints * 0.473176;
+  const ahamGallons = ahamPints / 8;
+  s('dr-aham', vol>0 ? r(ahamPints,0)+' pt/day ('+r(ahamLiters,0)+' L | '+r(ahamGallons,1)+' gal)' : '--');
+  // Dehus
+  const numDehu = (vol>0 && equip) ? Math.ceil(ahamPints / equip.pints) : 0;
+  s('dr-dehu', numDehu>0 ? numDehu : '--');
+  // Air movers by area
+  const amAreaDiv = (dryClass===3) ? 50 : 70;
+  const amArea = area>0 ? Math.ceil(area/amAreaDiv) : 0;
+  s('dr-am-area', amArea>0 ? amArea : '--');
+  // Air movers by LF
+  const amLfDiv = (dryClass>=3) ? 7 : 10;
+  const amLf = perim>0 ? Math.ceil(perim/amLfDiv) : 0;
+  s('dr-am-lf', amLf>0 ? amLf : '--');
+}
+function renderDrSpecs() {
+  const c = document.getElementById('dr-specs-list');
+  c.innerHTML = dehuEquip.map(e =>
+    '<div class="spec-row"><span class="spec-name">'+e.name+'</span><span class="spec-val">'+e.pints+' pt/day | '+e.cfm+' cfm</span></div>'
+  ).join('');
+}
+
+/* ===== 4. AIR MOVERS S500 ===== */
+function setAmClass(c, btn) {
+  amClass = c;
+  document.getElementById('am-class-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  calcAirMovers(); updateAmGuide();
+}
+function setAmMat(m, btn) {
+  amMat = m;
+  document.getElementById('am-mat-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  calcAirMovers(); updateAmGuide();
+}
+function calcAirMovers() {
+  const l=v('am-l'), w=v('am-w'), h=v('am-h');
+  const area = l*w;
+  const perim = 2*(l+w);
+  s('am-area', area>0 ? r(area,0)+' sq ft' : '--');
+  s('am-perim', perim>0 ? r(perim,0)+' LF' : '--');
+  // By area
+  let areaDiv = 70;
+  if (amClass === 3) areaDiv = 50;
+  if (amClass === 4) areaDiv = 40;
+  if (amMat === 'struct') areaDiv = 40;
+  const byArea = area>0 ? Math.ceil(area/areaDiv) : 0;
+  s('am-by-area', byArea>0 ? byArea : '--');
+  // By LF
+  let lfDiv = 10;
+  if (amClass >= 3) lfDiv = 7;
+  if (amMat === 'struct') lfDiv = 6;
+  const byLf = perim>0 ? Math.ceil(perim/lfDiv) : 0;
+  s('am-by-lf', byLf>0 ? byLf : '--');
+}
+function updateAmGuide() {
+  const guides = {
+    1: {
+      carpet:'<b>Class 1 - Carpet/Pad:</b> Place air movers at 10-foot intervals along wet perimeter walls. Angle at 15-45 degrees toward the wall. One air mover per 70 sq ft of affected area.',
+      hard:'<b>Class 1 - Hard Floor:</b> Place air movers along the wet perimeter at 10-foot intervals. Direct airflow across the wet floor surface.',
+      struct:'<b>Class 1 - Structural:</b> Direct air movers at wet structural components. Focus on the specific affected areas.'
+    },
+    2: {
+      carpet:'<b>Class 2 - Carpet/Pad:</b> Place air movers at 10-foot intervals along perimeter. Ensure airflow reaches walls where wicking occurs (up to 24"). One per 70 sq ft.',
+      hard:'<b>Class 2 - Hard Floor:</b> Air movers every 10 feet along perimeter. Consider wall cavity drying if moisture has migrated behind baseboards.',
+      struct:'<b>Class 2 - Structural:</b> Focus on walls with moisture wicking. Position air movers to maximize wall surface airflow. Consider wall cavity drying systems.'
+    },
+    3: {
+      carpet:'<b>Class 3 - Carpet/Pad:</b> Maximum air mover coverage. One per 50 sq ft or 7 LF. Address ceiling and overhead areas. Floating may be necessary.',
+      hard:'<b>Class 3 - Hard Floor:</b> Maximum coverage with air movers every 7 feet along walls. Address overhead water sources and ceiling damage.',
+      struct:'<b>Class 3 - Structural:</b> Comprehensive coverage. Air movers directed at all affected surfaces including walls, ceilings, and structural members.'
+    },
+    4: {
+      carpet:'<b>Class 4 - Specialty Drying:</b> Low-permeance materials require extended drying. Use desiccant dehumidifiers, heat injection, or injectidry systems. Standard air movers may not be sufficient alone.',
+      hard:'<b>Class 4 - Hard Floor:</b> Specialty drying for hardwood, VCT, concrete. May require above/below drying systems, mat systems, or heat injection.',
+      struct:'<b>Class 4 - Structural:</b> Plaster, concrete, stone, hardwood require specialty drying. Consider desiccant dehumidifiers and directed heat. Extended monitoring necessary.'
+    }
+  };
+  document.getElementById('am-guide-text').innerHTML = guides[amClass][amMat];
+}
+
+/* ===== 5. BTU CALC ===== */
+function setBtuIns(ins, btn) {
+  btuIns = ins;
+  document.getElementById('btu-ins-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  calcBtu();
+}
+function calcBtu() {
+  const l=v('btu-l'), w=v('btu-w'), h=v('btu-h');
+  const curF=v('btu-cur-f'), desF=v('btu-des-f');
+  si('btu-cur-c', curF ? r((curF-32)*5/9,1) : '');
+  si('btu-des-c', desF ? r((desF-32)*5/9,1) : '');
+  const vol = l*w*h;
+  const volM3 = vol*0.0283168;
+  s('btu-vol', vol>0 ? r(vol,0)+' ft\u00B3 ('+r(volM3,1)+' m\u00B3)' : '--');
+  const tempDiff = Math.abs(desF-curF);
+  const factors = {poor:1.5, avg:1.0, good:0.7};
+  const btu = vol*tempDiff*factors[btuIns]/60;
+  s('btu-btu', btu>0 ? r(btu,0)+' BTU/hr' : '--');
+  s('btu-tons', btu>0 ? r(btu/12000,2)+' tons' : '--');
+  s('btu-watts', btu>0 ? r(btu*0.293,0)+' W' : '--');
+}
+
+/* ===== 6. POWER CALC ===== */
+function addPowerRow() {
+  if (powerRowCount >= 3) return;
+  powerRowCount++;
+  const container = document.getElementById('power-rows');
+  const div = document.createElement('div');
+  div.className = 'power-equip-row';
+  div.id = 'pw-row-'+powerRowCount;
+  const n = powerRowCount;
+  let opts = '<option value="">-- Select --</option>';
+  allEquipPower.forEach((e,i) => { opts += '<option value="'+i+'">'+e.name+'</option>'; });
+  div.innerHTML = '<span class="calc-label">Equipment '+n+'</span>'+
+    '<div class="calc-row"><div class="calc-input-group" style="flex:2"><select class="calc-select" id="pw-eq-'+n+'" onchange="pwEqChange('+n+')">'+opts+'</select></div>'+
+    '<div class="calc-input-group"><label># Units</label><input class="calc-input" type="number" id="pw-num-'+n+'" value="1" min="1" inputmode="numeric" oninput="calcPower()"></div></div>'+
+    '<div class="calc-row"><div class="calc-input-group"><label>Amps</label><input class="calc-input" type="text" id="pw-amps-'+n+'" readonly></div></div>';
+  container.appendChild(div);
+  if (powerRowCount >= 3) document.getElementById('power-add-btn').style.display='none';
+}
+function pwEqChange(n) {
+  const idx = parseInt(document.getElementById('pw-eq-'+n).value);
+  if (!isNaN(idx) && allEquipPower[idx]) {
+    si('pw-amps-'+n, allEquipPower[idx].amps);
+  } else {
+    si('pw-amps-'+n, '');
+  }
+  calcPower();
+}
+function calcPower() {
+  let totalAmps = 0;
+  for (let i=1; i<=powerRowCount; i++) {
+    const ampsEl = document.getElementById('pw-amps-'+i);
+    const numEl = document.getElementById('pw-num-'+i);
+    if (ampsEl && numEl) {
+      totalAmps += (parseFloat(ampsEl.value)||0) * (parseInt(numEl.value)||1);
+    }
+  }
+  const costKwh = v('pw-cost');
+  const hours = v('pw-hours');
+  const days = v('pw-days');
+  const kw = totalAmps * 120 / 1000;
+  const totalHours = hours * days;
+  const runCost = kw * totalHours * costKwh / 100;
+  s('pw-amps', totalAmps>0 ? r(totalAmps,1)+' A' : '--');
+  s('pw-kw', kw>0 ? r(kw,2)+' kW' : '--');
+  s('pw-runcost', runCost>0 ? '$'+r(runCost,2) : '--');
+}
+
+/* ===== 7. CONVERSIONS ===== */
+function cvCalc(from) {
+  const val = parseFloat(document.getElementById('cv-'+from).value);
+  if (isNaN(val)) {
+    // Clear the paired field
+    const pairs = {f:'c',c:'f',ft:'m',m:'ft','in':'cm',cm:'in',sqft:'sqm',sqm:'sqft',cuft:'cum',cum:'cuft',gal:'lit',lit:'gal',lb:'kg',kg:'lb',cfm:'m3h',m3h:'cfm',inhg:'kpa',kpa:'inhg',gr:'gm',gm:'gr'};
+    si('cv-'+pairs[from],'');
+    return;
+  }
+  const conversions = {
+    f: ()=> si('cv-c', r((val-32)*5/9,2)),
+    c: ()=> si('cv-f', r(val*9/5+32,2)),
+    ft: ()=> si('cv-m', r(val*0.3048,4)),
+    m: ()=> si('cv-ft', r(val/0.3048,4)),
+    'in': ()=> si('cv-cm', r(val*2.54,3)),
+    cm: ()=> si('cv-in', r(val/2.54,3)),
+    sqft: ()=> si('cv-sqm', r(val*0.092903,4)),
+    sqm: ()=> si('cv-sqft', r(val/0.092903,4)),
+    cuft: ()=> si('cv-cum', r(val*0.0283168,4)),
+    cum: ()=> si('cv-cuft', r(val/0.0283168,4)),
+    gal: ()=> si('cv-lit', r(val*3.78541,3)),
+    lit: ()=> si('cv-gal', r(val/3.78541,3)),
+    lb: ()=> si('cv-kg', r(val*0.453592,3)),
+    kg: ()=> si('cv-lb', r(val/0.453592,3)),
+    cfm: ()=> si('cv-m3h', r(val*1.69901,2)),
+    m3h: ()=> si('cv-cfm', r(val/1.69901,2)),
+    inhg: ()=> si('cv-kpa', r(val*3.38639,4)),
+    kpa: ()=> si('cv-inhg', r(val/3.38639,4)),
+    gr: ()=> si('cv-gm', r(val*0.06479891,4)),
+    gm: ()=> si('cv-gr', r(val/0.06479891,4))
+  };
+  if (conversions[from]) conversions[from]();
+}
+
+/* ===== 8. DEFINITIONS ===== */
+function renderDefs() {
+  const c = document.getElementById('def-list');
+  c.innerHTML = definitions.map((d,i) =>
+    '<div class="def-item" id="def-'+i+'" onclick="toggleDef('+i+')">'+
+    '<div class="def-term">'+d[0]+'<span class="def-arrow">&#8250;</span></div>'+
+    '<div class="def-body">'+d[1]+'</div></div>'
+  ).join('');
+}
+function toggleDef(i) {
+  document.getElementById('def-'+i).classList.toggle('open');
+}
+function filterDefs() {
+  const q = document.getElementById('def-search').value.toLowerCase();
+  definitions.forEach((d,i) => {
+    const el = document.getElementById('def-'+i);
+    const match = d[0].toLowerCase().includes(q) || d[1].toLowerCase().includes(q);
+    el.style.display = match ? '' : 'none';
+  });
+}
+
+/* ===== ROOMS (shared for AF and Drying) ===== */
+// Add room buttons in bottom bar need wiring - use the existing togglePanel approach
+// We add "Add Room" to rooms panels
+function initRoomPanels() {
+  ['af','dr','btu'].forEach(prefix => {
+    const panel = document.getElementById(prefix+'-rooms-panel');
+    if (!panel) return;
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn btn-green btn-full';
+    addBtn.style.marginTop = '8px';
+    addBtn.textContent = '+ Add Current Room';
+    addBtn.onclick = () => addRoom(prefix);
+    panel.appendChild(addBtn);
+  });
+  renderRooms('af'); renderRooms('dr'); renderRooms('btu');
+}
+function addRoom(prefix) {
+  let roomData = {};
+  if (prefix === 'af') {
+    const l=v('af-l'),w=v('af-w'),h=v('af-h');
+    if (!l||!w) return;
+    const ach=parseInt(document.getElementById('af-ach').value)||6;
+    const ei=parseInt(document.getElementById('af-equip').value);
+    const eq=hepaEquip[ei];
+    const vol=l*w*h, cfm=vol*ach/60;
+    const units=eq?Math.ceil(cfm/eq.cfm):0;
+    roomData={l,w,h,label:l+'x'+w+'x'+h,val:units+' units ('+r(cfm,0)+' cfm)',numVal:units};
+    afRooms.push(roomData);
+  } else if (prefix === 'dr') {
+    const l=v('dr-l'),w=v('dr-w'),h=v('dr-h');
+    if (!l||!w) return;
+    const ei=parseInt(document.getElementById('dr-equip').value);
+    const eq=dehuEquip[ei];
+    const vol=l*w*h;
+    const ahamF={1:0.15,2:0.25,3:0.4,4:0.5};
+    const aham=vol*ahamF[dryClass];
+    const dehus=eq?Math.ceil(aham/eq.pints):0;
+    roomData={l,w,h,label:l+'x'+w+'x'+h+' (Class '+dryClass+')',val:dehus+' dehus',numVal:dehus};
+    drRooms.push(roomData);
+  } else if (prefix === 'btu') {
+    const l=v('btu-l'),w=v('btu-w'),h=v('btu-h');
+    if (!l||!w) return;
+    const curF=v('btu-cur-f'),desF=v('btu-des-f');
+    const vol=l*w*h, diff=Math.abs(desF-curF);
+    const factors={poor:1.5,avg:1.0,good:0.7};
+    const btu=vol*diff*factors[btuIns]/60;
+    roomData={l,w,h,label:l+'x'+w+'x'+h,val:r(btu,0)+' BTU/hr',numVal:btu};
+    btuRooms.push(roomData);
+  }
+  renderRooms(prefix);
+}
+function renderRooms(prefix) {
+  const rooms = prefix==='af'?afRooms : prefix==='dr'?drRooms : btuRooms;
+  const list = document.getElementById(prefix+'-rooms-list');
+  const totalEl = document.getElementById(prefix+'-rooms-total');
+  if (!rooms.length) {
+    list.innerHTML='<div style="color:#888;font-size:13px;">No rooms saved yet.</div>';
+    totalEl.textContent='';
+    return;
+  }
+  list.innerHTML = rooms.map((rm,i) =>
+    '<div class="room-entry"><span class="room-name">'+rm.label+'</span><span class="room-units">'+rm.val+'</span><span class="room-del" onclick="delRoom(\''+prefix+'\','+i+')">&times;</span></div>'
+  ).join('');
+  const total = rooms.reduce((s,r)=>s+r.numVal,0);
+  const label = prefix==='af'?'units':prefix==='dr'?'dehumidifiers':'BTU/hr';
+  totalEl.textContent = 'Total: '+r(total,0)+' '+label;
+}
+function delRoom(prefix,i) {
+  const rooms = prefix==='af'?afRooms:prefix==='dr'?drRooms:btuRooms;
+  rooms.splice(i,1);
+  renderRooms(prefix);
+}
+
+/* ===== LOCAL STORAGE ===== */
+function saveState() {
+  try {
+    const state = {
+      screen: currentScreen,
+      dryClass, amClass, amMat, btuIns,
+      inputs: {}
+    };
+    ['af-l','af-w','af-h','af-equip','dr-l','dr-w','dr-h','dr-cov','dr-wh','dr-equip',
+     'am-l','am-w','am-h','btu-l','btu-w','btu-h','btu-cur-f','btu-des-f',
+     'ps-in-f','ps-in-rh','ps-out-f','ps-out-rh','pw-cost','pw-hours','pw-days'
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) state.inputs[id] = el.value;
+    });
+    state.afAch = document.getElementById('af-ach').value;
+    localStorage.setItem('pdq-calc-state', JSON.stringify(state));
+  } catch(e) {}
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem('pdq-calc-state');
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    if (state.inputs) {
+      Object.keys(state.inputs).forEach(id => {
+        const el = document.getElementById(id);
+        if (el && state.inputs[id]) el.value = state.inputs[id];
+      });
+    }
+    if (state.afAch) document.getElementById('af-ach').value = state.afAch;
+    if (state.dryClass) {
+      dryClass = state.dryClass;
+      const dryBtns = document.querySelectorAll('#drying-screen .btn-row:first-of-type .btn');
+      dryBtns.forEach((b,i) => { b.classList.toggle('active', i===dryClass-1); });
+    }
+    if (state.amClass) {
+      amClass = state.amClass;
+      document.getElementById('am-class-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',i===amClass-1));
+    }
+    if (state.amMat) {
+      amMat = state.amMat;
+      const mats = ['carpet','hard','struct'];
+      document.getElementById('am-mat-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',mats[i]===amMat));
+    }
+    if (state.btuIns) {
+      btuIns = state.btuIns;
+      const ins = ['poor','avg','good'];
+      document.getElementById('btu-ins-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',ins[i]===btuIns));
+    }
+  } catch(e) {}
+}
+
+// Save on input changes
+document.addEventListener('input', () => { clearTimeout(window._saveTimer); window._saveTimer = setTimeout(saveState, 500); });
+
+/* ===== BOOT ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  initRoomPanels();
+  document.getElementById('btn-home').classList.add('hidden');
+  updateAmGuide();
+});
+</script>
+</body>
+</html>
