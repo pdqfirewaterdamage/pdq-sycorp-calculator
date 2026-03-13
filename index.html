@@ -533,6 +533,7 @@ body { display: flex; flex-direction: column; }
           <button class="btn btn-blue btn-full" onclick="setDryClass(3,this)">Class 3</button>
           <button class="btn btn-blue btn-full" onclick="setDryClass(4,this)">Class 4</button>
         </div>
+        <div id="dr-class-desc" style="font-size:12px;color:#aaa;margin-top:8px;line-height:1.4;padding:0 4px;">Class 1 – Minor Amount of Water: Affects only part of a room with minimal evaporation demand.</div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Room Size (LWH) in Feet</span>
@@ -546,17 +547,20 @@ body { display: flex; flex-direction: column; }
           <div class="calc-input-group"><label>Water Height (in)</label><input class="calc-input" type="number" id="dr-wh" value="0" inputmode="decimal"></div>
         </div>
       </div>
-      <div class="calc-section">
-        <span class="calc-label">Dehumidifier</span>
-        <select class="calc-select" id="dr-equip"></select>
-      </div>
       <div class="output-box">
         <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="dr-vol">--</span></div>
         <div class="output-row"><span class="output-label">Standing Water</span><span class="output-value" id="dr-water">--</span></div>
-        <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="dr-cfm">--</span></div>
-        <div class="output-row"><span class="output-label">AHAM Needed</span><span class="output-value" id="dr-aham">--</span></div>
-        <div class="output-row"><span class="output-label"># Dehumidifiers</span><span class="output-value" id="dr-dehu">--</span></div>
-        <div class="output-row"><span class="output-label">Air Movers (by area)</span><span class="output-value" id="dr-am-area">--</span></div>
+        <div class="output-row"><span class="output-label">PPD Needed</span><span class="output-value" id="dr-aham">--</span></div>
+      </div>
+      <div class="calc-section"><span class="calc-label" style="color:var(--yellow-text);font-size:15px;">Equipment Recommendations</span></div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">PHX Small (80 PPD)</span><span class="output-value" id="dr-phx-sm">--</span></div>
+        <div class="output-row"><span class="output-label">PHX XL (125 PPD)</span><span class="output-value" id="dr-phx-xl">--</span></div>
+        <div class="output-row"><span class="output-label">Dri-Eaz 6000 (100 PPD)</span><span class="output-value" id="dr-d6">--</span></div>
+        <div class="output-row"><span class="output-label">PHX DryMax (120 PPD)</span><span class="output-value" id="dr-dm">--</span></div>
+        <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Air Scrubbers (Dri-Eaz 500)</span><span class="output-value" id="dr-scrubbers">--</span></div>
+        <div class="output-row"><span class="output-label">Hydroxyl Generators</span><span class="output-value" id="dr-hydroxyl">--</span></div>
+        <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Air Movers (by area)</span><span class="output-value" id="dr-am-area">--</span></div>
         <div class="output-row"><span class="output-label">Air Movers (by LF)</span><span class="output-value" id="dr-am-lf">--</span></div>
       </div>
       <div class="rooms-panel" id="dr-rooms-panel">
@@ -564,14 +568,9 @@ body { display: flex; flex-direction: column; }
         <div id="dr-rooms-list"></div>
         <div class="rooms-total" id="dr-rooms-total"></div>
       </div>
-      <div class="specs-panel" id="dr-specs-panel">
-        <span class="calc-label">Dehumidifier Specs</span>
-        <div id="dr-specs-list"></div>
-      </div>
       <div class="bottom-bar">
         <button class="bottom-btn disabled"><span class="bb-icon">&#9993;</span>Email</button>
         <button class="bottom-btn" onclick="togglePanel('dr-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
-        <button class="bottom-btn" onclick="togglePanel('dr-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
       </div>
     </div>
 
@@ -895,15 +894,8 @@ function init() {
     const o = document.createElement('option'); o.value = i; o.textContent = e.name + ' (' + e.cfm + ' cfm)';
     afSel.appendChild(o);
   });
-  // Populate dehu dropdown
-  const drSel = document.getElementById('dr-equip');
-  dehuEquip.forEach((e,i) => {
-    const o = document.createElement('option'); o.value = i; o.textContent = e.name + ' (' + e.pints + ' pt/day)';
-    drSel.appendChild(o);
-  });
   // Populate specs
   renderAfSpecs();
-  renderDrSpecs();
   // Populate definitions
   renderDefs();
   // Add power row
@@ -911,7 +903,7 @@ function init() {
   // Bind inputs
   bindCalc('af-l af-w af-h af-equip', calcAirflow);
   document.getElementById('af-ach').addEventListener('input', calcAirflow);
-  bindCalc('dr-l dr-w dr-h dr-cov dr-wh dr-equip', calcDrying);
+  bindCalc('dr-l dr-w dr-h dr-cov dr-wh', calcDrying);
   bindCalc('am-l am-w am-h', calcAirMovers);
   bindCalc('btu-l btu-w btu-h btu-cur-f btu-des-f', calcBtu);
   bindCalc('pw-cost pw-hours pw-days', calcPower);
@@ -1083,16 +1075,21 @@ function calcPsychDiff() {
 }
 
 /* ===== 3. DRYING EQUIPMENT ===== */
+const classDescs = {
+  1:'Class 1 \u2013 Minor Amount of Water: Affects only part of a room with minimal evaporation demand.',
+  2:'Class 2 \u2013 Large Amount of Water: Affects an entire room or area; water has wicked into structural materials with moderate evaporation demand.',
+  3:'Class 3 \u2013 Greatest Amount of Water: Water has saturated ceilings, walls, insulation, and flooring, creating the highest evaporation demand.',
+  4:'Class 4 \u2013 Specialty Drying: Involves materials with very low permeance/porosity (hardwood, concrete, stone). Requires extended drying time and special methods.'
+};
 function setDryClass(c, btn) {
   dryClass = c;
   btn.parentElement.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('dr-class-desc').textContent = classDescs[c];
   calcDrying();
 }
 function calcDrying() {
   const l=v('dr-l'), w=v('dr-w'), h=v('dr-h'), cov=v('dr-cov')/100, wh=v('dr-wh');
-  const ei = parseInt(document.getElementById('dr-equip').value);
-  const equip = dehuEquip[ei];
   const vol = l*w*h;
   const area = l*w*cov;
   const perim = 2*(l+w);
@@ -1101,24 +1098,27 @@ function calcDrying() {
   const galWater = l*w*(wh/12)*7.48;
   const litWater = galWater*3.785;
   s('dr-water', wh>0 ? r(galWater,1)+' gal ('+r(litWater,1)+' L)' : '--');
-  // Airflow
-  const cfmFactors = {1:1, 2:1.5, 3:3, 4:1.5};
-  let cfmNeeded;
-  if (dryClass === 4) { cfmNeeded = vol * 1.5; }
-  else { cfmNeeded = area * cfmFactors[dryClass]; }
-  const m3hr = cfmNeeded * 1.69901;
-  s('dr-cfm', cfmNeeded>0 ? r(cfmNeeded,0)+' cfm ('+r(m3hr,0)+' m\u00B3/hr)' : '--');
   // PPD (Pints Per Day) per IICRC table: Base PPD = volume / 100
   // Class 1: 1x base, Class 2: 2x base, Class 3: 2.5x base, Class 4: 3x base
   const ppdFactors = {1:1, 2:2, 3:2.5, 4:3};
   const basePPD = vol / 100;
-  const ahamPints = basePPD * ppdFactors[dryClass];
-  const ahamLiters = ahamPints * 0.473176;
-  const ahamGallons = ahamPints / 8;
-  s('dr-aham', vol>0 ? r(ahamPints,0)+' PPD ('+r(ahamLiters,0)+' L | '+r(ahamGallons,1)+' gal)' : '--');
-  // Dehus
-  const numDehu = (vol>0 && equip) ? Math.ceil(ahamPints / equip.pints) : 0;
-  s('dr-dehu', numDehu>0 ? numDehu : '--');
+  const ppdNeeded = basePPD * ppdFactors[dryClass];
+  s('dr-aham', vol>0 ? r(ppdNeeded,1)+' PPD' : '--');
+  // Equipment recommendations - show qty for each common dehu type
+  const phxSm = vol>0 ? Math.max(Math.ceil(ppdNeeded / 80), 0) : 0;
+  const phxXl = vol>0 ? Math.max(Math.ceil(ppdNeeded / 125), 0) : 0;
+  const d6 = vol>0 ? Math.max(Math.ceil(ppdNeeded / 100), 0) : 0;
+  const dm = vol>0 ? Math.max(Math.ceil(ppdNeeded / 120), 0) : 0;
+  s('dr-phx-sm', phxSm>0 ? phxSm : '--');
+  s('dr-phx-xl', phxXl>0 ? phxXl : '--');
+  s('dr-d6', d6>0 ? d6 : '--');
+  s('dr-dm', dm>0 ? dm : '--');
+  // Air Scrubbers (Dri-Eaz 500 @ 500 cfm, 6 ACH)
+  const scrubberCfm = vol * 6 / 60;
+  const numScrubbers = vol>0 ? Math.max(Math.ceil(scrubberCfm / 500), 1) : 0;
+  s('dr-scrubbers', numScrubbers>0 ? numScrubbers : '--');
+  // Hydroxyl Generators (same as scrubbers)
+  s('dr-hydroxyl', numScrubbers>0 ? numScrubbers : '--');
   // Air movers by area
   const amAreaDiv = (dryClass===3) ? 50 : 70;
   const amArea = area>0 ? Math.ceil(area/amAreaDiv) : 0;
@@ -1127,12 +1127,6 @@ function calcDrying() {
   const amLfDiv = (dryClass>=3) ? 7 : 10;
   const amLf = perim>0 ? Math.ceil(perim/amLfDiv) : 0;
   s('dr-am-lf', amLf>0 ? amLf : '--');
-}
-function renderDrSpecs() {
-  const c = document.getElementById('dr-specs-list');
-  c.innerHTML = dehuEquip.map(e =>
-    '<div class="spec-row"><span class="spec-name">'+e.name+'</span><span class="spec-val">'+e.pints+' pt/day | '+e.cfm+' cfm</span></div>'
-  ).join('');
 }
 
 /* ===== 4. AIR MOVERS S500 ===== */
@@ -1350,13 +1344,10 @@ function addRoom(prefix) {
   } else if (prefix === 'dr') {
     const l=v('dr-l'),w=v('dr-w'),h=v('dr-h');
     if (!l||!w) return;
-    const ei=parseInt(document.getElementById('dr-equip').value);
-    const eq=dehuEquip[ei];
     const vol=l*w*h;
     const ppdF={1:1,2:2,3:2.5,4:3};
-    const aham=(vol/100)*ppdF[dryClass];
-    const dehus=eq?Math.ceil(aham/eq.pints):0;
-    roomData={l,w,h,label:l+'x'+w+'x'+h+' (Class '+dryClass+')',val:dehus+' dehus',numVal:dehus};
+    const ppd=(vol/100)*ppdF[dryClass];
+    roomData={l,w,h,label:l+'x'+w+'x'+h+' (Class '+dryClass+')',val:r(ppd,1)+' PPD',numVal:ppd};
     drRooms.push(roomData);
   } else if (prefix === 'btu') {
     const l=v('btu-l'),w=v('btu-w'),h=v('btu-h');
@@ -1400,7 +1391,7 @@ function saveState() {
       dryClass, amClass, amMat, btuIns,
       inputs: {}
     };
-    ['af-l','af-w','af-h','af-equip','dr-l','dr-w','dr-h','dr-cov','dr-wh','dr-equip',
+    ['af-l','af-w','af-h','af-equip','dr-l','dr-w','dr-h','dr-cov','dr-wh',
      'am-l','am-w','am-h','btu-l','btu-w','btu-h','btu-cur-f','btu-des-f',
      'ps-in-f','ps-in-rh','ps-out-f','ps-out-rh','pw-cost','pw-hours','pw-days'
     ].forEach(id => {
