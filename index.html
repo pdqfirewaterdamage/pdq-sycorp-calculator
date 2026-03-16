@@ -254,6 +254,37 @@ body { display: flex; flex-direction: column; }
 .spec-val { color: var(--yellow-text); }
 
 
+/* Under Construction */
+.uc-badge {
+  display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase;
+  background: #5a2020; color: #ff9999; padding: 2px 6px; border-radius: 4px;
+  margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;
+}
+.uc-screen { position: relative; pointer-events: none; }
+.uc-screen .calc-section, .uc-screen .output-box, .uc-screen .btn-row,
+.uc-screen .guide-box, .uc-screen .bottom-bar, .uc-screen .warning-box,
+.uc-screen .rooms-panel, .uc-screen #power-rows, .uc-screen #power-add-btn { opacity: 0.18; }
+.uc-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10; pointer-events: none;
+}
+.uc-x {
+  font-size: min(50vw, 240px); font-weight: 200; color: rgba(255, 100, 100, 0.18);
+  line-height: 1; user-select: none;
+}
+.uc-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center; pointer-events: none;
+}
+.uc-label span {
+  display: block; font-size: 20px; font-weight: 700; color: #ff9999;
+  text-transform: uppercase; letter-spacing: 2px;
+}
+.uc-label small {
+  display: block; font-size: 12px; color: #cc8888; margin-top: 4px;
+}
+
 /* Warning */
 .warning-box {
   background: #3D3000; border: 1px solid var(--yellow); border-radius: 8px;
@@ -335,17 +366,17 @@ body { display: flex; flex-direction: column; }
         </li>
         <li class="menu-item" onclick="showScreen('airmovers')">
           <div class="menu-icon mi-teal">&#9734;</div>
-          Air Movers (S500)
+          Air Movers (S500)<span class="uc-badge">Under Construction</span>
           <span class="menu-arrow">&#8250;</span>
         </li>
         <li class="menu-item" onclick="showScreen('btu')">
           <div class="menu-icon mi-brand">&#9832;</div>
-          Heating / Cooling BTU
+          Heating / Cooling BTU<span class="uc-badge">Under Construction</span>
           <span class="menu-arrow">&#8250;</span>
         </li>
         <li class="menu-item" onclick="showScreen('power')">
           <div class="menu-icon mi-purple">&#9889;</div>
-          Power Calculator
+          Power Calculator<span class="uc-badge">Under Construction</span>
           <span class="menu-arrow">&#8250;</span>
         </li>
       </ul>
@@ -459,7 +490,8 @@ body { display: flex; flex-direction: column; }
     </div>
 
     <!-- 4. AIR MOVERS S500 -->
-    <div class="screen calc-screen hidden" id="airmovers-screen">
+    <div class="screen calc-screen hidden uc-screen" id="airmovers-screen">
+      <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
       <div class="calc-section">
         <span class="calc-label">Room Size (LWH) in Feet</span>
         <div class="calc-row">
@@ -498,7 +530,8 @@ body { display: flex; flex-direction: column; }
     </div>
 
     <!-- 5. HEATING / COOLING BTU -->
-    <div class="screen calc-screen hidden" id="btu-screen">
+    <div class="screen calc-screen hidden uc-screen" id="btu-screen">
+      <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
       <div class="calc-section">
         <span class="calc-label">Room Size (LWH) in Feet</span>
         <div class="calc-row">
@@ -556,7 +589,8 @@ body { display: flex; flex-direction: column; }
     </div>
 
     <!-- 6. POWER CALCULATOR -->
-    <div class="screen calc-screen hidden" id="power-screen">
+    <div class="screen calc-screen hidden uc-screen" id="power-screen">
+      <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
       <div id="power-rows"></div>
       <div style="padding:4px 0 8px;">
         <button class="btn btn-blue btn-full" onclick="addPowerRow()" id="power-add-btn">+ Add Equipment</button>
