@@ -356,7 +356,7 @@ body { display: flex; flex-direction: column; }
       <ul class="menu-list">
         <li class="menu-item" onclick="showScreen('airflow')">
           <div class="menu-icon mi-blue">&#9729;</div>
-          Air Flow / HEPA Units
+          Hydroxyl <span style="font-size:12px;color:#AAA;">(Odor / Sanitize Air)</span>
           <span class="menu-arrow">&#8250;</span>
         </li>
         <li class="menu-item" onclick="showScreen('drying')">
@@ -387,23 +387,42 @@ body { display: flex; flex-direction: column; }
       </div>
     </div>
 
-    <!-- 1. AIR FLOW / HEPA UNITS -->
+    <!-- 1. HYDROXYL (ODOR / SANITIZE AIR) -->
     <div class="screen calc-screen hidden" id="airflow-screen">
       <div class="calc-section">
-        <span class="calc-label">Room Size (LWH) in Feet</span>
+        <span class="calc-label">Odor Source &amp; Severity</span>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:12px;color:#AAA;display:block;margin-bottom:4px;">Odor source</label>
+          <select class="calc-select" id="af-source">
+            <option value="fire">Fire / Smoke</option>
+            <option value="sewage">Sewage</option>
+            <option value="skunk">Skunk</option>
+            <option value="oil">Oil</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;color:#AAA;display:block;margin-bottom:4px;">Severity</label>
+          <div class="btn-row" id="af-sev-btns">
+            <button class="btn btn-blue btn-full active" onclick="setAfSev('moderate',this)">Moderate</button>
+            <button class="btn btn-blue btn-full" onclick="setAfSev('heavy',this)">Heavy</button>
+            <button class="btn btn-blue btn-full" onclick="setAfSev('extreme',this)">Extreme</button>
+          </div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Total Cubic Footage</span>
         <div class="calc-row">
-          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="af-l" placeholder="L" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="af-w" placeholder="W" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="af-h" value="8" placeholder="H" inputmode="decimal"></div>
+          <div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="af-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div>
         </div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Air Changes Per Hour</span>
-        <div class="slider-container">
-          <input type="range" id="af-ach" min="1" max="60" value="6">
-          <span class="slider-val" id="af-ach-val">6</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="background:var(--output-bg);border:2px solid var(--gray-border);border-radius:8px;padding:8px 16px;font-size:18px;font-weight:700;color:var(--yellow-text);min-width:40px;text-align:center;">6</div>
+          <span style="color:#AAA;font-size:13px;font-style:italic;">Per IICRC standard of care</span>
         </div>
-        <div style="color:#AAA;font-size:12px;margin-top:4px;" id="af-ach-min">10.0 minutes per air change</div>
+        <div style="color:#AAA;font-size:12px;margin-top:4px;">10.0 minutes per air change</div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Equipment</span>
@@ -413,6 +432,8 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="af-vol">--</span></div>
         <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="af-cfm">--</span></div>
         <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="af-units">--</span></div>
+        <div class="output-row"><span class="output-label">Est. Dwell Time</span><span class="output-value" id="af-dwell">--</span></div>
+        <div class="output-row"><span class="output-label">Est. Treatment Cycles</span><span class="output-value" id="af-cycles">--</span></div>
       </div>
       <div class="rooms-panel" id="af-rooms-panel">
         <span class="calc-label">Saved Rooms</span>
@@ -630,19 +651,14 @@ body { display: flex; flex-direction: column; }
 
 <script>
 /* ===== DATA ===== */
-const hepaEquip = [
-  {name:'Abatement BullDog', cfm:1950, amps:8, lbs:111},
-  {name:'Abatement CAP100', cfm:100, amps:1.2, lbs:11},
-  {name:'Abatement PAS5000', cfm:2000, amps:9, lbs:135},
-  {name:'BlueDri BD-AS-550', cfm:550, amps:2.4, lbs:33},
-  {name:'Dri-Eaz DefendAir HEPA 500', cfm:500, amps:3.8, lbs:50},
-  {name:'Dri-Eaz HEPA 700', cfm:700, amps:4, lbs:62},
-  {name:'Phoenix Guardian', cfm:1400, amps:6.3, lbs:92},
-  {name:'Phoenix Guardian R', cfm:1100, amps:5, lbs:75},
-  {name:'Phoenix MiniGuardian', cfm:300, amps:1.8, lbs:22},
-  {name:'Nikro PS600', cfm:600, amps:3, lbs:45},
-  {name:'Nikro PS2009', cfm:2000, amps:8, lbs:120}
+const hydroxylEquip = [
+  {name:'Hydroxyl Boss 3', cfm:750, amps:2.5, lbs:35, coverage:3000},
+  {name:'Hydroxyl Boss 2', cfm:500, amps:1.8, lbs:28, coverage:2000},
+  {name:'Hydroxyl Boss 1', cfm:250, amps:1.2, lbs:18, coverage:1000},
+  {name:'Titan 4000', cfm:800, amps:3.0, lbs:42, coverage:4000},
+  {name:'Titan 2000', cfm:400, amps:2.0, lbs:30, coverage:2000}
 ];
+const hepaEquip = hydroxylEquip;
 const dehuEquip = [
   {name:'Dri-Eaz Evolution', pints:84, cfm:400, amps:6.2},
   {name:'Dri-Eaz 2800i', pints:130, cfm:410, amps:8.2},
@@ -655,13 +671,14 @@ const dehuEquip = [
   {name:'Phoenix DryMax (DM)', pints:120, cfm:300, amps:7.0},
   {name:'B-Air VG-1400', pints:84, cfm:180, amps:6.0}
 ];
-const allEquipPower = hepaEquip.map(e=>({name:e.name,amps:e.amps})).concat(
+const allEquipPower = hydroxylEquip.map(e=>({name:e.name+' (Hydroxyl)',amps:e.amps})).concat(
   dehuEquip.map(e=>({name:e.name+' (Dehu)',amps:e.amps}))
 );
 
 
 /* ===== STATE ===== */
 let currentScreen = 'home';
+let afSeverity = 'moderate';
 let dryClass = 1;
 let amClass = 1;
 let amMat = 'carpet';
@@ -673,9 +690,9 @@ const btuRooms = [];
 
 /* ===== INIT ===== */
 function init() {
-  // Populate HEPA dropdowns
+  // Populate hydroxyl dropdown
   const afSel = document.getElementById('af-equip');
-  hepaEquip.forEach((e,i) => {
+  hydroxylEquip.forEach((e,i) => {
     const o = document.createElement('option'); o.value = i; o.textContent = e.name + ' (' + e.cfm + ' cfm)';
     afSel.appendChild(o);
   });
@@ -684,8 +701,7 @@ function init() {
   // Add power row
   addPowerRow();
   // Bind inputs
-  bindCalc('af-l af-w af-h af-equip', calcAirflow);
-  document.getElementById('af-ach').addEventListener('input', calcAirflow);
+  bindCalc('af-totalcf af-equip', calcAirflow);
   bindCalc('dr-l dr-w dr-h dr-cov dr-wh', calcDrying);
   bindCalc('am-l am-w am-h', calcAirMovers);
   bindCalc('btu-l btu-w btu-h btu-cur-f btu-des-f', calcBtu);
@@ -705,7 +721,7 @@ function bindCalc(ids, fn) {
 
 /* ===== NAVIGATION ===== */
 const screenNames = {
-  home:'PDQ Sycorp Calculator', airflow:'Air Flow / HEPA',
+  home:'PDQ Sycorp Calculator', airflow:'Hydroxyl',
   drying:'Drying Equipment', airmovers:'Air Movers (S500)',
   btu:'Heating / Cooling BTU', power:'Power Calculator',
 };
@@ -764,15 +780,17 @@ function s(id, val) { document.getElementById(id).textContent = val; }
 function si(id, val) { document.getElementById(id).value = val; }
 function r(n, d) { return d === undefined ? Math.round(n*100)/100 : (Math.round(n * Math.pow(10,d)) / Math.pow(10,d)); }
 
-/* ===== 1. AIRFLOW CALC ===== */
+/* ===== 1. HYDROXYL CALC ===== */
+function setAfSev(sev, btn) {
+  afSeverity = sev;
+  document.getElementById('af-sev-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
 function calcAirflow() {
-  const l=v('af-l'), w=v('af-w'), h=v('af-h');
-  const ach = parseInt(document.getElementById('af-ach').value) || 6;
-  document.getElementById('af-ach-val').textContent = ach;
-  document.getElementById('af-ach-min').textContent = r(60/ach,1) + ' minutes per air change';
+  const vol = v('af-totalcf');
+  const ach = 6;
   const ei = parseInt(document.getElementById('af-equip').value);
-  const equip = hepaEquip[ei];
-  const vol = l * w * h;
+  const equip = hydroxylEquip[ei];
   const volM3 = vol * 0.0283168;
   const cfmNeeded = vol * ach / 60;
   const m3hr = cfmNeeded * 1.69901;
@@ -780,12 +798,17 @@ function calcAirflow() {
   s('af-vol', vol > 0 ? r(vol,0) + ' ft\u00B3 (' + r(volM3,1) + ' m\u00B3)' : '--');
   s('af-cfm', cfmNeeded > 0 ? r(cfmNeeded,0) + ' cfm (' + r(m3hr,0) + ' m\u00B3/hr)' : '--');
   s('af-units', units > 0 ? units : '--');
+  // Dwell time = volume / equip cfm (in minutes per cycle)
+  const dwellMin = vol > 0 && equip ? r(vol / equip.cfm, 1) : 0;
+  s('af-dwell', dwellMin > 0 ? dwellMin + ' min' : '--');
+  // Estimate treatment cycles (typically 3-5 passes)
+  s('af-cycles', units > 0 ? '3 \u2013 5 passes' : '--');
 }
 
 function renderAfSpecs() {
   const c = document.getElementById('af-specs-list');
-  c.innerHTML = hepaEquip.map(e =>
-    '<div class="spec-row"><span class="spec-name">'+e.name+'</span><span class="spec-val">'+e.cfm+' cfm | '+e.amps+'A | '+e.lbs+' lbs</span></div>'
+  c.innerHTML = hydroxylEquip.map(e =>
+    '<div class="spec-row"><span class="spec-name">'+e.name+'</span><span class="spec-val">'+e.cfm+' cfm | '+e.coverage+' ft\u00B3 | '+e.amps+'A</span></div>'
   ).join('');
 }
 
@@ -794,15 +817,14 @@ document.querySelector('#af-bottom .bottom-btn:nth-child(2)').addEventListener('
   // handled by togglePanel
 });
 function addAfRoom() {
-  const l=v('af-l'), w=v('af-w'), h=v('af-h');
-  if (!l || !w) return;
-  const ach = parseInt(document.getElementById('af-ach').value) || 6;
+  const vol = v('af-totalcf');
+  if (!vol) return;
+  const ach = 6;
   const ei = parseInt(document.getElementById('af-equip').value);
-  const equip = hepaEquip[ei];
-  const vol = l*w*h;
+  const equip = hydroxylEquip[ei];
   const cfm = vol*ach/60;
   const units = equip ? Math.ceil(cfm/equip.cfm) : 0;
-  afRooms.push({l,w,h,ach,equip:equip.name,units,cfm:r(cfm,0)});
+  afRooms.push({vol,ach,equip:equip.name,units,cfm:r(cfm,0)});
   renderAfRooms();
 }
 function renderAfRooms() {
@@ -1026,14 +1048,14 @@ function initRoomPanels() {
 function addRoom(prefix) {
   let roomData = {};
   if (prefix === 'af') {
-    const l=v('af-l'),w=v('af-w'),h=v('af-h');
-    if (!l||!w) return;
-    const ach=parseInt(document.getElementById('af-ach').value)||6;
+    const vol=v('af-totalcf');
+    if (!vol) return;
+    const ach=6;
     const ei=parseInt(document.getElementById('af-equip').value);
-    const eq=hepaEquip[ei];
-    const vol=l*w*h, cfm=vol*ach/60;
+    const eq=hydroxylEquip[ei];
+    const cfm=vol*ach/60;
     const units=eq?Math.ceil(cfm/eq.cfm):0;
-    roomData={l,w,h,label:l+'x'+w+'x'+h,val:units+' units ('+r(cfm,0)+' cfm)',numVal:units};
+    roomData={vol,label:r(vol,0)+' ft\u00B3',val:units+' units ('+r(cfm,0)+' cfm)',numVal:units};
     afRooms.push(roomData);
   } else if (prefix === 'dr') {
     const l=v('dr-l'),w=v('dr-w'),h=v('dr-h');
@@ -1088,14 +1110,13 @@ function saveState() {
       dryClass, amClass, amMat, btuIns,
       inputs: {}
     };
-    ['af-l','af-w','af-h','af-equip','dr-l','dr-w','dr-h','dr-cov','dr-wh',
+    ['af-totalcf','af-equip','af-source','dr-l','dr-w','dr-h','dr-cov','dr-wh',
      'am-l','am-w','am-h','btu-l','btu-w','btu-h','btu-cur-f','btu-des-f',
      'pw-cost','pw-hours','pw-days'
     ].forEach(id => {
       const el = document.getElementById(id);
       if (el) state.inputs[id] = el.value;
     });
-    state.afAch = document.getElementById('af-ach').value;
     localStorage.setItem('pdq-calc-state', JSON.stringify(state));
   } catch(e) {}
 }
@@ -1110,7 +1131,6 @@ function loadState() {
         if (el && state.inputs[id]) el.value = state.inputs[id];
       });
     }
-    if (state.afAch) document.getElementById('af-ach').value = state.afAch;
     if (state.dryClass) {
       dryClass = state.dryClass;
       const dryBtns = document.querySelectorAll('#drying-screen .btn-row:first-of-type .btn');
