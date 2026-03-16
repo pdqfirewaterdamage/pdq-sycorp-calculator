@@ -253,72 +253,6 @@ body { display: flex; flex-direction: column; }
 .spec-name { color: #CCC; }
 .spec-val { color: var(--yellow-text); }
 
-/* Psychrometric columns */
-.psych-cols { display: flex; gap: 8px; }
-.psych-col { flex: 1; }
-.psych-col-header {
-  text-align: center; font-weight: 700; font-size: 16px; padding: 8px;
-  background: var(--blue); border-radius: 8px 8px 0 0; margin-bottom: 0;
-}
-.psych-col-body {
-  background: var(--dark2); border-radius: 0 0 8px 8px; padding: 10px;
-}
-.psych-field { margin-bottom: 8px; }
-.psych-field label { font-size: 11px; color: #AAA; display: block; margin-bottom: 3px; }
-.psych-field input {
-  width: 100%; height: 38px; border-radius: 6px; border: 2px solid transparent;
-  padding: 0 8px; font-size: 14px; font-family: var(--font);
-  background: var(--input-bg); color: var(--dark); outline: none;
-}
-.psych-field input:focus { border-color: var(--blue); }
-.psych-field input[readonly] {
-  background: var(--output-bg); color: var(--yellow-text); border: 2px solid var(--gray-border);
-  font-size: 13px;
-}
-
-/* Thirst/Depression box */
-.psych-diff {
-  margin-top: 12px;
-}
-
-/* Conversions */
-.conv-row {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  background: var(--dark2); border-radius: 8px; padding: 10px;
-}
-.conv-row input {
-  flex: 1; height: 40px; border-radius: 6px; border: 2px solid transparent;
-  padding: 0 8px; font-size: 15px; font-family: var(--font);
-  background: var(--input-bg); color: var(--dark); outline: none; min-width: 0;
-}
-.conv-row input:focus { border-color: var(--blue); }
-.conv-arrow { color: var(--yellow-text); font-size: 18px; flex-shrink: 0; }
-.conv-label { font-size: 11px; color: #AAA; text-align: center; min-width: 40px; flex-shrink: 0; }
-.conv-group { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.conv-group label { font-size: 10px; color: #AAA; }
-
-/* Definitions */
-.def-screen { background: var(--white); }
-.def-search {
-  width: calc(100% - 24px); margin: 12px; height: 44px; border-radius: 22px;
-  border: 2px solid #DDD; padding: 0 16px; font-size: 16px; font-family: var(--font);
-  outline: none;
-}
-.def-search:focus { border-color: var(--blue); }
-.def-list { padding: 0 12px 80px; }
-.def-item {
-  border-bottom: 1px solid #EEE; cursor: pointer; user-select: none;
-}
-.def-term {
-  padding: 14px 8px; font-size: 16px; color: var(--dark); font-weight: 600;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.def-term .def-arrow { color: #CCC; font-size: 14px; transition: transform 0.2s; }
-.def-item.open .def-arrow { transform: rotate(90deg); }
-.def-body {
-  padding: 0 8px 14px; font-size: 14px; color: #666; line-height: 1.5; display: none;
-}
-.def-item.open .def-body { display: block; }
 
 /* Warning */
 .warning-box {
@@ -367,7 +301,7 @@ body { display: flex; flex-direction: column; }
 }
 
 /* Ensure no horizontal scroll */
-.calc-screen, .def-screen, #home-screen { overflow-x: hidden; }
+.calc-screen, #home-screen { overflow-x: hidden; }
 
 @media (min-width: 481px) {
   .bottom-bar { left: 50%; transform: translateX(-50%); }
@@ -394,11 +328,6 @@ body { display: flex; flex-direction: column; }
           Air Flow / HEPA Units
           <span class="menu-arrow">&#8250;</span>
         </li>
-        <li class="menu-item" onclick="showScreen('psychrometric')">
-          <div class="menu-icon mi-green">&#9832;</div>
-          Psychrometric
-          <span class="menu-arrow">&#8250;</span>
-        </li>
         <li class="menu-item" onclick="showScreen('drying')">
           <div class="menu-icon mi-orange">&#9748;</div>
           Drying Equipment
@@ -417,16 +346,6 @@ body { display: flex; flex-direction: column; }
         <li class="menu-item" onclick="showScreen('power')">
           <div class="menu-icon mi-purple">&#9889;</div>
           Power Calculator
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('conversions')">
-          <div class="menu-icon mi-indigo">&#8644;</div>
-          Conversions
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('definitions')">
-          <div class="menu-icon mi-brown">&#128214;</div>
-          Definitions
           <span class="menu-arrow">&#8250;</span>
         </li>
       </ul>
@@ -477,49 +396,6 @@ body { display: flex; flex-direction: column; }
         <button class="bottom-btn disabled" title="Coming soon"><span class="bb-icon">&#9993;</span>Email</button>
         <button class="bottom-btn" onclick="togglePanel('af-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
         <button class="bottom-btn" onclick="togglePanel('af-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
-      </div>
-    </div>
-
-    <!-- 2. PSYCHROMETRIC -->
-    <div class="screen calc-screen hidden" id="psychrometric-screen">
-      <div class="psych-cols">
-        <div class="psych-col">
-          <div class="psych-col-header">In</div>
-          <div class="psych-col-body">
-            <div class="psych-field"><label>Temp &deg;F</label><input type="number" id="ps-in-f" inputmode="decimal"></div>
-            <div class="psych-field"><label>RH %</label><input type="number" id="ps-in-rh" inputmode="decimal"></div>
-            <div class="psych-field"><label>Temp &deg;C</label><input type="text" id="ps-in-c" readonly></div>
-            <div class="psych-field"><label>VP (in Hg)</label><input type="text" id="ps-in-vp-hg" readonly></div>
-            <div class="psych-field"><label>VP (kPa)</label><input type="text" id="ps-in-vp-kpa" readonly></div>
-            <div class="psych-field"><label>GPP</label><input type="text" id="ps-in-gpp" readonly></div>
-            <div class="psych-field"><label>g/kg</label><input type="text" id="ps-in-gkg" readonly></div>
-            <div class="psych-field"><label>Dew Pt &deg;F</label><input type="text" id="ps-in-dpf" readonly></div>
-            <div class="psych-field"><label>Dew Pt &deg;C</label><input type="text" id="ps-in-dpc" readonly></div>
-          </div>
-        </div>
-        <div class="psych-col">
-          <div class="psych-col-header">Out</div>
-          <div class="psych-col-body">
-            <div class="psych-field"><label>Temp &deg;F</label><input type="number" id="ps-out-f" inputmode="decimal"></div>
-            <div class="psych-field"><label>RH %</label><input type="number" id="ps-out-rh" inputmode="decimal"></div>
-            <div class="psych-field"><label>Temp &deg;C</label><input type="text" id="ps-out-c" readonly></div>
-            <div class="psych-field"><label>VP (in Hg)</label><input type="text" id="ps-out-vp-hg" readonly></div>
-            <div class="psych-field"><label>VP (kPa)</label><input type="text" id="ps-out-vp-kpa" readonly></div>
-            <div class="psych-field"><label>GPP</label><input type="text" id="ps-out-gpp" readonly></div>
-            <div class="psych-field"><label>g/kg</label><input type="text" id="ps-out-gkg" readonly></div>
-            <div class="psych-field"><label>Dew Pt &deg;F</label><input type="text" id="ps-out-dpf" readonly></div>
-            <div class="psych-field"><label>Dew Pt &deg;C</label><input type="text" id="ps-out-dpc" readonly></div>
-          </div>
-        </div>
-      </div>
-      <div class="psych-diff">
-        <div class="output-box">
-          <div class="output-row"><span class="output-label">Thirst (GPP diff)</span><span class="output-value" id="ps-thirst">--</span></div>
-          <div class="output-row"><span class="output-label">Temp Difference &deg;F</span><span class="output-value" id="ps-depression">--</span></div>
-        </div>
-      </div>
-      <div style="padding:8px 0;">
-        <button class="btn btn-gray btn-full disabled" style="opacity:0.5;">&#9993; Email (Coming Soon)</button>
       </div>
     </div>
 
@@ -702,74 +578,6 @@ body { display: flex; flex-direction: column; }
       </div>
     </div>
 
-    <!-- 7. CONVERSIONS -->
-    <div class="screen calc-screen hidden" id="conversions-screen" style="padding-bottom:20px;">
-      <span class="calc-label" style="margin-bottom:8px;display:block;">Temperature</span>
-      <div class="conv-row">
-        <div class="conv-group"><label>&deg;F</label><input type="number" id="cv-f" inputmode="decimal" oninput="cvCalc('f')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>&deg;C</label><input type="number" id="cv-c" inputmode="decimal" oninput="cvCalc('c')"></div>
-      </div>
-      <span class="calc-label" style="margin-bottom:8px;display:block;">Length</span>
-      <div class="conv-row">
-        <div class="conv-group"><label>Feet</label><input type="number" id="cv-ft" inputmode="decimal" oninput="cvCalc('ft')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>Meters</label><input type="number" id="cv-m" inputmode="decimal" oninput="cvCalc('m')"></div>
-      </div>
-      <div class="conv-row">
-        <div class="conv-group"><label>Inches</label><input type="number" id="cv-in" inputmode="decimal" oninput="cvCalc('in')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>Centimeters</label><input type="number" id="cv-cm" inputmode="decimal" oninput="cvCalc('cm')"></div>
-      </div>
-      <span class="calc-label" style="margin-bottom:8px;display:block;">Area</span>
-      <div class="conv-row">
-        <div class="conv-group"><label>Sq Ft</label><input type="number" id="cv-sqft" inputmode="decimal" oninput="cvCalc('sqft')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>Sq M</label><input type="number" id="cv-sqm" inputmode="decimal" oninput="cvCalc('sqm')"></div>
-      </div>
-      <span class="calc-label" style="margin-bottom:8px;display:block;">Volume</span>
-      <div class="conv-row">
-        <div class="conv-group"><label>Cu Ft</label><input type="number" id="cv-cuft" inputmode="decimal" oninput="cvCalc('cuft')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>Cu M</label><input type="number" id="cv-cum" inputmode="decimal" oninput="cvCalc('cum')"></div>
-      </div>
-      <div class="conv-row">
-        <div class="conv-group"><label>Gallons</label><input type="number" id="cv-gal" inputmode="decimal" oninput="cvCalc('gal')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>Liters</label><input type="number" id="cv-lit" inputmode="decimal" oninput="cvCalc('lit')"></div>
-      </div>
-      <span class="calc-label" style="margin-bottom:8px;display:block;">Weight</span>
-      <div class="conv-row">
-        <div class="conv-group"><label>Pounds</label><input type="number" id="cv-lb" inputmode="decimal" oninput="cvCalc('lb')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>Kilograms</label><input type="number" id="cv-kg" inputmode="decimal" oninput="cvCalc('kg')"></div>
-      </div>
-      <span class="calc-label" style="margin-bottom:8px;display:block;">Airflow</span>
-      <div class="conv-row">
-        <div class="conv-group"><label>CFM</label><input type="number" id="cv-cfm" inputmode="decimal" oninput="cvCalc('cfm')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>m&sup3;/hr</label><input type="number" id="cv-m3h" inputmode="decimal" oninput="cvCalc('m3h')"></div>
-      </div>
-      <span class="calc-label" style="margin-bottom:8px;display:block;">Pressure</span>
-      <div class="conv-row">
-        <div class="conv-group"><label>in Hg</label><input type="number" id="cv-inhg" inputmode="decimal" oninput="cvCalc('inhg')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>kPa</label><input type="number" id="cv-kpa" inputmode="decimal" oninput="cvCalc('kpa')"></div>
-      </div>
-      <span class="calc-label" style="margin-bottom:8px;display:block;">Moisture</span>
-      <div class="conv-row">
-        <div class="conv-group"><label>Grains</label><input type="number" id="cv-gr" inputmode="decimal" oninput="cvCalc('gr')"></div>
-        <span class="conv-arrow">&#8596;</span>
-        <div class="conv-group"><label>Grams</label><input type="number" id="cv-gm" inputmode="decimal" oninput="cvCalc('gm')"></div>
-      </div>
-    </div>
-
-    <!-- 8. DEFINITIONS -->
-    <div class="screen def-screen hidden" id="definitions-screen">
-      <input class="def-search" type="text" id="def-search" placeholder="Search terms..." oninput="filterDefs()">
-      <div class="def-list" id="def-list"></div>
-    </div>
-
   </div><!-- /screen-container -->
 </div><!-- /app-wrap -->
 
@@ -817,71 +625,6 @@ const allEquipPower = hepaEquip.map(e=>({name:e.name,amps:e.amps})).concat(
   dehuEquip.map(e=>({name:e.name+' (Dehu)',amps:e.amps}))
 );
 
-const definitions = [
-  ['Absorption','The process by which a material takes in and retains a liquid. Porous materials like carpet padding absorb water readily.'],
-  ['Adsorption','The adhesion of molecules to the surface of a solid material, as opposed to being absorbed into it. Desiccant dehumidifiers use adsorption.'],
-  ['AHAM','Association of Home Appliance Manufacturers. Sets testing standards for dehumidifier capacity ratings (pints per day).'],
-  ['Air Changes Per Hour (ACH)','The number of times the total volume of air in a space is replaced in one hour. Used to determine HEPA/air scrubber sizing.'],
-  ['Air Mover','A high-velocity fan used to accelerate evaporation from wet materials by directing airflow across surfaces.'],
-  ['Air Scrubber','A portable filtration system that draws in air, passes it through HEPA filters, and exhausts clean air. Used for contaminant removal and negative air.'],
-  ['Antimicrobial','A chemical agent that inhibits the growth of or destroys microorganisms. Applied to prevent mold and bacterial growth during water damage restoration.'],
-  ['ASTM','American Society for Testing and Materials. Develops standards for materials, products, and systems used in restoration.'],
-  ['Biocide','A chemical substance capable of killing living organisms. Used in restoration to destroy harmful microorganisms in Category 2 and 3 water losses.'],
-  ['BTU','British Thermal Unit. The amount of heat required to raise the temperature of one pound of water by one degree Fahrenheit.'],
-  ['Category 1 Water','Clean water from a sanitary source (broken supply line, rainwater). Poses no substantial risk from dermal, ingestion, or inhalation exposure.'],
-  ['Category 2 Water','Gray water with significant contamination (washing machine overflow, dishwasher discharge). May cause discomfort or illness if contacted or consumed.'],
-  ['Category 3 Water','Black water that is grossly contaminated (sewage, rising flood water, toilet overflow with feces). Contains pathogenic agents and toxins.'],
-  ['CFM','Cubic Feet per Minute. A measure of airflow volume used to rate air movers, air scrubbers, and dehumidifiers.'],
-  ['Class 1 Water Damage','Least amount of absorption. Affects only part of a room with low-porosity materials. Minimal moisture absorbed.'],
-  ['Class 2 Water Damage','Significant absorption. Water affects an entire room with carpet and cushion. Moisture wicks up walls less than 24 inches.'],
-  ['Class 3 Water Damage','Greatest absorption. Water may come from overhead, saturating ceilings, walls, insulation, carpet, cushion, and sub-floor.'],
-  ['Class 4 Water Damage','Specialty drying situations involving saturated materials with low permeance/porosity (hardwood, plaster, concrete, stone). Requires longer drying times and specialized methods.'],
-  ['Containment','Physical barriers (polyethylene sheeting) used to isolate work areas and prevent the spread of contaminants during restoration.'],
-  ['Dehumidifier','Equipment that removes moisture from the air. Types include refrigerant (LGR) and desiccant. Rated by pints of water removed per day.'],
-  ['Desiccant','A hygroscopic substance used as a drying agent. Desiccant dehumidifiers use materials like silica gel to adsorb moisture from air.'],
-  ['Dew Point','The temperature at which air becomes saturated and water vapor begins to condense. A key psychrometric measurement for monitoring drying progress.'],
-  ['Evaporation','The process by which liquid water changes to water vapor. The primary mechanism in structural drying, accelerated by airflow and heat.'],
-  ['Extraction','The physical removal of standing water or water from materials using pumps, wet vacuums, or weighted extraction tools.'],
-  ['Grains Per Pound (GPP)','A measure of specific humidity. The weight of moisture in grains (7000 grains = 1 pound) per pound of dry air. Key metric for monitoring drying.'],
-  ['HEPA','High Efficiency Particulate Air. A filter standard that captures 99.97% of particles 0.3 microns or larger. Required for mold remediation.'],
-  ['Humidity (Relative)','The ratio of water vapor present in air to the maximum amount possible at that temperature, expressed as a percentage.'],
-  ['Humidity (Specific)','The actual amount of water vapor in the air, measured in grains per pound (GPP) or grams per kilogram (g/kg).'],
-  ['Hygroscopic','Materials that readily attract and hold moisture from the surrounding environment (wood, drywall, concrete).'],
-  ['Hygrometer','An instrument used to measure the humidity of air or moisture content of materials. Essential for monitoring drying progress.'],
-  ['IICRC','Institute of Inspection, Cleaning and Restoration Certification. The certifying body that publishes S500 and S520 standards for water damage and mold remediation.'],
-  ['Injectidry','A specialty drying system that forces air into wall cavities, under floors, or into other enclosed spaces through small injector ports.'],
-  ['LGR (Low Grain Refrigerant)','A type of dehumidifier that uses a pre-cooling coil to achieve lower grain depression, making it more effective at removing moisture in typical restoration conditions.'],
-  ['Moisture Content','The amount of moisture in a material, typically expressed as a percentage of the material\'s dry weight. Measured with moisture meters.'],
-  ['Moisture Mapping','The systematic process of documenting moisture readings throughout a structure to define the scope of water damage and monitor drying progress.'],
-  ['Mold','Fungi that grow in the form of multicellular filaments (hyphae). Requires moisture, nutrients, and suitable temperature. Can begin growing within 24-48 hours of water exposure.'],
-  ['Negative Air','A containment technique where air is exhausted from an enclosed area faster than it enters, creating negative pressure that prevents contaminants from spreading.'],
-  ['NIOSH','National Institute for Occupational Safety and Health. Provides recommendations for PPE and exposure limits relevant to restoration work.'],
-  ['Psychrometric','Relating to the measurement and study of atmospheric conditions, particularly moisture in air. Psychrometric charts show relationships between temperature, humidity, dew point, and other properties.'],
-  ['PPE','Personal Protective Equipment. Safety gear including respirators, gloves, eye protection, and protective clothing used during restoration work.'],
-  ['Remediation','The process of correcting or reversing environmental damage, particularly removing mold contamination and restoring affected materials.'],
-  ['Restoration','The process of returning a property to its pre-loss condition after water, fire, mold, or other damage.'],
-  ['RH (Relative Humidity)','See Humidity (Relative). The percentage of moisture in air relative to the maximum at that temperature.'],
-  ['S500','IICRC Standard and Reference Guide for Professional Water Damage Restoration. The industry standard for water damage restoration procedures.'],
-  ['S520','IICRC Standard and Reference Guide for Professional Mold Remediation. The industry standard for mold remediation procedures.'],
-  ['Sanitizer','A chemical agent that reduces the number of microorganisms to a safe level. Less aggressive than a biocide or sterilizer.'],
-  ['SDS','Safety Data Sheet. Document providing information about chemical products including hazards, handling, storage, and emergency measures.'],
-  ['Sewage','Category 3 water containing human waste. Requires specialized protocols for safe cleanup including PPE, containment, and antimicrobial treatment.'],
-  ['Solvent','A liquid substance capable of dissolving other substances. Used in restoration for cleaning and deodorization.'],
-  ['Spores','Reproductive units of fungi (mold) that are released into the air and can remain dormant until conditions favor growth.'],
-  ['Subsurface Drying','Drying techniques targeting moisture trapped beneath surface materials (under tile, in wall cavities, beneath hardwood floors).'],
-  ['Thirst','The difference in specific humidity (GPP) between the indoor and outdoor environments. Indicates the drying potential of outside air.'],
-  ['Threshold Limit Values','Occupational exposure limits for airborne substances, relevant to restoration chemicals and contaminants.'],
-  ['Total Dissolved Solids','The concentration of dissolved substances in water. Higher TDS indicates greater contamination level.'],
-  ['Ultrasonic Cleaning','A cleaning method using high-frequency sound waves in a liquid solution to remove contaminants from objects and materials.'],
-  ['Vacuum Freeze-Dry','A document and artifact restoration technique that freezes wet materials and then removes moisture through sublimation under vacuum.'],
-  ['Vapor Pressure','The pressure exerted by water vapor in the air. The difference in vapor pressure drives moisture movement from wet to dry areas.'],
-  ['VCT','Vinyl Composition Tile. A common commercial flooring material that can trap moisture underneath, requiring specialty drying techniques.'],
-  ['Vinyl Asbestos Tile','Older flooring material containing asbestos fibers. Requires special handling and abatement procedures if disturbed during restoration.'],
-  ['VOC','Volatile Organic Compound. Chemical compounds that easily evaporate at room temperature. Can be released from water-damaged materials or restoration chemicals.'],
-  ['VP','See Vapor Pressure.'],
-  ['Water Migration','The movement of water through and along materials via gravity, capillary action, and wicking. Determines the extent of damage beyond the initial water source.'],
-  ['Wet Bulb','The temperature reading from a thermometer with its bulb wrapped in a wet wick. The difference between wet and dry bulb temperatures indicates the moisture content of the air.']
-];
 
 /* ===== STATE ===== */
 let currentScreen = 'home';
@@ -904,8 +647,6 @@ function init() {
   });
   // Populate specs
   renderAfSpecs();
-  // Populate definitions
-  renderDefs();
   // Add power row
   addPowerRow();
   // Bind inputs
@@ -915,12 +656,9 @@ function init() {
   bindCalc('am-l am-w am-h', calcAirMovers);
   bindCalc('btu-l btu-w btu-h btu-cur-f btu-des-f', calcBtu);
   bindCalc('pw-cost pw-hours pw-days', calcPower);
-  bindCalc('ps-in-f ps-in-rh', ()=>calcPsych('in'));
-  bindCalc('ps-out-f ps-out-rh', ()=>calcPsych('out'));
   // Load saved state
   loadState();
   calcAirflow(); calcDrying(); calcAirMovers(); calcBtu(); calcPower();
-  calcPsych('in'); calcPsych('out');
   updateAmGuide();
 }
 
@@ -933,10 +671,9 @@ function bindCalc(ids, fn) {
 
 /* ===== NAVIGATION ===== */
 const screenNames = {
-  home:'PDQ Sycorp Calculator', airflow:'Air Flow / HEPA', psychrometric:'Psychrometric',
+  home:'PDQ Sycorp Calculator', airflow:'Air Flow / HEPA',
   drying:'Drying Equipment', airmovers:'Air Movers (S500)',
   btu:'Heating / Cooling BTU', power:'Power Calculator',
-  conversions:'Conversions', definitions:'Definitions'
 };
 
 function showScreen(name) {
@@ -1042,44 +779,6 @@ function renderAfRooms() {
   ).join('');
   const total = afRooms.reduce((s,r)=>s+r.units,0);
   document.getElementById('af-rooms-total').textContent = 'Total: ' + total + ' units';
-}
-
-/* ===== 2. PSYCHROMETRIC ===== */
-function calcPsych(side) {
-  const tf = v('ps-'+side+'-f');
-  const rh = v('ps-'+side+'-rh');
-  if (!tf && !rh) {
-    ['c','vp-hg','vp-kpa','gpp','gkg','dpf','dpc'].forEach(f => si('ps-'+side+'-'+f,''));
-    calcPsychDiff(); return;
-  }
-  const tc = (tf-32)*5/9;
-  si('ps-'+side+'-c', r(tc,2));
-  if (rh > 0) {
-    const satVP = 0.49171 * Math.exp(0.0621846 * tc); // kPa
-    const actualVP = satVP * rh / 100;
-    const vpHg = actualVP * 0.295301;
-    si('ps-'+side+'-vp-hg', r(vpHg,4));
-    si('ps-'+side+'-vp-kpa', r(actualVP,4));
-    const gpp = 4354 * actualVP / (101.325 - actualVP);
-    const gkg = gpp / 7;
-    si('ps-'+side+'-gpp', r(gpp,1));
-    si('ps-'+side+'-gkg', r(gkg,2));
-    // Dew point Magnus
-    const gamma = Math.log(rh/100) + (17.67*tc)/(243.5+tc);
-    const dewC = 243.5*gamma/(17.67-gamma);
-    const dewF = dewC*9/5+32;
-    si('ps-'+side+'-dpf', r(dewF,1));
-    si('ps-'+side+'-dpc', r(dewC,1));
-  }
-  calcPsychDiff();
-}
-function calcPsychDiff() {
-  const inGpp = parseFloat(document.getElementById('ps-in-gpp').value);
-  const outGpp = parseFloat(document.getElementById('ps-out-gpp').value);
-  const inF = v('ps-in-f');
-  const outF = v('ps-out-f');
-  s('ps-thirst', (!isNaN(inGpp) && !isNaN(outGpp)) ? r(inGpp-outGpp,1)+' GPP' : '--');
-  s('ps-depression', (inF && outF) ? r(inF-outF,1)+' \u00B0F' : '--');
 }
 
 /* ===== 3. DRYING EQUIPMENT ===== */
@@ -1273,60 +972,6 @@ function calcPower() {
   s('pw-runcost', runCost>0 ? '$'+r(runCost,2) : '--');
 }
 
-/* ===== 7. CONVERSIONS ===== */
-function cvCalc(from) {
-  const val = parseFloat(document.getElementById('cv-'+from).value);
-  if (isNaN(val)) {
-    // Clear the paired field
-    const pairs = {f:'c',c:'f',ft:'m',m:'ft','in':'cm',cm:'in',sqft:'sqm',sqm:'sqft',cuft:'cum',cum:'cuft',gal:'lit',lit:'gal',lb:'kg',kg:'lb',cfm:'m3h',m3h:'cfm',inhg:'kpa',kpa:'inhg',gr:'gm',gm:'gr'};
-    si('cv-'+pairs[from],'');
-    return;
-  }
-  const conversions = {
-    f: ()=> si('cv-c', r((val-32)*5/9,2)),
-    c: ()=> si('cv-f', r(val*9/5+32,2)),
-    ft: ()=> si('cv-m', r(val*0.3048,4)),
-    m: ()=> si('cv-ft', r(val/0.3048,4)),
-    'in': ()=> si('cv-cm', r(val*2.54,3)),
-    cm: ()=> si('cv-in', r(val/2.54,3)),
-    sqft: ()=> si('cv-sqm', r(val*0.092903,4)),
-    sqm: ()=> si('cv-sqft', r(val/0.092903,4)),
-    cuft: ()=> si('cv-cum', r(val*0.0283168,4)),
-    cum: ()=> si('cv-cuft', r(val/0.0283168,4)),
-    gal: ()=> si('cv-lit', r(val*3.78541,3)),
-    lit: ()=> si('cv-gal', r(val/3.78541,3)),
-    lb: ()=> si('cv-kg', r(val*0.453592,3)),
-    kg: ()=> si('cv-lb', r(val/0.453592,3)),
-    cfm: ()=> si('cv-m3h', r(val*1.69901,2)),
-    m3h: ()=> si('cv-cfm', r(val/1.69901,2)),
-    inhg: ()=> si('cv-kpa', r(val*3.38639,4)),
-    kpa: ()=> si('cv-inhg', r(val/3.38639,4)),
-    gr: ()=> si('cv-gm', r(val*0.06479891,4)),
-    gm: ()=> si('cv-gr', r(val/0.06479891,4))
-  };
-  if (conversions[from]) conversions[from]();
-}
-
-/* ===== 8. DEFINITIONS ===== */
-function renderDefs() {
-  const c = document.getElementById('def-list');
-  c.innerHTML = definitions.map((d,i) =>
-    '<div class="def-item" id="def-'+i+'" onclick="toggleDef('+i+')">'+
-    '<div class="def-term">'+d[0]+'<span class="def-arrow">&#8250;</span></div>'+
-    '<div class="def-body">'+d[1]+'</div></div>'
-  ).join('');
-}
-function toggleDef(i) {
-  document.getElementById('def-'+i).classList.toggle('open');
-}
-function filterDefs() {
-  const q = document.getElementById('def-search').value.toLowerCase();
-  definitions.forEach((d,i) => {
-    const el = document.getElementById('def-'+i);
-    const match = d[0].toLowerCase().includes(q) || d[1].toLowerCase().includes(q);
-    el.style.display = match ? '' : 'none';
-  });
-}
 
 /* ===== ROOMS (shared for AF and Drying) ===== */
 // Add room buttons in bottom bar need wiring - use the existing togglePanel approach
@@ -1411,7 +1056,7 @@ function saveState() {
     };
     ['af-l','af-w','af-h','af-equip','dr-l','dr-w','dr-h','dr-cov','dr-wh',
      'am-l','am-w','am-h','btu-l','btu-w','btu-h','btu-cur-f','btu-des-f',
-     'ps-in-f','ps-in-rh','ps-out-f','ps-out-rh','pw-cost','pw-hours','pw-days'
+     'pw-cost','pw-hours','pw-days'
     ].forEach(id => {
       const el = document.getElementById(id);
       if (el) state.inputs[id] = el.value;
