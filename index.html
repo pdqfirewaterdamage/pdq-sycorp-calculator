@@ -6,64 +6,109 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1565A8">
+<meta name="theme-color" content="#1a3a5c">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <title>PDQ RestoreCalc - Water Damage Restoration</title>
 <style>
 :root {
-  --primary: #1B5E20;
-  --primary-dark: #0D3B13;
-  --brand-blue: #1565A8;
-  --brand-blue-dark: #0D4A7A;
+  --navy: #1a3a5c;
+  --navy-light: #264d73;
   --white: #FFFFFF;
   --dark: #333333;
-  --dark2: #444444;
-  --blue: #1565A8;
-  --blue-dark: #0D4A7A;
-  --yellow: #FFD600;
-  --yellow-text: #FFD600;
-  --gray-border: #888888;
-  --input-bg: #FFFFFF;
-  --output-bg: #2A2A2A;
+  --text: #333333;
+  --text-light: #666666;
+  --gray-border: #d1d5db;
+  --gray-bg: #f5f5f0;
   --green: #2E7D32;
   --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   font-family: var(--font);
-  background: #222;
-  color: var(--white);
+  background: #f0f0f0;
+  color: var(--text);
   height: 100%;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
 }
 body { display: flex; flex-direction: column; }
 
+/* APP WRAPPER */
+.app-wrap {
+  max-width: 480px; margin: 0 auto; width: 100%; height: 100%;
+  display: flex; flex-direction: column; position: relative;
+  background: var(--white);
+}
+
 /* HEADER */
 .header {
-  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--primary) 100%);
+  background: var(--navy);
   color: var(--white);
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  height: 52px;
-  min-height: 52px;
+  padding: 0 14px;
+  height: 48px;
+  min-height: 48px;
   z-index: 100;
   position: relative;
 }
+.header-logo {
+  width: 28px; height: 28px; margin-right: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.header-logo svg { width: 24px; height: 24px; }
+.header-title {
+  flex: 1; font-size: 18px; font-weight: 700; letter-spacing: 0.3px;
+}
 .header-btn {
   background: none; border: none; color: var(--white);
-  font-size: 24px; cursor: pointer; padding: 8px;
-  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-  border-radius: 50%;
+  font-size: 20px; cursor: pointer; padding: 6px;
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; opacity: 0.85;
 }
-.header-btn:active { background: rgba(255,255,255,0.2); }
-.header-title {
-  flex: 1; text-align: center; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;
+.header-btn:active { background: rgba(255,255,255,0.15); }
+
+/* TAB BAR */
+.tab-bar {
+  display: flex;
+  background: var(--white);
+  border-bottom: 1px solid #e5e7eb;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  min-height: 52px;
+  z-index: 90;
 }
-.header-btn.hidden { visibility: hidden; }
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 6px 14px 4px;
+  min-width: 72px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 3px solid transparent;
+  color: #9ca3af;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.tab-item:active { background: #f9fafb; }
+.tab-item.active {
+  color: var(--navy);
+  border-bottom-color: var(--navy);
+  font-weight: 600;
+}
+.tab-icon { font-size: 18px; margin-bottom: 2px; line-height: 1; }
+.tab-label { line-height: 1.2; }
+.uc-badge {
+  display: inline-block; font-size: 7px; font-weight: 700; text-transform: uppercase;
+  background: #fef2f2; color: #dc2626; padding: 1px 4px; border-radius: 3px;
+  margin-left: 2px; vertical-align: middle; letter-spacing: 0.3px;
+}
 
 /* SCREEN CONTAINER */
 .screen-container {
@@ -77,64 +122,17 @@ body { display: flex; flex-direction: column; }
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  transition: transform 0.3s ease, opacity 0.25s ease;
 }
-.screen.hidden {
-  display: none;
-}
-.screen.slide-out-left {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-.screen.slide-in-right {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-/* HOME MENU */
-#home-screen {
-  background: var(--white);
-}
-.menu-list { list-style: none; }
-.menu-item {
-  display: flex; align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #E0E0E0;
-  color: var(--dark);
-  font-size: 17px;
-  cursor: pointer;
-  user-select: none;
-}
-.menu-item:active { background: #F0F0F0; }
-.menu-item .menu-icon {
-  width: 36px; height: 36px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  margin-right: 14px; font-size: 18px; color: var(--white); flex-shrink: 0;
-}
-.menu-item .menu-arrow { margin-left: auto; color: #CCC; font-size: 20px; }
-.mi-blue { background: var(--blue); }
-.mi-green { background: var(--green); }
-.mi-brand { background: var(--brand-blue); }
-.mi-orange { background: #FF9800; }
-.mi-purple { background: #7B1FA2; }
-.mi-teal { background: #00897B; }
-.mi-indigo { background: #3F51B5; }
-.mi-brown { background: #795548; }
-
-.home-footer {
-  text-align: center; padding: 20px 16px; color: #999; font-size: 13px; line-height: 1.6;
-  border-top: 1px solid #E0E0E0;
-}
-.home-footer a { color: var(--brand-blue); text-decoration: none; }
+.screen.hidden { display: none; }
 
 /* CALCULATOR SCREENS */
-.calc-screen { background: var(--dark); padding: 12px 12px 80px; }
-.calc-section {
-  margin-bottom: 14px;
-}
+.calc-screen { background: var(--white); padding: 16px 16px 90px; }
+.calc-section { margin-bottom: 18px; }
 .calc-label {
-  font-size: 12px; color: #AAA; text-transform: uppercase; letter-spacing: 0.5px;
-  margin-bottom: 6px; display: block;
+  font-size: 12px; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px;
+  margin-bottom: 8px; display: block; font-weight: 700;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e5e7eb;
 }
 .calc-row {
   display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
@@ -143,134 +141,145 @@ body { display: flex; flex-direction: column; }
   flex: 1; display: flex; flex-direction: column;
 }
 .calc-input-group label {
-  font-size: 11px; color: #AAA; margin-bottom: 3px;
+  font-size: 11px; color: var(--text-light); margin-bottom: 3px; font-weight: 500;
 }
 .calc-input {
-  width: 100%; height: 44px; border-radius: 8px; border: 2px solid transparent;
+  width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--gray-border);
   padding: 0 12px; font-size: 16px; font-family: var(--font);
-  background: var(--input-bg); color: var(--dark);
-  outline: none;
+  background: var(--white); color: var(--text);
+  outline: none; transition: border-color 0.2s;
 }
-.calc-input:focus { border-color: var(--blue); }
-.calc-input[readonly] {
-  background: var(--output-bg); color: var(--yellow-text);
-  border: 2px solid var(--gray-border);
-}
+.calc-input:focus { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(26,58,92,0.12); }
 .calc-select {
-  width: 100%; height: 44px; border-radius: 8px; border: 2px solid transparent;
+  width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--gray-border);
   padding: 0 8px; font-size: 14px; font-family: var(--font);
-  background: var(--input-bg); color: var(--dark); outline: none;
-  appearance: auto;
+  background: var(--white); color: var(--text); outline: none;
+  appearance: auto; transition: border-color 0.2s;
 }
-.calc-select:focus { border-color: var(--blue); }
+.calc-select:focus { border-color: var(--navy); }
 
 /* Output boxes */
 .output-box {
-  background: var(--output-bg);
-  border: 2px solid var(--gray-border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 8px;
+  background: var(--gray-bg);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
 }
 .output-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 4px 0;
+  padding: 5px 0;
 }
-.output-label { font-size: 13px; color: #CCC; }
-.output-value { font-size: 15px; color: var(--yellow-text); font-weight: 600; }
+.output-row + .output-row { border-top: 1px solid #e8e8e4; }
+.output-label { font-size: 13px; color: var(--text-light); }
+.output-value { font-size: 15px; color: var(--navy); font-weight: 700; }
+
+/* Toggle buttons (pill style) */
+.toggle-btn-row {
+  display: flex; gap: 0; margin-bottom: 10px;
+  border-radius: 24px; overflow: hidden;
+  border: 1px solid var(--gray-border);
+  width: fit-content;
+}
+.toggle-btn {
+  padding: 8px 16px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+  background: var(--white); color: var(--text-light);
+  border: none; user-select: none;
+  transition: background 0.2s, color 0.2s;
+}
+.toggle-btn:not(:last-child) { border-right: 1px solid var(--gray-border); }
+.toggle-btn.active {
+  background: var(--navy); color: var(--white);
+}
+.toggle-btn:active { opacity: 0.85; }
 
 /* Buttons */
 .btn-row {
-  display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+  display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;
 }
 .btn {
-  height: 44px; border-radius: 8px; border: none;
-  padding: 0 16px; font-size: 14px; font-weight: 600;
+  height: 40px; border-radius: 20px; border: 1.5px solid var(--gray-border);
+  padding: 0 16px; font-size: 13px; font-weight: 600;
   cursor: pointer; font-family: var(--font);
   display: flex; align-items: center; justify-content: center;
   user-select: none; min-width: 44px;
+  background: var(--white); color: var(--text-light);
+  transition: all 0.2s;
 }
 .btn:active { opacity: 0.8; }
-.btn-blue { background: var(--blue); color: var(--white); }
-.btn-blue.active { background: var(--blue-dark); color: var(--yellow-text); border: 2px solid var(--yellow-text); }
-.btn-brand { background: var(--brand-blue); color: var(--white); }
-.btn-gray { background: #666; color: var(--white); }
-.btn-green { background: var(--green); color: var(--white); }
 .btn-full { flex: 1; }
+.btn.active, .btn-blue.active {
+  background: var(--navy); color: var(--white);
+  border-color: var(--navy);
+}
+.btn-blue { background: var(--white); color: var(--text-light); border: 1.5px solid var(--gray-border); }
+.btn-green { background: var(--green); color: var(--white); border-color: var(--green); }
 
 /* Bottom bar */
 .bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: #1A1A1A;
-  display: flex; gap: 0; height: 56px;
-  border-top: 1px solid #555;
+  background: var(--white);
+  display: flex; gap: 6px; height: 60px;
+  border-top: 1px solid #e5e7eb;
   z-index: 50;
   max-width: 480px; margin: 0 auto;
+  padding: 8px 12px;
+  align-items: center;
 }
 .bottom-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: none; border: none; color: #AAA; font-size: 10px; cursor: pointer;
-  font-family: var(--font); padding: 4px;
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;
+  background: var(--white); border: 1.5px solid var(--gray-border); color: var(--text-light);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); padding: 0 8px;
+  border-radius: 8px; height: 40px;
 }
-.bottom-btn:active { color: var(--white); background: #333; }
-.bottom-btn .bb-icon { font-size: 20px; margin-bottom: 2px; }
-.bottom-btn.disabled { opacity: 0.4; pointer-events: none; }
-
-/* Slider */
-.slider-container { display: flex; align-items: center; gap: 10px; }
-.slider-container input[type="range"] {
-  flex: 1; height: 6px; -webkit-appearance: none; appearance: none;
-  background: #666; border-radius: 3px; outline: none;
+.bottom-btn:active { background: #f3f4f6; }
+.bottom-btn .bb-icon { font-size: 16px; }
+.bottom-btn.disabled { opacity: 0.35; pointer-events: none; }
+.bottom-btn.btn-calc {
+  background: var(--green); color: var(--white); border-color: var(--green);
 }
-.slider-container input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%;
-  background: var(--blue); cursor: pointer;
-}
-.slider-val { font-size: 18px; font-weight: 700; color: var(--yellow-text); min-width: 36px; text-align: center; }
+.bottom-btn.btn-calc:active { background: #256d29; }
 
 /* Rooms panel */
 .rooms-panel {
-  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: none;
+  background: #fafafa; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 14px; margin-bottom: 10px; display: none;
 }
 .rooms-panel.open { display: block; }
 .room-entry {
-  display: flex; align-items: center; gap: 8px; padding: 6px 0;
-  border-bottom: 1px solid #555; font-size: 14px; color: #CCC;
+  display: flex; align-items: center; gap: 8px; padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb; font-size: 14px; color: var(--text);
 }
 .room-entry:last-child { border-bottom: none; }
 .room-entry .room-name { flex: 1; }
-.room-entry .room-units { color: var(--yellow-text); font-weight: 600; }
-.room-entry .room-del { color: #F44; cursor: pointer; font-size: 18px; padding: 4px; }
-.rooms-total { color: var(--yellow-text); font-weight: 700; padding-top: 8px; font-size: 15px; }
+.room-entry .room-units { color: var(--navy); font-weight: 600; }
+.room-entry .room-del { color: #dc2626; cursor: pointer; font-size: 18px; padding: 4px; }
+.rooms-total { color: var(--navy); font-weight: 700; padding-top: 8px; font-size: 15px; }
 
 /* Specs panel */
 .specs-panel {
-  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: none;
+  background: #fafafa; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 14px; margin-bottom: 10px; display: none;
 }
 .specs-panel.open { display: block; }
-.spec-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #555; font-size: 13px; }
+.spec-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-size: 13px; }
 .spec-row:last-child { border-bottom: none; }
-.spec-name { color: #CCC; }
-.spec-val { color: var(--yellow-text); }
-
+.spec-name { color: var(--text); font-weight: 500; }
+.spec-val { color: var(--navy); font-weight: 600; }
 
 /* Under Construction */
-.uc-badge {
-  display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase;
-  background: #5a2020; color: #ff9999; padding: 2px 6px; border-radius: 4px;
-  margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;
-}
 .uc-screen { position: relative; pointer-events: none; }
 .uc-screen .calc-section, .uc-screen .output-box, .uc-screen .btn-row,
 .uc-screen .guide-box, .uc-screen .bottom-bar, .uc-screen .warning-box,
-.uc-screen .rooms-panel, .uc-screen #power-rows, .uc-screen #power-add-btn { opacity: 0.18; }
+.uc-screen .rooms-panel { opacity: 0.15; }
 .uc-overlay {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   display: flex; align-items: center; justify-content: center;
   z-index: 10; pointer-events: none;
 }
 .uc-x {
-  font-size: min(50vw, 240px); font-weight: 200; color: rgba(255, 100, 100, 0.18);
+  font-size: min(50vw, 240px); font-weight: 200; color: rgba(220, 38, 38, 0.12);
   line-height: 1; user-select: none;
 }
 .uc-label {
@@ -278,82 +287,65 @@ body { display: flex; flex-direction: column; }
   text-align: center; pointer-events: none;
 }
 .uc-label span {
-  display: block; font-size: 20px; font-weight: 700; color: #ff9999;
+  display: block; font-size: 20px; font-weight: 700; color: #dc2626;
   text-transform: uppercase; letter-spacing: 2px;
 }
 .uc-label small {
-  display: block; font-size: 12px; color: #cc8888; margin-top: 4px;
+  display: block; font-size: 12px; color: #ef4444; margin-top: 4px;
 }
 
-/* Warning */
-.warning-box {
-  background: #3D3000; border: 1px solid var(--yellow); border-radius: 8px;
-  padding: 8px 12px; color: var(--yellow); font-size: 13px; margin-bottom: 10px;
-  text-align: center;
+/* ACH locked field */
+.ach-locked {
+  display: flex; align-items: center; gap: 10px;
 }
+.ach-box {
+  background: var(--gray-bg); border: 1px solid var(--gray-border);
+  border-radius: 8px; padding: 8px 16px; font-size: 18px; font-weight: 700;
+  color: var(--navy); min-width: 40px; text-align: center;
+}
+.ach-note { color: var(--text-light); font-size: 13px; font-style: italic; }
 
-/* Max width wrapper */
-.app-wrap {
-  max-width: 480px; margin: 0 auto; width: 100%; height: 100%;
-  display: flex; flex-direction: column; position: relative;
-  background: #222;
+/* Guide box */
+.guide-box {
+  background: var(--gray-bg); border-radius: 10px; padding: 14px; margin-bottom: 10px;
+  font-size: 13px; color: var(--text); line-height: 1.5;
+}
+.guide-box h4 { color: var(--navy); margin-bottom: 6px; font-size: 14px; }
+
+/* Dehu specs link */
+.dehu-specs-link {
+  color: var(--navy); cursor: pointer; font-size: 13px;
+  text-decoration: underline; display: inline-block; margin-top: 6px;
 }
 
 /* Info modal */
 .modal-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6); z-index: 200; display: none;
+  background: rgba(0,0,0,0.4); z-index: 200; display: none;
   align-items: center; justify-content: center;
 }
 .modal-overlay.open { display: flex; }
 .modal-box {
-  background: var(--white); color: var(--dark); border-radius: 12px;
-  padding: 24px; max-width: 360px; width: 90%; text-align: center;
+  background: var(--white); color: var(--text); border-radius: 14px;
+  padding: 28px; max-width: 360px; width: 90%; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
 }
-.modal-box h3 { margin-bottom: 12px; color: var(--brand-blue); }
+.modal-box h3 { margin-bottom: 12px; color: var(--navy); font-size: 20px; }
 .modal-box p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
-.modal-box a { color: var(--brand-blue); }
+.modal-box a { color: var(--navy); }
 .modal-close {
-  margin-top: 16px; background: var(--brand-blue); color: var(--white);
+  margin-top: 16px; background: var(--navy); color: var(--white);
   border: none; padding: 10px 32px; border-radius: 8px; font-size: 15px;
   cursor: pointer; font-family: var(--font);
 }
 
-/* S500 guidelines */
-.guide-box {
-  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px;
-  font-size: 13px; color: #CCC; line-height: 1.5;
-}
-.guide-box h4 { color: var(--yellow-text); margin-bottom: 6px; font-size: 14px; }
-
-/* Toggle switch for cu ft mode */
-.toggle-row {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
-}
-.toggle-switch {
-  position: relative; width: 44px; height: 24px; cursor: pointer;
-}
-.toggle-switch input { opacity: 0; width: 0; height: 0; }
-.toggle-track {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: #666; border-radius: 12px; transition: background 0.3s;
-}
-.toggle-switch input:checked + .toggle-track { background: var(--blue); }
-.toggle-knob {
-  position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
-  background: var(--white); border-radius: 50%; transition: transform 0.3s;
-}
-.toggle-switch input:checked ~ .toggle-knob { transform: translateX(20px); }
-.toggle-label { font-size: 13px; color: #CCC; }
-
-/* Dehu specs link */
-.dehu-specs-link {
-  color: var(--brand-blue); cursor: pointer; font-size: 13px;
-  text-decoration: underline; display: inline-block; margin-top: 6px;
+/* Footer */
+.app-footer {
+  text-align: center; padding: 12px 16px; color: #9ca3af; font-size: 11px;
 }
 
 /* Ensure no horizontal scroll */
-.calc-screen, #home-screen { overflow-x: hidden; }
+.calc-screen { overflow-x: hidden; }
 
 @media (min-width: 481px) {
   .bottom-bar { left: 50%; transform: translateX(-50%); }
@@ -364,55 +356,48 @@ body { display: flex; flex-direction: column; }
 <div class="app-wrap" id="app">
   <!-- HEADER -->
   <div class="header">
-    <button class="header-btn" id="btn-home" onclick="goHome()" title="Home">&#8962;</button>
-    <div class="header-title" id="header-title">PDQ RestoreCalc&copy;</div>
+    <div class="header-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 22 20 2 20"/>
+      </svg>
+    </div>
+    <div class="header-title" id="header-title">PDQ RestoreCalc &copy;</div>
     <button class="header-btn" id="btn-info" onclick="showInfo()" title="Info">&#9432;</button>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar" id="tab-bar">
+    <div class="tab-item active" onclick="showScreen('airflow')" data-tab="airflow">
+      <span class="tab-icon">&#128168;</span>
+      <span class="tab-label">Hydroxyl</span>
+    </div>
+    <div class="tab-item" onclick="showScreen('psychro')" data-tab="psychro">
+      <span class="tab-icon">&#127777;</span>
+      <span class="tab-label">Psychro</span>
+    </div>
+    <div class="tab-item" onclick="showScreen('drying')" data-tab="drying">
+      <span class="tab-icon">&#128167;</span>
+      <span class="tab-label">Dehu</span>
+    </div>
+    <div class="tab-item" onclick="showScreen('airmovers')" data-tab="airmovers">
+      <span class="tab-icon">&#127744;</span>
+      <span class="tab-label">Air Movers</span>
+    </div>
+    <div class="tab-item" onclick="showScreen('hepa')" data-tab="hepa">
+      <span class="tab-icon">&#129531;</span>
+      <span class="tab-label">HEPA</span>
+    </div>
   </div>
 
   <!-- SCREEN CONTAINER -->
   <div class="screen-container">
 
-    <!-- HOME -->
-    <div class="screen" id="home-screen">
-      <ul class="menu-list">
-        <li class="menu-item" onclick="showScreen('airflow')">
-          <div class="menu-icon mi-blue">&#9729;</div>
-          Hydroxyl <span style="font-size:12px;color:#AAA;">(Odor / Sanitize Air)</span>
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('psychro')">
-          <div class="menu-icon mi-green">&#127777;</div>
-          Psychro<span class="uc-badge">Under Construction</span>
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('drying')">
-          <div class="menu-icon mi-orange">&#128167;</div>
-          Dehumidifiers Required
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('airmovers')">
-          <div class="menu-icon mi-teal">&#9734;</div>
-          Air Movers<span class="uc-badge">Under Construction</span>
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('hepa')">
-          <div class="menu-icon mi-indigo">&#9881;</div>
-          Hepa Air Scrubber Units
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-      </ul>
-      <div class="home-footer">
-        <strong>IICRC Standard of Care Requirements</strong><br>
-        <span style="font-size:11px;color:#BBB;">v2.5.2</span>
-      </div>
-    </div>
-
     <!-- 1. HYDROXYL (ODOR / SANITIZE AIR) -->
-    <div class="screen calc-screen hidden" id="airflow-screen">
+    <div class="screen calc-screen" id="airflow-screen">
       <div class="calc-section">
         <span class="calc-label">Odor Source &amp; Severity</span>
-        <div style="margin-bottom:8px;">
-          <label style="font-size:12px;color:#AAA;display:block;margin-bottom:4px;">Odor source</label>
+        <div style="margin-bottom:10px;">
+          <label style="font-size:12px;color:var(--text-light);display:block;margin-bottom:4px;font-weight:500;">Odor source</label>
           <select class="calc-select" id="af-source">
             <option value="fire">Fire / Smoke</option>
             <option value="sewage">Sewage</option>
@@ -422,7 +407,7 @@ body { display: flex; flex-direction: column; }
           </select>
         </div>
         <div>
-          <label style="font-size:12px;color:#AAA;display:block;margin-bottom:4px;">Severity</label>
+          <label style="font-size:12px;color:var(--text-light);display:block;margin-bottom:6px;font-weight:500;">Severity</label>
           <div class="btn-row" id="af-sev-btns">
             <button class="btn btn-blue btn-full active" onclick="setAfSev('moderate',this)">Moderate</button>
             <button class="btn btn-blue btn-full" onclick="setAfSev('heavy',this)">Heavy</button>
@@ -432,13 +417,9 @@ body { display: flex; flex-direction: column; }
       </div>
       <div class="calc-section">
         <span class="calc-label">Total Cubic Footage</span>
-        <div class="toggle-row">
-          <label class="toggle-switch">
-            <input type="checkbox" id="af-mode-toggle" onchange="toggleAfMode()">
-            <span class="toggle-track"></span>
-            <span class="toggle-knob"></span>
-          </label>
-          <span class="toggle-label" id="af-mode-label">Enter total cu ft</span>
+        <div class="toggle-btn-row" id="af-mode-btns">
+          <button class="toggle-btn active" onclick="setAfModeBtn(false, this)">Enter total cu ft</button>
+          <button class="toggle-btn" onclick="setAfModeBtn(true, this)">Enter room size</button>
         </div>
         <div id="af-totalcf-wrap">
           <div class="calc-row">
@@ -455,11 +436,11 @@ body { display: flex; flex-direction: column; }
       </div>
       <div class="calc-section">
         <span class="calc-label">Air Changes Per Hour</span>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="background:var(--output-bg);border:2px solid var(--gray-border);border-radius:8px;padding:8px 16px;font-size:18px;font-weight:700;color:var(--yellow-text);min-width:40px;text-align:center;">6</div>
-          <span style="color:#AAA;font-size:13px;font-style:italic;">Per IICRC standard of care</span>
+        <div class="ach-locked">
+          <div class="ach-box">6</div>
+          <span class="ach-note">Per IICRC standard of care</span>
         </div>
-        <div style="color:#AAA;font-size:12px;margin-top:4px;">10.0 minutes per air change</div>
+        <div style="color:var(--text-light);font-size:12px;margin-top:4px;">10.0 minutes per air change</div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Equipment</span>
@@ -473,19 +454,20 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label">Est. Treatment Cycles</span><span class="output-value" id="af-cycles">--</span></div>
       </div>
       <div class="rooms-panel" id="af-rooms-panel">
-        <span class="calc-label">Saved Rooms</span>
+        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Saved Rooms</span>
         <div id="af-rooms-list"></div>
         <div class="rooms-total" id="af-rooms-total"></div>
       </div>
       <div class="specs-panel" id="af-specs-panel">
-        <span class="calc-label">Equipment Specs</span>
+        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Equipment Specs</span>
         <div id="af-specs-list"></div>
       </div>
+      <div class="app-footer">IICRC Standard of Care Requirements</div>
       <div class="bottom-bar" id="af-bottom">
         <button class="bottom-btn disabled" title="Coming soon"><span class="bb-icon">&#9993;</span>Email</button>
         <button class="bottom-btn" onclick="togglePanel('af-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
         <button class="bottom-btn" onclick="togglePanel('af-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
-        <button class="bottom-btn" onclick="calcAirflow()"><span class="bb-icon">&#9999;</span>Calculate</button>
+        <button class="bottom-btn btn-calc" onclick="calcAirflow()"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
     </div>
 
@@ -493,13 +475,9 @@ body { display: flex; flex-direction: column; }
     <div class="screen calc-screen hidden" id="hepa-screen">
       <div class="calc-section">
         <span class="calc-label">Drying Chamber Size</span>
-        <div class="toggle-row">
-          <label class="toggle-switch">
-            <input type="checkbox" id="hepa-mode-toggle" onchange="toggleHepaMode()">
-            <span class="toggle-track"></span>
-            <span class="toggle-knob"></span>
-          </label>
-          <span class="toggle-label" id="hepa-mode-label">Enter total cu ft</span>
+        <div class="toggle-btn-row" id="hepa-mode-btns">
+          <button class="toggle-btn active" onclick="setHepaModeBtn(false, this)">Enter total cu ft</button>
+          <button class="toggle-btn" onclick="setHepaModeBtn(true, this)">Enter room size</button>
         </div>
         <div id="hepa-totalcf-wrap">
           <div class="calc-row">
@@ -516,9 +494,9 @@ body { display: flex; flex-direction: column; }
       </div>
       <div class="calc-section">
         <span class="calc-label">Air Changes Per Hour</span>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="background:var(--output-bg);border:2px solid var(--gray-border);border-radius:8px;padding:8px 16px;font-size:18px;font-weight:700;color:var(--yellow-text);min-width:40px;text-align:center;">6</div>
-          <span style="color:#AAA;font-size:13px;font-style:italic;">Per IICRC standard of care</span>
+        <div class="ach-locked">
+          <div class="ach-box">6</div>
+          <span class="ach-note">Per IICRC standard of care</span>
         </div>
       </div>
       <div class="calc-section">
@@ -532,8 +510,9 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="hepa-cfm">--</span></div>
         <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="hepa-units">--</span></div>
       </div>
+      <div class="app-footer">IICRC Standard of Care Requirements</div>
       <div class="bottom-bar">
-        <button class="bottom-btn" onclick="calcHepa()" style="flex:1;"><span class="bb-icon">&#9999;</span>Calculate</button>
+        <button class="bottom-btn btn-calc" onclick="calcHepa()" style="flex:1;"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
     </div>
 
@@ -547,17 +526,13 @@ body { display: flex; flex-direction: column; }
           <button class="btn btn-blue btn-full" onclick="setDryClass(3,this)">Class 3</button>
           <button class="btn btn-blue btn-full" onclick="setDryClass(4,this)">Class 4</button>
         </div>
-        <div id="dr-class-desc" style="font-size:12px;color:#aaa;margin-top:8px;line-height:1.4;padding:0 4px;">Class 1 &ndash; Minor Amount of Water: Affects only part of a room with minimal evaporation demand.</div>
+        <div id="dr-class-desc" style="font-size:12px;color:var(--text-light);margin-top:8px;line-height:1.4;padding:0 4px;">Class 1 &ndash; Minor Amount of Water: Affects only part of a room with minimal evaporation demand.</div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Room Size</span>
-        <div class="toggle-row">
-          <label class="toggle-switch">
-            <input type="checkbox" id="dr-mode-toggle" onchange="toggleDrMode()">
-            <span class="toggle-track"></span>
-            <span class="toggle-knob"></span>
-          </label>
-          <span class="toggle-label" id="dr-mode-label">Enter total cu ft</span>
+        <div class="toggle-btn-row" id="dr-mode-btns">
+          <button class="toggle-btn active" onclick="setDrModeBtn(false, this)">Enter total cu ft</button>
+          <button class="toggle-btn" onclick="setDrModeBtn(true, this)">Enter room size</button>
         </div>
         <div id="dr-totalcf-wrap">
           <div class="calc-row">
@@ -597,11 +572,12 @@ body { display: flex; flex-direction: column; }
         <span class="dehu-specs-link" onclick="toggleDehuSpecs()">Click here for dehumidifier specs</span>
       </div>
       <div class="specs-panel" id="dr-specs-panel">
-        <span class="calc-label">Dehumidifier Specs</span>
+        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
         <div id="dr-specs-list"></div>
       </div>
+      <div class="app-footer">IICRC Standard of Care Requirements</div>
       <div class="bottom-bar">
-        <button class="bottom-btn" onclick="calcDrying()" style="flex:1;"><span class="bb-icon">&#9999;</span>Calculate</button>
+        <button class="bottom-btn btn-calc" onclick="calcDrying()" style="flex:1;"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
     </div>
 
@@ -650,7 +626,7 @@ body { display: flex; flex-direction: column; }
       <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
       <div class="calc-section">
         <span class="calc-label">Psychrometric Calculator</span>
-        <p style="color:#AAA;font-size:14px;padding:20px 0;">Psychrometric calculations coming soon.</p>
+        <p style="color:var(--text-light);font-size:14px;padding:20px 0;">Psychrometric calculations coming soon.</p>
       </div>
     </div>
 
@@ -692,7 +668,7 @@ const hepaEquipData = [
 
 
 /* ===== STATE ===== */
-let currentScreen = 'home';
+let currentScreen = 'airflow';
 let afSeverity = 'moderate';
 let dryClass = 1;
 let amClass = 1;
@@ -729,47 +705,18 @@ function bindCalc(ids, fn) {
 }
 
 /* ===== NAVIGATION ===== */
-const screenNames = {
-  home:'PDQ RestoreCalc\u00A9', airflow:'Hydroxyl : (Odor / Sanitize Air)',
-  drying:'Dehumidifiers Required', airmovers:'Air Movers',
-  hepa:'Hepa Air Scrubber Units', psychro:'Psychro',
-};
-
 function showScreen(name) {
   if (name === currentScreen) return;
-  const oldEl = document.getElementById(currentScreen + '-screen');
+  // Hide all screens
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  // Show target
   const newEl = document.getElementById(name + '-screen');
-  oldEl.classList.add('slide-out-left');
-  newEl.classList.remove('hidden');
-  newEl.classList.add('slide-in-right');
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      newEl.classList.remove('slide-in-right');
-      setTimeout(() => { oldEl.classList.add('hidden'); oldEl.classList.remove('slide-out-left'); }, 300);
-    });
+  if (newEl) newEl.classList.remove('hidden');
+  // Update tabs
+  document.querySelectorAll('.tab-item').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === name);
   });
   currentScreen = name;
-  document.getElementById('header-title').textContent = screenNames[name] || 'PDQ RestoreCalc\u00A9';
-  document.getElementById('btn-home').classList.toggle('hidden', name === 'home');
-  saveState();
-}
-
-function goHome() {
-  if (currentScreen === 'home') return;
-  const oldEl = document.getElementById(currentScreen + '-screen');
-  const newEl = document.getElementById('home-screen');
-  oldEl.classList.add('slide-out-left');
-  newEl.classList.remove('hidden');
-  newEl.classList.add('slide-in-right');
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      newEl.classList.remove('slide-in-right');
-      setTimeout(() => { oldEl.classList.add('hidden'); oldEl.classList.remove('slide-out-left'); }, 300);
-    });
-  });
-  currentScreen = 'home';
-  document.getElementById('header-title').innerHTML = 'PDQ RestoreCalc&copy;';
-  document.getElementById('btn-home').classList.add('hidden');
   saveState();
 }
 
@@ -783,26 +730,26 @@ function togglePanel(id) {
   el.classList.toggle('open');
 }
 
-/* ===== TOGGLE MODES ===== */
-function toggleAfMode() {
-  const checked = document.getElementById('af-mode-toggle').checked;
-  document.getElementById('af-mode-label').textContent = checked ? 'Enter room size' : 'Enter total cu ft';
-  document.getElementById('af-totalcf-wrap').style.display = checked ? 'none' : 'block';
-  document.getElementById('af-room-wrap').style.display = checked ? 'block' : 'none';
+/* ===== TOGGLE MODE BUTTONS ===== */
+function setAfModeBtn(roomMode, btn) {
+  document.getElementById('af-mode-btns').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('af-totalcf-wrap').style.display = roomMode ? 'none' : 'block';
+  document.getElementById('af-room-wrap').style.display = roomMode ? 'block' : 'none';
   calcAirflow();
 }
-function toggleHepaMode() {
-  const checked = document.getElementById('hepa-mode-toggle').checked;
-  document.getElementById('hepa-mode-label').textContent = checked ? 'Enter room size' : 'Enter total cu ft';
-  document.getElementById('hepa-totalcf-wrap').style.display = checked ? 'none' : 'block';
-  document.getElementById('hepa-room-wrap').style.display = checked ? 'block' : 'none';
+function setHepaModeBtn(roomMode, btn) {
+  document.getElementById('hepa-mode-btns').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('hepa-totalcf-wrap').style.display = roomMode ? 'none' : 'block';
+  document.getElementById('hepa-room-wrap').style.display = roomMode ? 'block' : 'none';
   calcHepa();
 }
-function toggleDrMode() {
-  const checked = document.getElementById('dr-mode-toggle').checked;
-  document.getElementById('dr-mode-label').textContent = checked ? 'Enter room size' : 'Enter total cu ft';
-  document.getElementById('dr-totalcf-wrap').style.display = checked ? 'none' : 'block';
-  document.getElementById('dr-room-wrap').style.display = checked ? 'block' : 'none';
+function setDrModeBtn(roomMode, btn) {
+  document.getElementById('dr-mode-btns').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('dr-totalcf-wrap').style.display = roomMode ? 'none' : 'block';
+  document.getElementById('dr-room-wrap').style.display = roomMode ? 'block' : 'none';
   calcDrying();
 }
 function toggleDehuSpecs() {
@@ -817,22 +764,22 @@ function r(n, d) { return d === undefined ? Math.round(n*100)/100 : (Math.round(
 
 /* ===== GET VOLUME HELPERS ===== */
 function getAfVolume() {
-  const checked = document.getElementById('af-mode-toggle').checked;
-  if (checked) {
+  const roomMode = document.getElementById('af-room-wrap').style.display !== 'none';
+  if (roomMode) {
     return v('af-l') * v('af-w') * v('af-h');
   }
   return v('af-totalcf');
 }
 function getHepaVolume() {
-  const checked = document.getElementById('hepa-mode-toggle').checked;
-  if (checked) {
+  const roomMode = document.getElementById('hepa-room-wrap').style.display !== 'none';
+  if (roomMode) {
     return v('hepa-l') * v('hepa-w') * v('hepa-h');
   }
   return v('hepa-totalcf');
 }
 function getDrVolume() {
-  const checked = document.getElementById('dr-mode-toggle').checked;
-  if (checked) {
+  const roomMode = document.getElementById('dr-room-wrap').style.display !== 'none';
+  if (roomMode) {
     return v('dr-l') * v('dr-w') * v('dr-h');
   }
   return v('dr-totalcf');
@@ -1013,7 +960,7 @@ function renderRooms(prefix) {
   const totalEl = document.getElementById(prefix+'-rooms-total');
   if (!list || !totalEl) return;
   if (!rooms.length) {
-    list.innerHTML='<div style="color:#888;font-size:13px;">No rooms saved yet.</div>';
+    list.innerHTML='<div style="color:#9ca3af;font-size:13px;">No rooms saved yet.</div>';
     totalEl.textContent='';
     return;
   }
@@ -1074,6 +1021,10 @@ function loadState() {
       const mats = ['carpet','hard','struct'];
       document.getElementById('am-mat-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',mats[i]===amMat));
     }
+    // Restore active screen via tabs
+    if (state.screen && state.screen !== 'home') {
+      showScreen(state.screen);
+    }
   } catch(e) {}
 }
 
@@ -1084,7 +1035,6 @@ document.addEventListener('input', () => { clearTimeout(window._saveTimer); wind
 document.addEventListener('DOMContentLoaded', () => {
   init();
   initRoomPanels();
-  document.getElementById('btn-home').classList.add('hidden');
   updateAmGuide();
 });
 </script>
