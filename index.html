@@ -70,44 +70,97 @@ body { display: flex; flex-direction: column; }
 }
 .header-btn:active { background: rgba(255,255,255,0.15); }
 
-/* TAB BAR */
-.tab-bar {
-  display: flex;
-  background: var(--white);
-  border-bottom: 1px solid #e5e7eb;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  min-height: 52px;
-  z-index: 90;
+/* BACK BUTTON */
+.header-back {
+  background: none; border: none; color: var(--white);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  padding: 6px 10px 6px 0;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
 }
-.tab-bar::-webkit-scrollbar { display: none; }
-.tab-item {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 6px 14px 4px;
-  min-width: 72px;
+.header-back:active { opacity: 0.7; }
+.header-back.visible { display: flex; }
+
+/* HOME SCREEN */
+.home-screen {
+  flex: 1;
+  background: var(--white);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+}
+.home-screen.hidden { display: none; }
+.home-grid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px 16px;
+}
+.home-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  justify-content: center;
+  width: 100%;
+}
+.home-card {
+  flex: 1;
+  max-width: 130px;
+  min-height: 110px;
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.15s, box-shadow 0.15s;
   user-select: none;
-  border-bottom: 3px solid transparent;
+}
+.home-card:active {
+  transform: scale(0.96);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.home-card-icon {
+  font-size: 36px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.home-card-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  text-align: center;
+  line-height: 1.2;
+}
+.home-card.disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+.home-card .coming-soon {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+.home-footer {
+  text-align: center;
+  padding: 16px;
   color: #9ca3af;
   font-size: 11px;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: color 0.2s, border-color 0.2s;
-  flex-shrink: 0;
-}
-.tab-item:active { background: #f9fafb; }
-.tab-item.active {
-  color: var(--navy);
-  border-bottom-color: var(--navy);
-  font-weight: 600;
-}
-.tab-icon { font-size: 18px; margin-bottom: 2px; line-height: 1; }
-.tab-label { line-height: 1.2; }
-.uc-badge {
-  display: inline-block; font-size: 7px; font-weight: 700; text-transform: uppercase;
-  background: #fef2f2; color: #dc2626; padding: 1px 4px; border-radius: 3px;
-  margin-left: 2px; vertical-align: middle; letter-spacing: 0.3px;
 }
 
 /* SCREEN CONTAINER */
@@ -115,7 +168,9 @@ body { display: flex; flex-direction: column; }
   flex: 1;
   position: relative;
   overflow: hidden;
+  display: none;
 }
+.screen-container.visible { display: flex; flex-direction: column; flex: 1; }
 .screen {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -356,7 +411,8 @@ body { display: flex; flex-direction: column; }
 <div class="app-wrap" id="app">
   <!-- HEADER -->
   <div class="header">
-    <div class="header-logo">
+    <button class="header-back" id="header-back" onclick="goHome()">&#8592; Back</button>
+    <div class="header-logo" id="header-logo">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="12 2 22 20 2 20"/>
       </svg>
@@ -365,32 +421,41 @@ body { display: flex; flex-direction: column; }
     <button class="header-btn" id="btn-info" onclick="showInfo()" title="Info">&#9432;</button>
   </div>
 
-  <!-- TAB BAR -->
-  <div class="tab-bar" id="tab-bar">
-    <div class="tab-item active" onclick="showScreen('airflow')" data-tab="airflow">
-      <span class="tab-icon">&#128168;</span>
-      <span class="tab-label">Hydroxyl</span>
+  <!-- HOME SCREEN -->
+  <div class="home-screen" id="home-screen">
+    <div class="home-grid">
+      <div class="home-row">
+        <div class="home-card" onclick="showScreen('airflow')">
+          <span class="home-card-icon">&#128168;</span>
+          <span class="home-card-label">Hydroxyl</span>
+        </div>
+        <div class="home-card" onclick="showScreen('drying')">
+          <span class="home-card-icon">&#128167;</span>
+          <span class="home-card-label">Dehu</span>
+        </div>
+        <div class="home-card" onclick="showScreen('hepa')">
+          <span class="home-card-icon">&#129531;</span>
+          <span class="home-card-label">HEPA</span>
+        </div>
+      </div>
+      <div class="home-row">
+        <div class="home-card disabled">
+          <span class="home-card-icon">&#127777;&#65039;</span>
+          <span class="home-card-label">Psychro</span>
+          <span class="coming-soon">Coming Soon</span>
+        </div>
+        <div class="home-card disabled">
+          <span class="home-card-icon">&#127744;</span>
+          <span class="home-card-label">Air Movers</span>
+          <span class="coming-soon">Coming Soon</span>
+        </div>
+      </div>
     </div>
-    <div class="tab-item" onclick="showScreen('psychro')" data-tab="psychro">
-      <span class="tab-icon">&#127777;</span>
-      <span class="tab-label">Psychro</span>
-    </div>
-    <div class="tab-item" onclick="showScreen('drying')" data-tab="drying">
-      <span class="tab-icon">&#128167;</span>
-      <span class="tab-label">Dehu</span>
-    </div>
-    <div class="tab-item" onclick="showScreen('airmovers')" data-tab="airmovers">
-      <span class="tab-icon">&#127744;</span>
-      <span class="tab-label">Air Movers</span>
-    </div>
-    <div class="tab-item" onclick="showScreen('hepa')" data-tab="hepa">
-      <span class="tab-icon">&#129531;</span>
-      <span class="tab-label">HEPA</span>
-    </div>
+    <div class="home-footer">IICRC Standard of Care Requirements</div>
   </div>
 
   <!-- SCREEN CONTAINER -->
-  <div class="screen-container">
+  <div class="screen-container" id="screen-container">
 
     <!-- 1. HYDROXYL (ODOR / SANITIZE AIR) -->
     <div class="screen calc-screen" id="airflow-screen">
@@ -668,12 +733,21 @@ const hepaEquipData = [
 
 
 /* ===== STATE ===== */
-let currentScreen = 'airflow';
+let currentScreen = 'home';
 let afSeverity = 'moderate';
 let dryClass = 1;
 let amClass = 1;
 let amMat = 'carpet';
 const afRooms = [];
+
+/* ===== SCREEN NAME MAP ===== */
+const screenTitles = {
+  airflow: 'Hydroxyl',
+  drying: 'Dehu',
+  hepa: 'HEPA',
+  psychro: 'Psychro',
+  airmovers: 'Air Movers'
+};
 
 /* ===== INIT ===== */
 function init() {
@@ -706,17 +780,46 @@ function bindCalc(ids, fn) {
 
 /* ===== NAVIGATION ===== */
 function showScreen(name) {
-  if (name === currentScreen) return;
-  // Hide all screens
+  // Leave home, show a calculator screen
+  currentScreen = name;
+
+  // Hide home screen
+  document.getElementById('home-screen').classList.add('hidden');
+
+  // Show screen container
+  document.getElementById('screen-container').classList.add('visible');
+
+  // Hide all screens, show target
   document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-  // Show target
   const newEl = document.getElementById(name + '-screen');
   if (newEl) newEl.classList.remove('hidden');
-  // Update tabs
-  document.querySelectorAll('.tab-item').forEach(t => {
-    t.classList.toggle('active', t.dataset.tab === name);
-  });
-  currentScreen = name;
+
+  // Show back button, hide logo
+  document.getElementById('header-back').classList.add('visible');
+  document.getElementById('header-logo').style.display = 'none';
+
+  // Update header title
+  document.getElementById('header-title').textContent = screenTitles[name] || 'PDQ RestoreCalc \u00A9';
+
+  saveState();
+}
+
+function goHome() {
+  currentScreen = 'home';
+
+  // Show home screen
+  document.getElementById('home-screen').classList.remove('hidden');
+
+  // Hide screen container
+  document.getElementById('screen-container').classList.remove('visible');
+
+  // Hide back button, show logo
+  document.getElementById('header-back').classList.remove('visible');
+  document.getElementById('header-logo').style.display = 'flex';
+
+  // Reset header title
+  document.getElementById('header-title').innerHTML = 'PDQ RestoreCalc &copy;';
+
   saveState();
 }
 
@@ -1021,7 +1124,7 @@ function loadState() {
       const mats = ['carpet','hard','struct'];
       document.getElementById('am-mat-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',mats[i]===amMat));
     }
-    // Restore active screen via tabs
+    // Restore active screen
     if (state.screen && state.screen !== 'home') {
       showScreen(state.screen);
     }
