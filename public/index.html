@@ -151,9 +151,10 @@ body { display: flex; flex-direction: column; }
 .btn-blue { background: var(--white); color: var(--text-light); border: 1.5px solid var(--gray-border); }
 .btn-green { background: var(--green); color: var(--white); border-color: var(--green); }
 .bottom-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  background: var(--white);
   display: flex; gap: 6px; height: 60px; border-top: 1px solid #e5e7eb;
-  z-index: 50; max-width: 600px; margin: 0 auto; padding: 8px 12px; align-items: center;
+  z-index: 50; width: 100%; max-width: 600px; padding: 8px 12px; align-items: center;
 }
 .bottom-btn {
   flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;
@@ -281,10 +282,6 @@ body { display: flex; flex-direction: column; }
 .toast.show { opacity: 1; }
 @media (min-width: 601px) {
   .app-wrap { box-shadow: 0 0 40px rgba(0,0,0,0.1); }
-  .bottom-bar { left: 50%; transform: translateX(-50%); max-width: 600px; }
-}
-@media (min-width: 481px) {
-  .bottom-bar { left: 50%; transform: translateX(-50%); }
 }
 </style>
 </head>
