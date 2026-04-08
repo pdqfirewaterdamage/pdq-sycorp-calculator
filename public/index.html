@@ -6,135 +6,224 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1565A8">
+<meta name="theme-color" content="#1a3a5c">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<title>PDQ Sycorp Calculator - Water Damage Restoration</title>
+<title>PDQ RestoreCalc - Water Damage Restoration</title>
 <style>
 :root {
-  --primary: #1B5E20;
-  --primary-dark: #0D3B13;
-  --brand-blue: #1565A8;
-  --brand-blue-dark: #0D4A7A;
+  --navy: #1a3a5c;
+  --navy-light: #264d73;
   --white: #FFFFFF;
   --dark: #333333;
-  --dark2: #444444;
-  --blue: #1565A8;
-  --blue-dark: #0D4A7A;
-  --yellow: #FFD600;
-  --yellow-text: #FFD600;
-  --gray-border: #888888;
-  --input-bg: #FFFFFF;
-  --output-bg: #2A2A2A;
+  --text: #333333;
+  --text-light: #666666;
+  --gray-border: #d1d5db;
+  --gray-bg: #f5f5f0;
   --green: #2E7D32;
   --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   font-family: var(--font);
-  background: #222;
-  color: var(--white);
+  background: #f0f0f0;
+  color: var(--text);
   height: 100%;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
 }
 body { display: flex; flex-direction: column; }
 
+/* APP WRAPPER */
+.app-wrap {
+  max-width: 480px; margin: 0 auto; width: 100%; height: 100%;
+  display: flex; flex-direction: column; position: relative;
+  background: var(--white);
+}
+
 /* HEADER */
 .header {
-  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--primary) 100%);
+  background: var(--navy);
   color: var(--white);
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  height: 52px;
-  min-height: 52px;
+  padding: 0 14px;
+  height: 48px;
+  min-height: 48px;
   z-index: 100;
   position: relative;
 }
+.header-logo {
+  width: 28px; height: 28px; margin-right: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.header-logo svg { width: 24px; height: 24px; }
+.header-title {
+  flex: 1; font-size: 18px; font-weight: 700; letter-spacing: 0.3px;
+}
 .header-btn {
   background: none; border: none; color: var(--white);
-  font-size: 24px; cursor: pointer; padding: 8px;
-  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-  border-radius: 50%;
+  font-size: 20px; cursor: pointer; padding: 6px;
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; opacity: 0.85;
 }
-.header-btn:active { background: rgba(255,255,255,0.2); }
-.header-title {
-  flex: 1; text-align: center; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;
+.header-btn:active { background: rgba(255,255,255,0.15); }
+
+/* BACK BUTTON */
+.header-back {
+  background: none; border: none; color: var(--white);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  padding: 6px 10px 6px 0;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
 }
-.header-btn.hidden { visibility: hidden; }
+.header-back:active { opacity: 0.7; }
+.header-back.visible { display: flex; }
+
+/* HOME SCREEN */
+.home-screen {
+  flex: 1;
+  background: var(--white);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+}
+.home-screen.hidden { display: none; }
+.home-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  padding: 16px;
+}
+.home-card {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.15s, box-shadow 0.15s;
+  user-select: none;
+}
+.home-card:active {
+  transform: scale(0.96);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.home-card-icon {
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.home-card-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  text-align: center;
+  line-height: 1.2;
+}
+.home-card.disabled {
+  opacity: 1;
+  cursor: default;
+  pointer-events: none;
+  position: relative;
+  overflow: hidden;
+  background: #f9fafb;
+}
+.home-card .coming-soon {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-top: 6px;
+  letter-spacing: 0.5px;
+}
+/* Diagonal split for the 4th quadrant */
+.home-card-split {
+  position: relative;
+  overflow: hidden;
+  background: #f9fafb;
+  pointer-events: none;
+  cursor: default;
+}
+.home-card-split::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, transparent 49.5%, #d1d5db 49.5%, #d1d5db 50.5%, transparent 50.5%);
+  z-index: 1;
+}
+.split-top {
+  position: absolute;
+  top: 12px; left: 8px;
+  display: flex; flex-direction: column; align-items: center;
+  z-index: 2;
+}
+.split-bottom {
+  position: absolute;
+  bottom: 12px; right: 8px;
+  display: flex; flex-direction: column; align-items: center;
+  z-index: 2;
+}
+.split-icon { font-size: 22px; line-height: 1; margin-bottom: 2px; }
+.split-label { font-size: 10px; font-weight: 600; color: #9ca3af; text-align: center; }
+.split-coming-soon {
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 3;
+  background: rgba(255,255,255,0.9);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #9ca3af;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.home-footer {
+  text-align: center;
+  padding: 16px;
+  color: #9ca3af;
+  font-size: 11px;
+}
 
 /* SCREEN CONTAINER */
 .screen-container {
   flex: 1;
   position: relative;
   overflow: hidden;
+  display: none;
 }
+.screen-container.visible { display: flex; flex-direction: column; flex: 1; }
 .screen {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  transition: transform 0.3s ease, opacity 0.25s ease;
 }
-.screen.hidden {
-  display: none;
-}
-.screen.slide-out-left {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-.screen.slide-in-right {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-/* HOME MENU */
-#home-screen {
-  background: var(--white);
-}
-.menu-list { list-style: none; }
-.menu-item {
-  display: flex; align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #E0E0E0;
-  color: var(--dark);
-  font-size: 17px;
-  cursor: pointer;
-  user-select: none;
-}
-.menu-item:active { background: #F0F0F0; }
-.menu-item .menu-icon {
-  width: 36px; height: 36px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  margin-right: 14px; font-size: 18px; color: var(--white); flex-shrink: 0;
-}
-.menu-item .menu-arrow { margin-left: auto; color: #CCC; font-size: 20px; }
-.mi-blue { background: var(--blue); }
-.mi-green { background: var(--green); }
-.mi-brand { background: var(--brand-blue); }
-.mi-orange { background: #FF9800; }
-.mi-purple { background: #7B1FA2; }
-.mi-teal { background: #00897B; }
-.mi-indigo { background: #3F51B5; }
-.mi-brown { background: #795548; }
-
-.home-footer {
-  text-align: center; padding: 20px 16px; color: #999; font-size: 13px; line-height: 1.6;
-  border-top: 1px solid #E0E0E0;
-}
-.home-footer a { color: var(--brand-blue); text-decoration: none; }
+.screen.hidden { display: none; }
 
 /* CALCULATOR SCREENS */
-.calc-screen { background: var(--dark); padding: 12px 12px 80px; }
-.calc-section {
-  margin-bottom: 14px;
-}
+.calc-screen { background: var(--white); padding: 16px 16px 90px; }
+.calc-section { margin-bottom: 18px; }
 .calc-label {
-  font-size: 12px; color: #AAA; text-transform: uppercase; letter-spacing: 0.5px;
-  margin-bottom: 6px; display: block;
+  font-size: 12px; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px;
+  margin-bottom: 8px; display: block; font-weight: 700;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e5e7eb;
 }
 .calc-row {
   display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
@@ -143,134 +232,145 @@ body { display: flex; flex-direction: column; }
   flex: 1; display: flex; flex-direction: column;
 }
 .calc-input-group label {
-  font-size: 11px; color: #AAA; margin-bottom: 3px;
+  font-size: 11px; color: var(--text-light); margin-bottom: 3px; font-weight: 500;
 }
 .calc-input {
-  width: 100%; height: 44px; border-radius: 8px; border: 2px solid transparent;
+  width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--gray-border);
   padding: 0 12px; font-size: 16px; font-family: var(--font);
-  background: var(--input-bg); color: var(--dark);
-  outline: none;
+  background: var(--white); color: var(--text);
+  outline: none; transition: border-color 0.2s;
 }
-.calc-input:focus { border-color: var(--blue); }
-.calc-input[readonly] {
-  background: var(--output-bg); color: var(--yellow-text);
-  border: 2px solid var(--gray-border);
-}
+.calc-input:focus { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(26,58,92,0.12); }
 .calc-select {
-  width: 100%; height: 44px; border-radius: 8px; border: 2px solid transparent;
+  width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--gray-border);
   padding: 0 8px; font-size: 14px; font-family: var(--font);
-  background: var(--input-bg); color: var(--dark); outline: none;
-  appearance: auto;
+  background: var(--white); color: var(--text); outline: none;
+  appearance: auto; transition: border-color 0.2s;
 }
-.calc-select:focus { border-color: var(--blue); }
+.calc-select:focus { border-color: var(--navy); }
 
 /* Output boxes */
 .output-box {
-  background: var(--output-bg);
-  border: 2px solid var(--gray-border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 8px;
+  background: var(--gray-bg);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
 }
 .output-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 4px 0;
+  padding: 5px 0;
 }
-.output-label { font-size: 13px; color: #CCC; }
-.output-value { font-size: 15px; color: var(--yellow-text); font-weight: 600; }
+.output-row + .output-row { border-top: 1px solid #e8e8e4; }
+.output-label { font-size: 13px; color: var(--text-light); }
+.output-value { font-size: 15px; color: var(--navy); font-weight: 700; }
+
+/* Toggle buttons (pill style) */
+.toggle-btn-row {
+  display: flex; gap: 0; margin-bottom: 10px;
+  border-radius: 24px; overflow: hidden;
+  border: 1px solid var(--gray-border);
+  width: fit-content;
+}
+.toggle-btn {
+  padding: 8px 16px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+  background: var(--white); color: var(--text-light);
+  border: none; user-select: none;
+  transition: background 0.2s, color 0.2s;
+}
+.toggle-btn:not(:last-child) { border-right: 1px solid var(--gray-border); }
+.toggle-btn.active {
+  background: var(--navy); color: var(--white);
+}
+.toggle-btn:active { opacity: 0.85; }
 
 /* Buttons */
 .btn-row {
-  display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+  display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;
 }
 .btn {
-  height: 44px; border-radius: 8px; border: none;
-  padding: 0 16px; font-size: 14px; font-weight: 600;
+  height: 40px; border-radius: 20px; border: 1.5px solid var(--gray-border);
+  padding: 0 16px; font-size: 13px; font-weight: 600;
   cursor: pointer; font-family: var(--font);
   display: flex; align-items: center; justify-content: center;
   user-select: none; min-width: 44px;
+  background: var(--white); color: var(--text-light);
+  transition: all 0.2s;
 }
 .btn:active { opacity: 0.8; }
-.btn-blue { background: var(--blue); color: var(--white); }
-.btn-blue.active { background: var(--blue-dark); color: var(--yellow-text); border: 2px solid var(--yellow-text); }
-.btn-brand { background: var(--brand-blue); color: var(--white); }
-.btn-gray { background: #666; color: var(--white); }
-.btn-green { background: var(--green); color: var(--white); }
 .btn-full { flex: 1; }
+.btn.active, .btn-blue.active {
+  background: var(--navy); color: var(--white);
+  border-color: var(--navy);
+}
+.btn-blue { background: var(--white); color: var(--text-light); border: 1.5px solid var(--gray-border); }
+.btn-green { background: var(--green); color: var(--white); border-color: var(--green); }
 
 /* Bottom bar */
 .bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: #1A1A1A;
-  display: flex; gap: 0; height: 56px;
-  border-top: 1px solid #555;
+  background: var(--white);
+  display: flex; gap: 6px; height: 60px;
+  border-top: 1px solid #e5e7eb;
   z-index: 50;
   max-width: 480px; margin: 0 auto;
+  padding: 8px 12px;
+  align-items: center;
 }
 .bottom-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: none; border: none; color: #AAA; font-size: 10px; cursor: pointer;
-  font-family: var(--font); padding: 4px;
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;
+  background: var(--white); border: 1.5px solid var(--gray-border); color: var(--text-light);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); padding: 0 8px;
+  border-radius: 8px; height: 40px;
 }
-.bottom-btn:active { color: var(--white); background: #333; }
-.bottom-btn .bb-icon { font-size: 20px; margin-bottom: 2px; }
-.bottom-btn.disabled { opacity: 0.4; pointer-events: none; }
-
-/* Slider */
-.slider-container { display: flex; align-items: center; gap: 10px; }
-.slider-container input[type="range"] {
-  flex: 1; height: 6px; -webkit-appearance: none; appearance: none;
-  background: #666; border-radius: 3px; outline: none;
+.bottom-btn:active { background: #f3f4f6; }
+.bottom-btn .bb-icon { font-size: 16px; }
+.bottom-btn.disabled { opacity: 0.35; pointer-events: none; }
+.bottom-btn.btn-calc {
+  background: var(--green); color: var(--white); border-color: var(--green);
 }
-.slider-container input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%;
-  background: var(--blue); cursor: pointer;
-}
-.slider-val { font-size: 18px; font-weight: 700; color: var(--yellow-text); min-width: 36px; text-align: center; }
+.bottom-btn.btn-calc:active { background: #256d29; }
 
 /* Rooms panel */
 .rooms-panel {
-  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: none;
+  background: #fafafa; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 14px; margin-bottom: 10px; display: none;
 }
 .rooms-panel.open { display: block; }
 .room-entry {
-  display: flex; align-items: center; gap: 8px; padding: 6px 0;
-  border-bottom: 1px solid #555; font-size: 14px; color: #CCC;
+  display: flex; align-items: center; gap: 8px; padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb; font-size: 14px; color: var(--text);
 }
 .room-entry:last-child { border-bottom: none; }
 .room-entry .room-name { flex: 1; }
-.room-entry .room-units { color: var(--yellow-text); font-weight: 600; }
-.room-entry .room-del { color: #F44; cursor: pointer; font-size: 18px; padding: 4px; }
-.rooms-total { color: var(--yellow-text); font-weight: 700; padding-top: 8px; font-size: 15px; }
+.room-entry .room-units { color: var(--navy); font-weight: 600; }
+.room-entry .room-del { color: #dc2626; cursor: pointer; font-size: 18px; padding: 4px; }
+.rooms-total { color: var(--navy); font-weight: 700; padding-top: 8px; font-size: 15px; }
 
 /* Specs panel */
 .specs-panel {
-  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: none;
+  background: #fafafa; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 14px; margin-bottom: 10px; display: none;
 }
 .specs-panel.open { display: block; }
-.spec-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #555; font-size: 13px; }
+.spec-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-size: 13px; }
 .spec-row:last-child { border-bottom: none; }
-.spec-name { color: #CCC; }
-.spec-val { color: var(--yellow-text); }
-
+.spec-name { color: var(--text); font-weight: 500; }
+.spec-val { color: var(--navy); font-weight: 600; }
 
 /* Under Construction */
-.uc-badge {
-  display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase;
-  background: #5a2020; color: #ff9999; padding: 2px 6px; border-radius: 4px;
-  margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;
-}
 .uc-screen { position: relative; pointer-events: none; }
 .uc-screen .calc-section, .uc-screen .output-box, .uc-screen .btn-row,
 .uc-screen .guide-box, .uc-screen .bottom-bar, .uc-screen .warning-box,
-.uc-screen .rooms-panel, .uc-screen #power-rows, .uc-screen #power-add-btn { opacity: 0.18; }
+.uc-screen .rooms-panel { opacity: 0.15; }
 .uc-overlay {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   display: flex; align-items: center; justify-content: center;
   z-index: 10; pointer-events: none;
 }
 .uc-x {
-  font-size: min(50vw, 240px); font-weight: 200; color: rgba(255, 100, 100, 0.18);
+  font-size: min(50vw, 240px); font-weight: 200; color: rgba(220, 38, 38, 0.12);
   line-height: 1; user-select: none;
 }
 .uc-label {
@@ -278,61 +378,65 @@ body { display: flex; flex-direction: column; }
   text-align: center; pointer-events: none;
 }
 .uc-label span {
-  display: block; font-size: 20px; font-weight: 700; color: #ff9999;
+  display: block; font-size: 20px; font-weight: 700; color: #dc2626;
   text-transform: uppercase; letter-spacing: 2px;
 }
 .uc-label small {
-  display: block; font-size: 12px; color: #cc8888; margin-top: 4px;
+  display: block; font-size: 12px; color: #ef4444; margin-top: 4px;
 }
 
-/* Warning */
-.warning-box {
-  background: #3D3000; border: 1px solid var(--yellow); border-radius: 8px;
-  padding: 8px 12px; color: var(--yellow); font-size: 13px; margin-bottom: 10px;
-  text-align: center;
+/* ACH locked field */
+.ach-locked {
+  display: flex; align-items: center; gap: 10px;
 }
+.ach-box {
+  background: var(--gray-bg); border: 1px solid var(--gray-border);
+  border-radius: 8px; padding: 8px 16px; font-size: 18px; font-weight: 700;
+  color: var(--navy); min-width: 40px; text-align: center;
+}
+.ach-note { color: var(--text-light); font-size: 13px; font-style: italic; }
 
-/* Max width wrapper */
-.app-wrap {
-  max-width: 480px; margin: 0 auto; width: 100%; height: 100%;
-  display: flex; flex-direction: column; position: relative;
-  background: #222;
+/* Guide box */
+.guide-box {
+  background: var(--gray-bg); border-radius: 10px; padding: 14px; margin-bottom: 10px;
+  font-size: 13px; color: var(--text); line-height: 1.5;
+}
+.guide-box h4 { color: var(--navy); margin-bottom: 6px; font-size: 14px; }
+
+/* Dehu specs link */
+.dehu-specs-link {
+  color: var(--navy); cursor: pointer; font-size: 13px;
+  text-decoration: underline; display: inline-block; margin-top: 6px;
 }
 
 /* Info modal */
 .modal-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6); z-index: 200; display: none;
+  background: rgba(0,0,0,0.4); z-index: 200; display: none;
   align-items: center; justify-content: center;
 }
 .modal-overlay.open { display: flex; }
 .modal-box {
-  background: var(--white); color: var(--dark); border-radius: 12px;
-  padding: 24px; max-width: 360px; width: 90%; text-align: center;
+  background: var(--white); color: var(--text); border-radius: 14px;
+  padding: 28px; max-width: 360px; width: 90%; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
 }
-.modal-box h3 { margin-bottom: 12px; color: var(--brand-blue); }
+.modal-box h3 { margin-bottom: 12px; color: var(--navy); font-size: 20px; }
 .modal-box p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
-.modal-box a { color: var(--brand-blue); }
+.modal-box a { color: var(--navy); }
 .modal-close {
-  margin-top: 16px; background: var(--brand-blue); color: var(--white);
+  margin-top: 16px; background: var(--navy); color: var(--white);
   border: none; padding: 10px 32px; border-radius: 8px; font-size: 15px;
   cursor: pointer; font-family: var(--font);
 }
 
-/* S500 guidelines */
-.guide-box {
-  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px;
-  font-size: 13px; color: #CCC; line-height: 1.5;
-}
-.guide-box h4 { color: var(--yellow-text); margin-bottom: 6px; font-size: 14px; }
-
-/* Power rows */
-.power-equip-row {
-  background: var(--dark2); border-radius: 8px; padding: 10px; margin-bottom: 8px;
+/* Footer */
+.app-footer {
+  text-align: center; padding: 12px 16px; color: #9ca3af; font-size: 11px;
 }
 
 /* Ensure no horizontal scroll */
-.calc-screen, #home-screen { overflow-x: hidden; }
+.calc-screen { overflow-x: hidden; }
 
 @media (min-width: 481px) {
   .bottom-bar { left: 50%; transform: translateX(-50%); }
@@ -343,56 +447,59 @@ body { display: flex; flex-direction: column; }
 <div class="app-wrap" id="app">
   <!-- HEADER -->
   <div class="header">
-    <button class="header-btn" id="btn-home" onclick="goHome()" title="Home">&#8962;</button>
-    <div class="header-title" id="header-title">PDQ Sycorp Calculator</div>
+    <button class="header-back" id="header-back" onclick="goHome()">&#8592; Back</button>
+    <div class="header-logo" id="header-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 22 20 2 20"/>
+      </svg>
+    </div>
+    <div class="header-title" id="header-title">PDQ RestoreCalc &copy;</div>
     <button class="header-btn" id="btn-info" onclick="showInfo()" title="Info">&#9432;</button>
   </div>
 
-  <!-- SCREEN CONTAINER -->
-  <div class="screen-container">
-
-    <!-- HOME -->
-    <div class="screen" id="home-screen">
-      <ul class="menu-list">
-        <li class="menu-item" onclick="showScreen('airflow')">
-          <div class="menu-icon mi-blue">&#9729;</div>
-          Hydroxyl <span style="font-size:12px;color:#AAA;">(Odor / Sanitize Air)</span>
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('drying')">
-          <div class="menu-icon mi-orange">&#9748;</div>
-          Drying Equipment
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('airmovers')">
-          <div class="menu-icon mi-teal">&#9734;</div>
-          Air Movers (S500)<span class="uc-badge">Under Construction</span>
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('btu')">
-          <div class="menu-icon mi-brand">&#9832;</div>
-          Heating / Cooling BTU<span class="uc-badge">Under Construction</span>
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-        <li class="menu-item" onclick="showScreen('power')">
-          <div class="menu-icon mi-purple">&#9889;</div>
-          Power Calculator<span class="uc-badge">Under Construction</span>
-          <span class="menu-arrow">&#8250;</span>
-        </li>
-      </ul>
-      <div class="home-footer">
-        <strong>PDQ Restoration</strong><br>
-        <a href="https://pdqfirewaterdamage.com" target="_blank">pdqfirewaterdamage.com</a><br>
-        <a href="tel:9733166014">973-316-6014</a>
+  <!-- HOME SCREEN -->
+  <div class="home-screen" id="home-screen">
+    <div class="home-grid">
+      <!-- Top left: Dehu -->
+      <div class="home-card" onclick="showScreen('drying')">
+        <span class="home-card-icon">&#128167;</span>
+        <span class="home-card-label">Dehu</span>
+      </div>
+      <!-- Top right: HEPA -->
+      <div class="home-card" onclick="showScreen('hepa')">
+        <span class="home-card-icon">&#129531;</span>
+        <span class="home-card-label">HEPA</span>
+      </div>
+      <!-- Bottom left: Hydroxyl -->
+      <div class="home-card" onclick="showScreen('airflow')">
+        <span class="home-card-icon">&#128168;</span>
+        <span class="home-card-label">Hydroxyl</span>
+      </div>
+      <!-- Bottom right: Air Movers / Psychro diagonal split -->
+      <div class="home-card home-card-split">
+        <div class="split-top">
+          <span class="split-icon">&#127744;</span>
+          <span class="split-label">Air Movers</span>
+        </div>
+        <div class="split-bottom">
+          <span class="split-icon">&#127777;&#65039;</span>
+          <span class="split-label">Psychro</span>
+        </div>
+        <span class="split-coming-soon">Coming Soon</span>
       </div>
     </div>
+    <div class="home-footer">IICRC Standard of Care Requirements</div>
+  </div>
+
+  <!-- SCREEN CONTAINER -->
+  <div class="screen-container" id="screen-container">
 
     <!-- 1. HYDROXYL (ODOR / SANITIZE AIR) -->
-    <div class="screen calc-screen hidden" id="airflow-screen">
+    <div class="screen calc-screen" id="airflow-screen">
       <div class="calc-section">
         <span class="calc-label">Odor Source &amp; Severity</span>
-        <div style="margin-bottom:8px;">
-          <label style="font-size:12px;color:#AAA;display:block;margin-bottom:4px;">Odor source</label>
+        <div style="margin-bottom:10px;">
+          <label style="font-size:12px;color:var(--text-light);display:block;margin-bottom:4px;font-weight:500;">Odor source</label>
           <select class="calc-select" id="af-source">
             <option value="fire">Fire / Smoke</option>
             <option value="sewage">Sewage</option>
@@ -402,7 +509,7 @@ body { display: flex; flex-direction: column; }
           </select>
         </div>
         <div>
-          <label style="font-size:12px;color:#AAA;display:block;margin-bottom:4px;">Severity</label>
+          <label style="font-size:12px;color:var(--text-light);display:block;margin-bottom:6px;font-weight:500;">Severity</label>
           <div class="btn-row" id="af-sev-btns">
             <button class="btn btn-blue btn-full active" onclick="setAfSev('moderate',this)">Moderate</button>
             <button class="btn btn-blue btn-full" onclick="setAfSev('heavy',this)">Heavy</button>
@@ -412,17 +519,30 @@ body { display: flex; flex-direction: column; }
       </div>
       <div class="calc-section">
         <span class="calc-label">Total Cubic Footage</span>
-        <div class="calc-row">
-          <div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="af-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div>
+        <div class="toggle-btn-row" id="af-mode-btns">
+          <button class="toggle-btn active" onclick="setAfModeBtn(false, this)">Enter total cu ft</button>
+          <button class="toggle-btn" onclick="setAfModeBtn(true, this)">Enter room size</button>
+        </div>
+        <div id="af-totalcf-wrap">
+          <div class="calc-row">
+            <div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="af-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div>
+          </div>
+        </div>
+        <div id="af-room-wrap" style="display:none;">
+          <div class="calc-row">
+            <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="af-l" placeholder="L" inputmode="decimal"></div>
+            <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="af-w" placeholder="W" inputmode="decimal"></div>
+            <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="af-h" value="8" placeholder="H" inputmode="decimal"></div>
+          </div>
         </div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Air Changes Per Hour</span>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="background:var(--output-bg);border:2px solid var(--gray-border);border-radius:8px;padding:8px 16px;font-size:18px;font-weight:700;color:var(--yellow-text);min-width:40px;text-align:center;">6</div>
-          <span style="color:#AAA;font-size:13px;font-style:italic;">Per IICRC standard of care</span>
+        <div class="ach-locked">
+          <div class="ach-box">6</div>
+          <span class="ach-note">Per IICRC standard of care</span>
         </div>
-        <div style="color:#AAA;font-size:12px;margin-top:4px;">10.0 minutes per air change</div>
+        <div style="color:var(--text-light);font-size:12px;margin-top:4px;">10.0 minutes per air change</div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Equipment</span>
@@ -436,77 +556,130 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label">Est. Treatment Cycles</span><span class="output-value" id="af-cycles">--</span></div>
       </div>
       <div class="rooms-panel" id="af-rooms-panel">
-        <span class="calc-label">Saved Rooms</span>
+        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Saved Rooms</span>
         <div id="af-rooms-list"></div>
         <div class="rooms-total" id="af-rooms-total"></div>
       </div>
       <div class="specs-panel" id="af-specs-panel">
-        <span class="calc-label">Equipment Specs</span>
+        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Equipment Specs</span>
         <div id="af-specs-list"></div>
       </div>
+      <div class="app-footer">IICRC Standard of Care Requirements</div>
       <div class="bottom-bar" id="af-bottom">
         <button class="bottom-btn disabled" title="Coming soon"><span class="bb-icon">&#9993;</span>Email</button>
         <button class="bottom-btn" onclick="togglePanel('af-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
         <button class="bottom-btn" onclick="togglePanel('af-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
+        <button class="bottom-btn btn-calc" onclick="calcAirflow()"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
     </div>
 
-    <!-- 3. DRYING EQUIPMENT -->
-    <div class="screen calc-screen hidden" id="drying-screen">
+    <!-- 2. HEPA AIR SCRUBBER UNITS -->
+    <div class="screen calc-screen hidden" id="hepa-screen">
       <div class="calc-section">
-        <div class="calc-row">
-          <div class="calc-input-group"><label>Project</label><input class="calc-input" type="text" id="dr-project" placeholder="Project name"></div>
-          <div class="calc-input-group"><label>Room/Chamber</label><input class="calc-input" type="text" id="dr-room" placeholder="Room name"></div>
+        <span class="calc-label">Drying Chamber Size</span>
+        <div class="toggle-btn-row" id="hepa-mode-btns">
+          <button class="toggle-btn active" onclick="setHepaModeBtn(false, this)">Enter total cu ft</button>
+          <button class="toggle-btn" onclick="setHepaModeBtn(true, this)">Enter room size</button>
+        </div>
+        <div id="hepa-totalcf-wrap">
+          <div class="calc-row">
+            <div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="hepa-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div>
+          </div>
+        </div>
+        <div id="hepa-room-wrap" style="display:none;">
+          <div class="calc-row">
+            <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="hepa-l" placeholder="L" inputmode="decimal"></div>
+            <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="hepa-w" placeholder="W" inputmode="decimal"></div>
+            <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="hepa-h" value="8" placeholder="H" inputmode="decimal"></div>
+          </div>
         </div>
       </div>
       <div class="calc-section">
+        <span class="calc-label">Air Changes Per Hour</span>
+        <div class="ach-locked">
+          <div class="ach-box">6</div>
+          <span class="ach-note">Per IICRC standard of care</span>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Equipment</span>
+        <select class="calc-select" id="hepa-equip">
+          <option value="0">Dri-Eaz HEPA 500 (500 cfm)</option>
+        </select>
+      </div>
+      <div class="output-box" id="hepa-outputs">
+        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="hepa-vol">--</span></div>
+        <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="hepa-cfm">--</span></div>
+        <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="hepa-units">--</span></div>
+      </div>
+      <div class="app-footer">IICRC Standard of Care Requirements</div>
+      <div class="bottom-bar">
+        <button class="bottom-btn btn-calc" onclick="calcHepa()" style="flex:1;"><span class="bb-icon">&#9999;</span>Calculate</button>
+      </div>
+    </div>
+
+    <!-- 3. DEHUMIDIFIERS REQUIRED -->
+    <div class="screen calc-screen hidden" id="drying-screen">
+      <div class="calc-section">
         <span class="calc-label">Water Damage Class</span>
-        <div class="btn-row">
-          <button class="btn btn-blue btn-full" onclick="setDryClass(0,this)">None</button>
+        <div class="btn-row" id="dr-class-btns">
           <button class="btn btn-blue btn-full active" onclick="setDryClass(1,this)">Class 1</button>
           <button class="btn btn-blue btn-full" onclick="setDryClass(2,this)">Class 2</button>
           <button class="btn btn-blue btn-full" onclick="setDryClass(3,this)">Class 3</button>
           <button class="btn btn-blue btn-full" onclick="setDryClass(4,this)">Class 4</button>
         </div>
-        <div id="dr-class-desc" style="font-size:12px;color:#aaa;margin-top:8px;line-height:1.4;padding:0 4px;">Class 1 – Minor Amount of Water: Affects only part of a room with minimal evaporation demand.</div>
+        <div id="dr-class-desc" style="font-size:12px;color:var(--text-light);margin-top:8px;line-height:1.4;padding:0 4px;">Class 1 &ndash; Minor Amount of Water: Affects only part of a room with minimal evaporation demand.</div>
       </div>
       <div class="calc-section">
-        <span class="calc-label">Room Size (LWH) in Feet</span>
-        <div class="calc-row">
-          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="dr-l" placeholder="L" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="dr-w" placeholder="W" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="dr-h" value="8" placeholder="H" inputmode="decimal"></div>
+        <span class="calc-label">Room Size</span>
+        <div class="toggle-btn-row" id="dr-mode-btns">
+          <button class="toggle-btn active" onclick="setDrModeBtn(false, this)">Enter total cu ft</button>
+          <button class="toggle-btn" onclick="setDrModeBtn(true, this)">Enter room size</button>
         </div>
-        <div class="calc-row">
-          <div class="calc-input-group"><label>% Coverage</label><input class="calc-input" type="number" id="dr-cov" value="100" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Water Height (in)</label><input class="calc-input" type="number" id="dr-wh" value="0" inputmode="decimal"></div>
+        <div id="dr-totalcf-wrap">
+          <div class="calc-row">
+            <div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="dr-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div>
+          </div>
         </div>
+        <div id="dr-room-wrap" style="display:none;">
+          <div class="calc-row">
+            <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="dr-l" placeholder="L" inputmode="decimal"></div>
+            <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="dr-w" placeholder="W" inputmode="decimal"></div>
+            <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="dr-h" value="8" placeholder="H" inputmode="decimal"></div>
+          </div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Equipment</span>
+        <select class="calc-select" id="dr-equip">
+          <option value="0">Dri-Eaz LGR 6000Li (100 PPD)</option>
+          <option value="1">Phoenix DryMax XL 125 PPD</option>
+          <option value="2">XPower LGR Dehu (85 PPD)</option>
+          <option value="3">Dri-Eaz Evolution LGR (80 PPD)</option>
+          <option value="4">Dri-Eaz 3500i (70 PPD)</option>
+        </select>
       </div>
       <div class="output-box">
-        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="dr-vol">--</span></div>
-        <div class="output-row"><span class="output-label">Standing Water</span><span class="output-value" id="dr-water">--</span></div>
-        <div class="output-row"><span class="output-label">Pints Per Day to Remove</span><span class="output-value" id="dr-aham">--</span></div>
+        <div class="output-row"><span class="output-label">AHAM Needed</span><span class="output-value" id="dr-aham">--</span></div>
       </div>
-      <div class="calc-section"><span class="calc-label" style="color:var(--yellow-text);font-size:15px;">Equipment Recommendations</span></div>
       <div class="output-box">
-        <div class="output-row"><span class="output-label">Quantity of Dehus Max.</span><span class="output-value" id="dr-dehu-max">--</span></div>
-        <div class="output-row"><span class="output-label">Qty PHX Small 80ppd</span><span class="output-value" id="dr-phx-sm">--</span></div>
-        <div class="output-row"><span class="output-label">Qty PHX XL 125ppd</span><span class="output-value" id="dr-phx-xl">--</span></div>
-        <div class="output-row"><span class="output-label">Qty Li6000 100ppd</span><span class="output-value" id="dr-d6">--</span></div>
-        <div class="output-row"><span class="output-label">Qty PHX DryMax 120ppd</span><span class="output-value" id="dr-dm">--</span></div>
-        <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Quantity of Air Scrubbers, Dri-Eze 500</span><span class="output-value" id="dr-scrubbers">--</span></div>
-        <div class="output-row"><span class="output-label">Quantity of Hydroxyl Generators</span><span class="output-value" id="dr-hydroxyl">--</span></div>
-        <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Air Movers (by area)</span><span class="output-value" id="dr-am-area">--</span></div>
-        <div class="output-row"><span class="output-label">Air Movers (by LF)</span><span class="output-value" id="dr-am-lf">--</span></div>
+        <div class="output-row"><span class="output-label">Pints Per Day</span><span class="output-value" id="dr-ppd">--</span></div>
+        <div class="output-row"><span class="output-label">Liters Per Day</span><span class="output-value" id="dr-lpd">--</span></div>
+        <div class="output-row"><span class="output-label">Gallons Per Day</span><span class="output-value" id="dr-gpd">--</span></div>
       </div>
-      <div class="rooms-panel" id="dr-rooms-panel">
-        <span class="calc-label">Saved Rooms</span>
-        <div id="dr-rooms-list"></div>
-        <div class="rooms-total" id="dr-rooms-total"></div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Dehumidifier Units Needed</span><span class="output-value" id="dr-dehu-units">--</span></div>
       </div>
+      <div style="padding:4px 0;">
+        <span class="dehu-specs-link" onclick="toggleDehuSpecs()">Click here for dehumidifier specs</span>
+      </div>
+      <div class="specs-panel" id="dr-specs-panel">
+        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
+        <div id="dr-specs-list"></div>
+      </div>
+      <div class="app-footer">IICRC Standard of Care Requirements</div>
       <div class="bottom-bar">
-        <button class="bottom-btn disabled"><span class="bb-icon">&#9993;</span>Email</button>
-        <button class="bottom-btn" onclick="togglePanel('dr-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
+        <button class="bottom-btn btn-calc" onclick="calcDrying()" style="flex:1;"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
     </div>
 
@@ -550,86 +723,12 @@ body { display: flex; flex-direction: column; }
       </div>
     </div>
 
-    <!-- 5. HEATING / COOLING BTU -->
-    <div class="screen calc-screen hidden uc-screen" id="btu-screen">
+    <!-- 5. PSYCHRO (Under Construction) -->
+    <div class="screen calc-screen hidden uc-screen" id="psychro-screen">
       <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
       <div class="calc-section">
-        <span class="calc-label">Room Size (LWH) in Feet</span>
-        <div class="calc-row">
-          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="btu-l" placeholder="L" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="btu-w" placeholder="W" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="btu-h" value="8" placeholder="H" inputmode="decimal"></div>
-        </div>
-      </div>
-      <div class="calc-section">
-        <span class="calc-label">Room Insulation</span>
-        <div class="btn-row" id="btu-ins-btns">
-          <button class="btn btn-blue btn-full" onclick="setBtuIns('poor',this)">Poor</button>
-          <button class="btn btn-blue btn-full active" onclick="setBtuIns('avg',this)">Average</button>
-          <button class="btn btn-blue btn-full" onclick="setBtuIns('good',this)">Good</button>
-        </div>
-      </div>
-      <div class="calc-section">
-        <span class="calc-label">Temperature</span>
-        <div class="calc-row">
-          <div class="calc-input-group">
-            <label>Current &deg;F</label>
-            <input class="calc-input" type="number" id="btu-cur-f" inputmode="decimal">
-          </div>
-          <div class="calc-input-group">
-            <label>Current &deg;C</label>
-            <input class="calc-input" type="text" id="btu-cur-c" readonly>
-          </div>
-        </div>
-        <div class="calc-row">
-          <div class="calc-input-group">
-            <label>Desired &deg;F</label>
-            <input class="calc-input" type="number" id="btu-des-f" inputmode="decimal">
-          </div>
-          <div class="calc-input-group">
-            <label>Desired &deg;C</label>
-            <input class="calc-input" type="text" id="btu-des-c" readonly>
-          </div>
-        </div>
-      </div>
-      <div class="warning-box">&#9888; Rough Estimate Only</div>
-      <div class="output-box">
-        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="btu-vol">--</span></div>
-        <div class="output-row"><span class="output-label">BTU/Hr</span><span class="output-value" id="btu-btu">--</span></div>
-        <div class="output-row"><span class="output-label">Tons HVAC</span><span class="output-value" id="btu-tons">--</span></div>
-        <div class="output-row"><span class="output-label">Watts</span><span class="output-value" id="btu-watts">--</span></div>
-      </div>
-      <div class="rooms-panel" id="btu-rooms-panel">
-        <span class="calc-label">Saved Rooms</span>
-        <div id="btu-rooms-list"></div>
-        <div class="rooms-total" id="btu-rooms-total"></div>
-      </div>
-      <div style="padding-top:8px;">
-        <button class="btn btn-blue btn-full" onclick="togglePanel('btu-rooms-panel')">&#9633; MultiRoom</button>
-      </div>
-    </div>
-
-    <!-- 6. POWER CALCULATOR -->
-    <div class="screen calc-screen hidden uc-screen" id="power-screen">
-      <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
-      <div id="power-rows"></div>
-      <div style="padding:4px 0 8px;">
-        <button class="btn btn-blue btn-full" onclick="addPowerRow()" id="power-add-btn">+ Add Equipment</button>
-      </div>
-      <div class="calc-section">
-        <span class="calc-label">Settings</span>
-        <div class="calc-row">
-          <div class="calc-input-group"><label>Cost/kWh (cents)</label><input class="calc-input" type="number" id="pw-cost" value="12" inputmode="decimal"></div>
-        </div>
-        <div class="calc-row">
-          <div class="calc-input-group"><label>Hours/Day</label><input class="calc-input" type="number" id="pw-hours" value="24" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Days</label><input class="calc-input" type="number" id="pw-days" value="3" inputmode="decimal"></div>
-        </div>
-      </div>
-      <div class="output-box">
-        <div class="output-row"><span class="output-label">Total Amps</span><span class="output-value" id="pw-amps">--</span></div>
-        <div class="output-row"><span class="output-label">Power Needed</span><span class="output-value" id="pw-kw">--</span></div>
-        <div class="output-row"><span class="output-label">Run Cost</span><span class="output-value" id="pw-runcost">--</span></div>
+        <span class="calc-label">Psychrometric Calculator</span>
+        <p style="color:var(--text-light);font-size:14px;padding:20px 0;">Psychrometric calculations coming soon.</p>
       </div>
     </div>
 
@@ -639,12 +738,10 @@ body { display: flex; flex-direction: column; }
 <!-- INFO MODAL -->
 <div class="modal-overlay" id="info-modal" onclick="if(event.target===this)closeInfo()">
   <div class="modal-box">
-    <h3>PDQ Sycorp Calculator</h3>
+    <h3>PDQ RestoreCalc&copy;</h3>
     <p>Water Damage Restoration Calculator</p>
-    <p><strong>PDQ Restoration</strong><br>
-    <a href="https://pdqfirewaterdamage.com" target="_blank">pdqfirewaterdamage.com</a><br>
-    <a href="tel:9733166014">973-316-6014</a></p>
     <p style="font-size:12px;color:#999;">Calculations are estimates. Always verify with project-specific conditions and manufacturer specifications.</p>
+    <p style="font-size:11px;color:#BBB;">v2.5.2</p>
     <button class="modal-close" onclick="closeInfo()">Close</button>
   </div>
 </div>
@@ -652,28 +749,24 @@ body { display: flex; flex-direction: column; }
 <script>
 /* ===== DATA ===== */
 const hydroxylEquip = [
-  {name:'Hydroxyl Boss 3', cfm:750, amps:2.5, lbs:35, coverage:3000},
-  {name:'Hydroxyl Boss 2', cfm:500, amps:1.8, lbs:28, coverage:2000},
   {name:'Hydroxyl Boss 1', cfm:250, amps:1.2, lbs:18, coverage:1000},
-  {name:'Titan 4000', cfm:800, amps:3.0, lbs:42, coverage:4000},
-  {name:'Titan 2000', cfm:400, amps:2.0, lbs:30, coverage:2000}
+  {name:'Hydroxyl Boss 2', cfm:500, amps:1.8, lbs:28, coverage:2000},
+  {name:'Hydroxyl Boss 3', cfm:750, amps:2.5, lbs:35, coverage:3000},
+  {name:'Titan 2000', cfm:400, amps:2.0, lbs:30, coverage:2000},
+  {name:'Titan 4000', cfm:800, amps:3.0, lbs:42, coverage:4000}
 ];
-const hepaEquip = hydroxylEquip;
+
 const dehuEquip = [
-  {name:'Dri-Eaz Evolution', pints:84, cfm:400, amps:6.2},
-  {name:'Dri-Eaz 2800i', pints:130, cfm:410, amps:8.2},
-  {name:'Dri-Eaz LGR 3500i', pints:170, cfm:413, amps:9.5},
-  {name:'Dri-Eaz LGR 6000 (D6)', pints:100, cfm:235, amps:5.8},
-  {name:'Phoenix R200', pints:140, cfm:325, amps:8.0},
-  {name:'Phoenix R175', pints:118, cfm:300, amps:7.5},
-  {name:'Phoenix D385', pints:185, cfm:400, amps:10.0},
-  {name:'Phoenix 200 MAX', pints:160, cfm:357, amps:9.0},
-  {name:'Phoenix DryMax (DM)', pints:120, cfm:300, amps:7.0},
-  {name:'B-Air VG-1400', pints:84, cfm:180, amps:6.0}
+  {name:'Dri-Eaz LGR 6000Li', pints:100, amps:7.8},
+  {name:'Phoenix DryMax XL 125 PPD', pints:125, amps:9.0},
+  {name:'XPower LGR Dehu', pints:85, amps:6.5},
+  {name:'Dri-Eaz Evolution LGR', pints:80, amps:7.5},
+  {name:'Dri-Eaz 3500i', pints:70, amps:5.8}
 ];
-const allEquipPower = hydroxylEquip.map(e=>({name:e.name+' (Hydroxyl)',amps:e.amps})).concat(
-  dehuEquip.map(e=>({name:e.name+' (Dehu)',amps:e.amps}))
-);
+
+const hepaEquipData = [
+  {name:'Dri-Eaz HEPA 500', cfm:500, amps:3.0}
+];
 
 
 /* ===== STATE ===== */
@@ -682,11 +775,16 @@ let afSeverity = 'moderate';
 let dryClass = 1;
 let amClass = 1;
 let amMat = 'carpet';
-let btuIns = 'avg';
-let powerRowCount = 0;
 const afRooms = [];
-const drRooms = [];
-const btuRooms = [];
+
+/* ===== SCREEN NAME MAP ===== */
+const screenTitles = {
+  airflow: 'Hydroxyl',
+  drying: 'Dehu',
+  hepa: 'HEPA',
+  psychro: 'Psychro',
+  airmovers: 'Air Movers'
+};
 
 /* ===== INIT ===== */
 function init() {
@@ -698,17 +796,15 @@ function init() {
   });
   // Populate specs
   renderAfSpecs();
-  // Add power row
-  addPowerRow();
+  renderDehuSpecs();
   // Bind inputs
-  bindCalc('af-totalcf af-equip', calcAirflow);
-  bindCalc('dr-l dr-w dr-h dr-cov dr-wh', calcDrying);
+  bindCalc('af-totalcf af-equip af-l af-w af-h', calcAirflow);
+  bindCalc('dr-totalcf dr-l dr-w dr-h dr-equip', calcDrying);
+  bindCalc('hepa-totalcf hepa-l hepa-w hepa-h', calcHepa);
   bindCalc('am-l am-w am-h', calcAirMovers);
-  bindCalc('btu-l btu-w btu-h btu-cur-f btu-des-f', calcBtu);
-  bindCalc('pw-cost pw-hours pw-days', calcPower);
   // Load saved state
   loadState();
-  calcAirflow(); calcDrying(); calcAirMovers(); calcBtu(); calcPower();
+  calcAirflow(); calcDrying(); calcHepa(); calcAirMovers();
   updateAmGuide();
 }
 
@@ -720,47 +816,47 @@ function bindCalc(ids, fn) {
 }
 
 /* ===== NAVIGATION ===== */
-const screenNames = {
-  home:'PDQ Sycorp Calculator', airflow:'Hydroxyl',
-  drying:'Drying Equipment', airmovers:'Air Movers (S500)',
-  btu:'Heating / Cooling BTU', power:'Power Calculator',
-};
-
 function showScreen(name) {
-  if (name === currentScreen) return;
-  const oldEl = document.getElementById(currentScreen + '-screen');
-  const newEl = document.getElementById(name + '-screen');
-  oldEl.classList.add('slide-out-left');
-  newEl.classList.remove('hidden');
-  newEl.classList.add('slide-in-right');
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      newEl.classList.remove('slide-in-right');
-      setTimeout(() => { oldEl.classList.add('hidden'); oldEl.classList.remove('slide-out-left'); }, 300);
-    });
-  });
+  // Leave home, show a calculator screen
   currentScreen = name;
-  document.getElementById('header-title').textContent = screenNames[name] || 'PDQ Sycorp Calculator';
-  document.getElementById('btn-home').classList.toggle('hidden', name === 'home');
+
+  // Hide home screen
+  document.getElementById('home-screen').classList.add('hidden');
+
+  // Show screen container
+  document.getElementById('screen-container').classList.add('visible');
+
+  // Hide all screens, show target
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  const newEl = document.getElementById(name + '-screen');
+  if (newEl) newEl.classList.remove('hidden');
+
+  // Show back button, hide logo
+  document.getElementById('header-back').classList.add('visible');
+  document.getElementById('header-logo').style.display = 'none';
+
+  // Update header title
+  document.getElementById('header-title').textContent = screenTitles[name] || 'PDQ RestoreCalc \u00A9';
+
   saveState();
 }
 
 function goHome() {
-  if (currentScreen === 'home') return;
-  const oldEl = document.getElementById(currentScreen + '-screen');
-  const newEl = document.getElementById('home-screen');
-  oldEl.classList.add('slide-out-left');
-  newEl.classList.remove('hidden');
-  newEl.classList.add('slide-in-right');
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      newEl.classList.remove('slide-in-right');
-      setTimeout(() => { oldEl.classList.add('hidden'); oldEl.classList.remove('slide-out-left'); }, 300);
-    });
-  });
   currentScreen = 'home';
-  document.getElementById('header-title').textContent = 'PDQ Sycorp Calculator';
-  document.getElementById('btn-home').classList.add('hidden');
+
+  // Show home screen
+  document.getElementById('home-screen').classList.remove('hidden');
+
+  // Hide screen container
+  document.getElementById('screen-container').classList.remove('visible');
+
+  // Hide back button, show logo
+  document.getElementById('header-back').classList.remove('visible');
+  document.getElementById('header-logo').style.display = 'flex';
+
+  // Reset header title
+  document.getElementById('header-title').innerHTML = 'PDQ RestoreCalc &copy;';
+
   saveState();
 }
 
@@ -774,11 +870,60 @@ function togglePanel(id) {
   el.classList.toggle('open');
 }
 
+/* ===== TOGGLE MODE BUTTONS ===== */
+function setAfModeBtn(roomMode, btn) {
+  document.getElementById('af-mode-btns').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('af-totalcf-wrap').style.display = roomMode ? 'none' : 'block';
+  document.getElementById('af-room-wrap').style.display = roomMode ? 'block' : 'none';
+  calcAirflow();
+}
+function setHepaModeBtn(roomMode, btn) {
+  document.getElementById('hepa-mode-btns').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('hepa-totalcf-wrap').style.display = roomMode ? 'none' : 'block';
+  document.getElementById('hepa-room-wrap').style.display = roomMode ? 'block' : 'none';
+  calcHepa();
+}
+function setDrModeBtn(roomMode, btn) {
+  document.getElementById('dr-mode-btns').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('dr-totalcf-wrap').style.display = roomMode ? 'none' : 'block';
+  document.getElementById('dr-room-wrap').style.display = roomMode ? 'block' : 'none';
+  calcDrying();
+}
+function toggleDehuSpecs() {
+  togglePanel('dr-specs-panel');
+}
+
 /* ===== HELPERS ===== */
 function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
 function s(id, val) { document.getElementById(id).textContent = val; }
 function si(id, val) { document.getElementById(id).value = val; }
 function r(n, d) { return d === undefined ? Math.round(n*100)/100 : (Math.round(n * Math.pow(10,d)) / Math.pow(10,d)); }
+
+/* ===== GET VOLUME HELPERS ===== */
+function getAfVolume() {
+  const roomMode = document.getElementById('af-room-wrap').style.display !== 'none';
+  if (roomMode) {
+    return v('af-l') * v('af-w') * v('af-h');
+  }
+  return v('af-totalcf');
+}
+function getHepaVolume() {
+  const roomMode = document.getElementById('hepa-room-wrap').style.display !== 'none';
+  if (roomMode) {
+    return v('hepa-l') * v('hepa-w') * v('hepa-h');
+  }
+  return v('hepa-totalcf');
+}
+function getDrVolume() {
+  const roomMode = document.getElementById('dr-room-wrap').style.display !== 'none';
+  if (roomMode) {
+    return v('dr-l') * v('dr-w') * v('dr-h');
+  }
+  return v('dr-totalcf');
+}
 
 /* ===== 1. HYDROXYL CALC ===== */
 function setAfSev(sev, btn) {
@@ -787,21 +932,17 @@ function setAfSev(sev, btn) {
   btn.classList.add('active');
 }
 function calcAirflow() {
-  const vol = v('af-totalcf');
+  const vol = getAfVolume();
   const ach = 6;
   const ei = parseInt(document.getElementById('af-equip').value);
   const equip = hydroxylEquip[ei];
-  const volM3 = vol * 0.0283168;
   const cfmNeeded = vol * ach / 60;
-  const m3hr = cfmNeeded * 1.69901;
   const units = vol > 0 && equip ? Math.ceil(cfmNeeded / equip.cfm) : 0;
-  s('af-vol', vol > 0 ? r(vol,0) + ' ft\u00B3 (' + r(volM3,1) + ' m\u00B3)' : '--');
-  s('af-cfm', cfmNeeded > 0 ? r(cfmNeeded,0) + ' cfm (' + r(m3hr,0) + ' m\u00B3/hr)' : '--');
+  s('af-vol', vol > 0 ? r(vol,0) + ' ft\u00B3' : '--');
+  s('af-cfm', cfmNeeded > 0 ? r(cfmNeeded,0) + ' cfm' : '--');
   s('af-units', units > 0 ? units : '--');
-  // Dwell time = volume / equip cfm (in minutes per cycle)
   const dwellMin = vol > 0 && equip ? r(vol / equip.cfm, 1) : 0;
   s('af-dwell', dwellMin > 0 ? dwellMin + ' min' : '--');
-  // Estimate treatment cycles (typically 3-5 passes)
   s('af-cycles', units > 0 ? '3 \u2013 5 passes' : '--');
 }
 
@@ -812,34 +953,20 @@ function renderAfSpecs() {
   ).join('');
 }
 
-/* ===== AF ROOMS ===== */
-document.querySelector('#af-bottom .bottom-btn:nth-child(2)').addEventListener('click', function() {
-  // handled by togglePanel
-});
-function addAfRoom() {
-  const vol = v('af-totalcf');
-  if (!vol) return;
+/* ===== 2. HEPA AIR SCRUBBER CALC ===== */
+function calcHepa() {
+  const vol = getHepaVolume();
   const ach = 6;
-  const ei = parseInt(document.getElementById('af-equip').value);
-  const equip = hydroxylEquip[ei];
-  const cfm = vol*ach/60;
-  const units = equip ? Math.ceil(cfm/equip.cfm) : 0;
-  afRooms.push({vol,ach,equip:equip.name,units,cfm:r(cfm,0)});
-  renderAfRooms();
-}
-function renderAfRooms() {
-  const c = document.getElementById('af-rooms-list');
-  if (!afRooms.length) { c.innerHTML='<div style="color:#888;font-size:13px;">No rooms saved. Calculate and add rooms.</div>'; document.getElementById('af-rooms-total').textContent=''; return; }
-  c.innerHTML = afRooms.map((rm,i) =>
-    '<div class="room-entry"><span class="room-name">'+rm.l+'x'+rm.w+'x'+rm.h+'</span><span class="room-units">'+rm.units+' units ('+rm.cfm+' cfm)</span><span class="room-del" onclick="afRooms.splice('+i+',1);renderAfRooms();">&times;</span></div>'
-  ).join('');
-  const total = afRooms.reduce((s,r)=>s+r.units,0);
-  document.getElementById('af-rooms-total').textContent = 'Total: ' + total + ' units';
+  const cfmNeeded = vol * ach / 60;
+  const equipCfm = 500; // Dri-Eaz HEPA 500
+  const units = vol > 0 ? Math.ceil(cfmNeeded / equipCfm) : 0;
+  s('hepa-vol', vol > 0 ? r(vol,0) + ' ft\u00B3' : '--');
+  s('hepa-cfm', cfmNeeded > 0 ? r(cfmNeeded,0) + ' cfm' : '--');
+  s('hepa-units', units > 0 ? units : '--');
 }
 
-/* ===== 3. DRYING EQUIPMENT ===== */
+/* ===== 3. DEHUMIDIFIERS REQUIRED ===== */
 const classDescs = {
-  0:'No class selected \u2013 Air scrubbers and hydroxyl generators will still be calculated based on room volume.',
   1:'Class 1 \u2013 Minor Amount of Water: Affects only part of a room with minimal evaporation demand.',
   2:'Class 2 \u2013 Large Amount of Water: Affects an entire room or area; water has wicked into structural materials with moderate evaporation demand.',
   3:'Class 3 \u2013 Greatest Amount of Water: Water has saturated ceilings, walls, insulation, and flooring, creating the highest evaporation demand.',
@@ -847,56 +974,39 @@ const classDescs = {
 };
 function setDryClass(c, btn) {
   dryClass = c;
-  btn.parentElement.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dr-class-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('dr-class-desc').textContent = classDescs[c];
   calcDrying();
 }
 function calcDrying() {
-  const l=v('dr-l'), w=v('dr-w'), h=v('dr-h'), cov=v('dr-cov')/100, wh=v('dr-wh');
-  const vol = l*w*h;
-  const area = l*w*cov;
-  const perim = 2*(l+w);
-  s('dr-vol', vol>0 ? r(vol,0)+' ft\u00B3' : '--');
-  // Standing water
-  const galWater = l*w*(wh/12)*7.48;
-  const litWater = galWater*3.785;
-  s('dr-water', wh>0 ? r(galWater,1)+' gal ('+r(litWater,1)+' L)' : '--');
-  // PPD (Pints Per Day) per IICRC table: Base PPD = volume / 100
-  // Class 1: 1x base, Class 2: 2x base, Class 3: 2.5x base, Class 4: 3x base
-  const ppdFactors = {0:0, 1:1, 2:2, 3:2.5, 4:3};
+  const vol = getDrVolume();
+  // PPD per IICRC: Base PPD = volume / 100
+  const ppdFactors = {1:1, 2:2, 3:2.5, 4:3};
   const basePPD = vol / 100;
-  const ppdNeeded = Math.ceil(basePPD * ppdFactors[dryClass]);
-  s('dr-aham', (vol>0 && dryClass>0) ? ppdNeeded : (vol>0 ? '0' : '--'));
-  // Equipment recommendations - show qty for each common dehu type
-  const phxSm = ppdNeeded>0 ? Math.ceil(ppdNeeded / 80) : 0;
-  const phxXl = ppdNeeded>0 ? Math.ceil(ppdNeeded / 125) : 0;
-  const d6 = ppdNeeded>0 ? Math.ceil(ppdNeeded / 100) : 0;
-  const dm = ppdNeeded>0 ? Math.ceil(ppdNeeded / 120) : 0;
-  const dehuMax = Math.max(phxSm, phxXl, d6, dm);
-  s('dr-dehu-max', vol>0 ? dehuMax : '--');
-  s('dr-phx-sm', vol>0 ? phxSm : '--');
-  s('dr-phx-xl', vol>0 ? phxXl : '--');
-  s('dr-d6', vol>0 ? d6 : '--');
-  s('dr-dm', vol>0 ? dm : '--');
-  // Air Scrubbers (Dri-Eaz 500 @ 500 cfm, 6 ACH) - always calc based on volume
-  const scrubberCfm = vol * 6 / 60;
-  const numScrubbers = vol>0 ? Math.max(Math.ceil(scrubberCfm / 500), 1) : 0;
-  s('dr-scrubbers', numScrubbers>0 ? numScrubbers : '--');
-  // Hydroxyl Generators (same as scrubbers)
-  s('dr-hydroxyl', numScrubbers>0 ? numScrubbers : '--');
-  // Air movers by area (only when class is set)
-  if (dryClass > 0) {
-    const amAreaDiv = (dryClass===3) ? 50 : 70;
-    const amArea = area>0 ? Math.ceil(area/amAreaDiv) : 0;
-    s('dr-am-area', amArea>0 ? amArea : '--');
-    const amLfDiv = (dryClass>=3) ? 7 : 10;
-    const amLf = perim>0 ? Math.ceil(perim/amLfDiv) : 0;
-    s('dr-am-lf', amLf>0 ? amLf : '--');
-  } else {
-    s('dr-am-area', '--');
-    s('dr-am-lf', '--');
-  }
+  const ppdNeeded = vol > 0 ? Math.ceil(basePPD * ppdFactors[dryClass]) : 0;
+
+  s('dr-aham', ppdNeeded > 0 ? ppdNeeded + ' PPD' : '--');
+  s('dr-ppd', ppdNeeded > 0 ? ppdNeeded : '--');
+
+  // Conversions
+  const liters = ppdNeeded > 0 ? r(ppdNeeded * 0.473176, 1) : 0;
+  const gallons = ppdNeeded > 0 ? r(ppdNeeded / 8, 1) : 0;
+  s('dr-lpd', liters > 0 ? liters : '--');
+  s('dr-gpd', gallons > 0 ? gallons : '--');
+
+  // Dehu units needed based on selected equipment
+  const eqIdx = parseInt(document.getElementById('dr-equip').value);
+  const eq = dehuEquip[eqIdx];
+  const unitsNeeded = ppdNeeded > 0 && eq ? Math.ceil(ppdNeeded / eq.pints) : 0;
+  s('dr-dehu-units', unitsNeeded > 0 ? unitsNeeded + ' x ' + eq.name : '--');
+}
+
+function renderDehuSpecs() {
+  const c = document.getElementById('dr-specs-list');
+  c.innerHTML = dehuEquip.map(e =>
+    '<div class="spec-row"><span class="spec-name">'+e.name+'</span><span class="spec-val">'+e.pints+' PPD | '+e.amps+' Amps</span></div>'
+  ).join('');
 }
 
 /* ===== 4. AIR MOVERS S500 ===== */
@@ -918,14 +1028,12 @@ function calcAirMovers() {
   const perim = 2*(l+w);
   s('am-area', area>0 ? r(area,0)+' sq ft' : '--');
   s('am-perim', perim>0 ? r(perim,0)+' LF' : '--');
-  // By area
   let areaDiv = 70;
   if (amClass === 3) areaDiv = 50;
   if (amClass === 4) areaDiv = 40;
   if (amMat === 'struct') areaDiv = 40;
   const byArea = area>0 ? Math.ceil(area/areaDiv) : 0;
   s('am-by-area', byArea>0 ? byArea : '--');
-  // By LF
   let lfDiv = 10;
   if (amClass >= 3) lfDiv = 7;
   if (amMat === 'struct') lfDiv = 6;
@@ -958,82 +1066,9 @@ function updateAmGuide() {
   document.getElementById('am-guide-text').innerHTML = guides[amClass][amMat];
 }
 
-/* ===== 5. BTU CALC ===== */
-function setBtuIns(ins, btn) {
-  btuIns = ins;
-  document.getElementById('btu-ins-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  calcBtu();
-}
-function calcBtu() {
-  const l=v('btu-l'), w=v('btu-w'), h=v('btu-h');
-  const curF=v('btu-cur-f'), desF=v('btu-des-f');
-  si('btu-cur-c', curF ? r((curF-32)*5/9,1) : '');
-  si('btu-des-c', desF ? r((desF-32)*5/9,1) : '');
-  const vol = l*w*h;
-  const volM3 = vol*0.0283168;
-  s('btu-vol', vol>0 ? r(vol,0)+' ft\u00B3 ('+r(volM3,1)+' m\u00B3)' : '--');
-  const tempDiff = Math.abs(desF-curF);
-  const factors = {poor:1.5, avg:1.0, good:0.7};
-  const btu = vol*tempDiff*factors[btuIns]/60;
-  s('btu-btu', btu>0 ? r(btu,0)+' BTU/hr' : '--');
-  s('btu-tons', btu>0 ? r(btu/12000,2)+' tons' : '--');
-  s('btu-watts', btu>0 ? r(btu*0.293,0)+' W' : '--');
-}
-
-/* ===== 6. POWER CALC ===== */
-function addPowerRow() {
-  if (powerRowCount >= 3) return;
-  powerRowCount++;
-  const container = document.getElementById('power-rows');
-  const div = document.createElement('div');
-  div.className = 'power-equip-row';
-  div.id = 'pw-row-'+powerRowCount;
-  const n = powerRowCount;
-  let opts = '<option value="">-- Select --</option>';
-  allEquipPower.forEach((e,i) => { opts += '<option value="'+i+'">'+e.name+'</option>'; });
-  div.innerHTML = '<span class="calc-label">Equipment '+n+'</span>'+
-    '<div class="calc-row"><div class="calc-input-group" style="flex:2"><select class="calc-select" id="pw-eq-'+n+'" onchange="pwEqChange('+n+')">'+opts+'</select></div>'+
-    '<div class="calc-input-group"><label># Units</label><input class="calc-input" type="number" id="pw-num-'+n+'" value="1" min="1" inputmode="numeric" oninput="calcPower()"></div></div>'+
-    '<div class="calc-row"><div class="calc-input-group"><label>Amps</label><input class="calc-input" type="text" id="pw-amps-'+n+'" readonly></div></div>';
-  container.appendChild(div);
-  if (powerRowCount >= 3) document.getElementById('power-add-btn').style.display='none';
-}
-function pwEqChange(n) {
-  const idx = parseInt(document.getElementById('pw-eq-'+n).value);
-  if (!isNaN(idx) && allEquipPower[idx]) {
-    si('pw-amps-'+n, allEquipPower[idx].amps);
-  } else {
-    si('pw-amps-'+n, '');
-  }
-  calcPower();
-}
-function calcPower() {
-  let totalAmps = 0;
-  for (let i=1; i<=powerRowCount; i++) {
-    const ampsEl = document.getElementById('pw-amps-'+i);
-    const numEl = document.getElementById('pw-num-'+i);
-    if (ampsEl && numEl) {
-      totalAmps += (parseFloat(ampsEl.value)||0) * (parseInt(numEl.value)||1);
-    }
-  }
-  const costKwh = v('pw-cost');
-  const hours = v('pw-hours');
-  const days = v('pw-days');
-  const kw = totalAmps * 120 / 1000;
-  const totalHours = hours * days;
-  const runCost = kw * totalHours * costKwh / 100;
-  s('pw-amps', totalAmps>0 ? r(totalAmps,1)+' A' : '--');
-  s('pw-kw', kw>0 ? r(kw,2)+' kW' : '--');
-  s('pw-runcost', runCost>0 ? '$'+r(runCost,2) : '--');
-}
-
-
-/* ===== ROOMS (shared for AF and Drying) ===== */
-// Add room buttons in bottom bar need wiring - use the existing togglePanel approach
-// We add "Add Room" to rooms panels
+/* ===== ROOMS (for AF) ===== */
 function initRoomPanels() {
-  ['af','dr','btu'].forEach(prefix => {
+  ['af'].forEach(prefix => {
     const panel = document.getElementById(prefix+'-rooms-panel');
     if (!panel) return;
     const addBtn = document.createElement('button');
@@ -1043,49 +1078,29 @@ function initRoomPanels() {
     addBtn.onclick = () => addRoom(prefix);
     panel.appendChild(addBtn);
   });
-  renderRooms('af'); renderRooms('dr'); renderRooms('btu');
+  renderRooms('af');
 }
 function addRoom(prefix) {
-  let roomData = {};
   if (prefix === 'af') {
-    const vol=v('af-totalcf');
+    const vol = getAfVolume();
     if (!vol) return;
     const ach=6;
     const ei=parseInt(document.getElementById('af-equip').value);
     const eq=hydroxylEquip[ei];
     const cfm=vol*ach/60;
     const units=eq?Math.ceil(cfm/eq.cfm):0;
-    roomData={vol,label:r(vol,0)+' ft\u00B3',val:units+' units ('+r(cfm,0)+' cfm)',numVal:units};
+    const roomData={vol,label:r(vol,0)+' ft\u00B3',val:units+' units ('+r(cfm,0)+' cfm)',numVal:units};
     afRooms.push(roomData);
-  } else if (prefix === 'dr') {
-    const l=v('dr-l'),w=v('dr-w'),h=v('dr-h');
-    if (!l||!w) return;
-    const vol=l*w*h;
-    const ppdF={0:0,1:1,2:2,3:2.5,4:3};
-    const ppd=Math.ceil((vol/100)*(ppdF[dryClass]||0));
-    const proj=document.getElementById('dr-project').value||'';
-    const rm=document.getElementById('dr-room').value||'';
-    const lbl=(rm||proj?((rm||'Room')+' - '):'')+ l+'x'+w+'x'+h+(dryClass>0?' (Class '+dryClass+')':'');
-    roomData={l,w,h,label:lbl,val:ppd+' PPD',numVal:ppd};
-    drRooms.push(roomData);
-  } else if (prefix === 'btu') {
-    const l=v('btu-l'),w=v('btu-w'),h=v('btu-h');
-    if (!l||!w) return;
-    const curF=v('btu-cur-f'),desF=v('btu-des-f');
-    const vol=l*w*h, diff=Math.abs(desF-curF);
-    const factors={poor:1.5,avg:1.0,good:0.7};
-    const btu=vol*diff*factors[btuIns]/60;
-    roomData={l,w,h,label:l+'x'+w+'x'+h,val:r(btu,0)+' BTU/hr',numVal:btu};
-    btuRooms.push(roomData);
   }
   renderRooms(prefix);
 }
 function renderRooms(prefix) {
-  const rooms = prefix==='af'?afRooms : prefix==='dr'?drRooms : btuRooms;
+  const rooms = afRooms;
   const list = document.getElementById(prefix+'-rooms-list');
   const totalEl = document.getElementById(prefix+'-rooms-total');
+  if (!list || !totalEl) return;
   if (!rooms.length) {
-    list.innerHTML='<div style="color:#888;font-size:13px;">No rooms saved yet.</div>';
+    list.innerHTML='<div style="color:#9ca3af;font-size:13px;">No rooms saved yet.</div>';
     totalEl.textContent='';
     return;
   }
@@ -1093,12 +1108,10 @@ function renderRooms(prefix) {
     '<div class="room-entry"><span class="room-name">'+rm.label+'</span><span class="room-units">'+rm.val+'</span><span class="room-del" onclick="delRoom(\''+prefix+'\','+i+')">&times;</span></div>'
   ).join('');
   const total = rooms.reduce((s,r)=>s+r.numVal,0);
-  const label = prefix==='af'?'units':prefix==='dr'?'dehumidifiers':'BTU/hr';
-  totalEl.textContent = 'Total: '+r(total,0)+' '+label;
+  totalEl.textContent = 'Total: '+r(total,0)+' units';
 }
 function delRoom(prefix,i) {
-  const rooms = prefix==='af'?afRooms:prefix==='dr'?drRooms:btuRooms;
-  rooms.splice(i,1);
+  afRooms.splice(i,1);
   renderRooms(prefix);
 }
 
@@ -1107,12 +1120,13 @@ function saveState() {
   try {
     const state = {
       screen: currentScreen,
-      dryClass, amClass, amMat, btuIns,
+      dryClass, amClass, amMat,
       inputs: {}
     };
-    ['af-totalcf','af-equip','af-source','dr-l','dr-w','dr-h','dr-cov','dr-wh',
-     'am-l','am-w','am-h','btu-l','btu-w','btu-h','btu-cur-f','btu-des-f',
-     'pw-cost','pw-hours','pw-days'
+    ['af-totalcf','af-equip','af-source','af-l','af-w','af-h',
+     'dr-totalcf','dr-l','dr-w','dr-h','dr-equip',
+     'hepa-totalcf','hepa-l','hepa-w','hepa-h',
+     'am-l','am-w','am-h'
     ].forEach(id => {
       const el = document.getElementById(id);
       if (el) state.inputs[id] = el.value;
@@ -1133,8 +1147,10 @@ function loadState() {
     }
     if (state.dryClass) {
       dryClass = state.dryClass;
-      const dryBtns = document.querySelectorAll('#drying-screen .btn-row:first-of-type .btn');
-      dryBtns.forEach((b,i) => { b.classList.toggle('active', i===dryClass-1); });
+      const dryBtns = document.getElementById('dr-class-btns');
+      if (dryBtns) {
+        dryBtns.querySelectorAll('.btn').forEach((b,i) => { b.classList.toggle('active', (i+1)===dryClass); });
+      }
     }
     if (state.amClass) {
       amClass = state.amClass;
@@ -1145,10 +1161,9 @@ function loadState() {
       const mats = ['carpet','hard','struct'];
       document.getElementById('am-mat-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',mats[i]===amMat));
     }
-    if (state.btuIns) {
-      btuIns = state.btuIns;
-      const ins = ['poor','avg','good'];
-      document.getElementById('btu-ins-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',ins[i]===btuIns));
+    // Restore active screen
+    if (state.screen && state.screen !== 'home') {
+      showScreen(state.screen);
     }
   } catch(e) {}
 }
@@ -1160,10 +1175,8 @@ document.addEventListener('input', () => { clearTimeout(window._saveTimer); wind
 document.addEventListener('DOMContentLoaded', () => {
   init();
   initRoomPanels();
-  document.getElementById('btn-home').classList.add('hidden');
   updateAmGuide();
 });
 </script>
 </body>
 </html>
-
