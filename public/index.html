@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1565A8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<title>PDQ Sycorp Calculator - Water Damage Restoration</title>
+<style>
+:root {
+  --primary: #1B5E20;
+  --primary-dark: #0D3B13;
+  --brand-blue: #1565A8;
+  --brand-blue-dark: #0D4A7A;
+  --white: #FFFFFF;
+  --dark: #333333;
+  --dark2: #444444;
+  --blue: #1565A8;
+  --blue-dark: #0D4A7A;
+  --yellow: #FFD600;
+  --yellow-text: #FFD600;
+  --gray-border: #888888;
+  --input-bg: #FFFFFF;
+  --output-bg: #2A2A2A;
+  --green: #2E7D32;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: var(--font);
+  background: #222;
+  color: var(--white);
+  height: 100%;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+body { display: flex; flex-direction: column; }
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--primary) 100%);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 52px;
+  min-height: 52px;
+  z-index: 100;
+  position: relative;
+}
+.header-btn {
+  background: none; border: none; color: var(--white);
+  font-size: 24px; cursor: pointer; padding: 8px;
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+.header-btn:active { background: rgba(255,255,255,0.2); }
+.header-title {
+  flex: 1; text-align: center; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;
+}
+.header-btn.hidden { visibility: hidden; }
+
+/* SCREEN CONTAINER */
+.screen-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  transition: transform 0.3s ease, opacity 0.25s ease;
+}
+.screen.hidden {
+  display: none;
+}
+.screen.slide-out-left {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.screen.slide-in-right {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* HOME MENU */
+#home-screen {
+  background: var(--white);
+}
+.menu-list { list-style: none; }
+.menu-item {
+  display: flex; align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E0E0E0;
+  color: var(--dark);
+  font-size: 17px;
+  cursor: pointer;
+  user-select: none;
+}
+.menu-item:active { background: #F0F0F0; }
+.menu-item .menu-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  margin-right: 14px; font-size: 18px; color: var(--white); flex-shrink: 0;
+}
+.menu-item .menu-arrow { margin-left: auto; color: #CCC; font-size: 20px; }
+.mi-blue { background: var(--blue); }
+.mi-green { background: var(--green); }
+.mi-brand { background: var(--brand-blue); }
+.mi-orange { background: #FF9800; }
+.mi-purple { background: #7B1FA2; }
+.mi-teal { background: #00897B; }
+.mi-indigo { background: #3F51B5; }
+.mi-brown { background: #795548; }
+
+.home-footer {
+  text-align: center; padding: 20px 16px; color: #999; font-size: 13px; line-height: 1.6;
+  border-top: 1px solid #E0E0E0;
+}
+.home-footer a { color: var(--brand-blue); text-decoration: none; }
+
+/* CALCULATOR SCREENS */
+.calc-screen { background: var(--dark); padding: 12px 12px 80px; }
+.calc-section {
+  margin-bottom: 14px;
+}
+.calc-label {
+  font-size: 12px; color: #AAA; text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 6px; display: block;
+}
+.calc-row {
+  display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
+}
+.calc-input-group {
+  flex: 1; display: flex; flex-direction: column;
+}
+.calc-input-group label {
+  font-size: 11px; color: #AAA; margin-bottom: 3px;
+}
+.calc-input {
+  width: 100%; height: 44px; border-radius: 8px; border: 2px solid transparent;
+  padding: 0 12px; font-size: 16px; font-family: var(--font);
+  background: var(--input-bg); color: var(--dark);
+  outline: none;
+}
+.calc-input:focus { border-color: var(--blue); }
+.calc-input[readonly] {
+  background: var(--output-bg); color: var(--yellow-text);
+  border: 2px solid var(--gray-border);
+}
+.calc-select {
+  width: 100%; height: 44px; border-radius: 8px; border: 2px solid transparent;
+  padding: 0 8px; font-size: 14px; font-family: var(--font);
+  background: var(--input-bg); color: var(--dark); outline: none;
+  appearance: auto;
+}
+.calc-select:focus { border-color: var(--blue); }
+
+/* Output boxes */
+.output-box {
+  background: var(--output-bg);
+  border: 2px solid var(--gray-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+.output-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 4px 0;
+}
+.output-label { font-size: 13px; color: #CCC; }
+.output-value { font-size: 15px; color: var(--yellow-text); font-weight: 600; }
+
+/* Buttons */
+.btn-row {
+  display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+}
+.btn {
+  height: 44px; border-radius: 8px; border: none;
+  padding: 0 16px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+  display: flex; align-items: center; justify-content: center;
+  user-select: none; min-width: 44px;
+}
+.btn:active { opacity: 0.8; }
+.btn-blue { background: var(--blue); color: var(--white); }
+.btn-blue.active { background: var(--blue-dark); color: var(--yellow-text); border: 2px solid var(--yellow-text); }
+.btn-brand { background: var(--brand-blue); color: var(--white); }
+.btn-gray { background: #666; color: var(--white); }
+.btn-green { background: var(--green); color: var(--white); }
+.btn-full { flex: 1; }
+
+/* Bottom bar */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #1A1A1A;
+  display: flex; gap: 0; height: 56px;
+  border-top: 1px solid #555;
+  z-index: 50;
+  max-width: 480px; margin: 0 auto;
+}
+.bottom-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: none; border: none; color: #AAA; font-size: 10px; cursor: pointer;
+  font-family: var(--font); padding: 4px;
+}
+.bottom-btn:active { color: var(--white); background: #333; }
+.bottom-btn .bb-icon { font-size: 20px; margin-bottom: 2px; }
+.bottom-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+/* Slider */
+.slider-container { display: flex; align-items: center; gap: 10px; }
+.slider-container input[type="range"] {
+  flex: 1; height: 6px; -webkit-appearance: none; appearance: none;
+  background: #666; border-radius: 3px; outline: none;
+}
+.slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--blue); cursor: pointer;
+}
+.slider-val { font-size: 18px; font-weight: 700; color: var(--yellow-text); min-width: 36px; text-align: center; }
+
+/* Rooms panel */
+.rooms-panel {
+  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: none;
+}
+.rooms-panel.open { display: block; }
+.room-entry {
+  display: flex; align-items: center; gap: 8px; padding: 6px 0;
+  border-bottom: 1px solid #555; font-size: 14px; color: #CCC;
+}
+.room-entry:last-child { border-bottom: none; }
+.room-entry .room-name { flex: 1; }
+.room-entry .room-units { color: var(--yellow-text); font-weight: 600; }
+.room-entry .room-del { color: #F44; cursor: pointer; font-size: 18px; padding: 4px; }
+.rooms-total { color: var(--yellow-text); font-weight: 700; padding-top: 8px; font-size: 15px; }
+
+/* Specs panel */
+.specs-panel {
+  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: none;
+}
+.specs-panel.open { display: block; }
+.spec-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #555; font-size: 13px; }
+.spec-row:last-child { border-bottom: none; }
+.spec-name { color: #CCC; }
+.spec-val { color: var(--yellow-text); }
+
+
+/* Under Construction */
+.uc-badge {
+  display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase;
+  background: #5a2020; color: #ff9999; padding: 2px 6px; border-radius: 4px;
+  margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;
+}
+.uc-screen { position: relative; pointer-events: none; }
+.uc-screen .calc-section, .uc-screen .output-box, .uc-screen .btn-row,
+.uc-screen .guide-box, .uc-screen .bottom-bar, .uc-screen .warning-box,
+.uc-screen .rooms-panel, .uc-screen #power-rows, .uc-screen #power-add-btn { opacity: 0.18; }
+.uc-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10; pointer-events: none;
+}
+.uc-x {
+  font-size: min(50vw, 240px); font-weight: 200; color: rgba(255, 100, 100, 0.18);
+  line-height: 1; user-select: none;
+}
+.uc-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center; pointer-events: none;
+}
+.uc-label span {
+  display: block; font-size: 20px; font-weight: 700; color: #ff9999;
+  text-transform: uppercase; letter-spacing: 2px;
+}
+.uc-label small {
+  display: block; font-size: 12px; color: #cc8888; margin-top: 4px;
+}
+
+/* Warning */
+.warning-box {
+  background: #3D3000; border: 1px solid var(--yellow); border-radius: 8px;
+  padding: 8px 12px; color: var(--yellow); font-size: 13px; margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Max width wrapper */
+.app-wrap {
+  max-width: 480px; margin: 0 auto; width: 100%; height: 100%;
+  display: flex; flex-direction: column; position: relative;
+  background: #222;
+}
+
+/* Info modal */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6); z-index: 200; display: none;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--white); color: var(--dark); border-radius: 12px;
+  padding: 24px; max-width: 360px; width: 90%; text-align: center;
+}
+.modal-box h3 { margin-bottom: 12px; color: var(--brand-blue); }
+.modal-box p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
+.modal-box a { color: var(--brand-blue); }
+.modal-close {
+  margin-top: 16px; background: var(--brand-blue); color: var(--white);
+  border: none; padding: 10px 32px; border-radius: 8px; font-size: 15px;
+  cursor: pointer; font-family: var(--font);
+}
+
+/* S500 guidelines */
+.guide-box {
+  background: var(--dark2); border-radius: 8px; padding: 12px; margin-bottom: 8px;
+  font-size: 13px; color: #CCC; line-height: 1.5;
+}
+.guide-box h4 { color: var(--yellow-text); margin-bottom: 6px; font-size: 14px; }
+
+/* Power rows */
+.power-equip-row {
+  background: var(--dark2); border-radius: 8px; padding: 10px; margin-bottom: 8px;
+}
+
+/* Ensure no horizontal scroll */
+.calc-screen, #home-screen { overflow-x: hidden; }
+
+@media (min-width: 481px) {
+  .bottom-bar { left: 50%; transform: translateX(-50%); }
+}
+</style>
+</head>
+<body>
+<div class="app-wrap" id="app">
+  <!-- HEADER -->
+  <div class="header">
+    <button class="header-btn" id="btn-home" onclick="goHome()" title="Home">&#8962;</button>
+    <div class="header-title" id="header-title">PDQ Sycorp Calculator</div>
+    <button class="header-btn" id="btn-info" onclick="showInfo()" title="Info">&#9432;</button>
+  </div>
+
+  <!-- SCREEN CONTAINER -->
+  <div class="screen-container">
+
+    <!-- HOME -->
+    <div class="screen" id="home-screen">
+      <ul class="menu-list">
+        <li class="menu-item" onclick="showScreen('airflow')">
+          <div class="menu-icon mi-blue">&#9729;</div>
+          Hydroxyl <span style="font-size:12px;color:#AAA;">(Odor / Sanitize Air)</span>
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('drying')">
+          <div class="menu-icon mi-orange">&#9748;</div>
+          Drying Equipment
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('airmovers')">
+          <div class="menu-icon mi-teal">&#9734;</div>
+          Air Movers (S500)<span class="uc-badge">Under Construction</span>
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('btu')">
+          <div class="menu-icon mi-brand">&#9832;</div>
+          Heating / Cooling BTU<span class="uc-badge">Under Construction</span>
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+        <li class="menu-item" onclick="showScreen('power')">
+          <div class="menu-icon mi-purple">&#9889;</div>
+          Power Calculator<span class="uc-badge">Under Construction</span>
+          <span class="menu-arrow">&#8250;</span>
+        </li>
+      </ul>
+      <div class="home-footer">
+        <strong>PDQ Restoration</strong><br>
+        <a href="https://pdqfirewaterdamage.com" target="_blank">pdqfirewaterdamage.com</a><br>
+        <a href="tel:9733166014">973-316-6014</a>
+      </div>
+    </div>
+
+    <!-- 1. HYDROXYL (ODOR / SANITIZE AIR) -->
+    <div class="screen calc-screen hidden" id="airflow-screen">
+      <div class="calc-section">
+        <span class="calc-label">Odor Source &amp; Severity</span>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:12px;color:#AAA;display:block;margin-bottom:4px;">Odor source</label>
+          <select class="calc-select" id="af-source">
+            <option value="fire">Fire / Smoke</option>
+            <option value="sewage">Sewage</option>
+            <option value="skunk">Skunk</option>
+            <option value="oil">Oil</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;color:#AAA;display:block;margin-bottom:4px;">Severity</label>
+          <div class="btn-row" id="af-sev-btns">
+            <button class="btn btn-blue btn-full active" onclick="setAfSev('moderate',this)">Moderate</button>
+            <button class="btn btn-blue btn-full" onclick="setAfSev('heavy',this)">Heavy</button>
+            <button class="btn btn-blue btn-full" onclick="setAfSev('extreme',this)">Extreme</button>
+          </div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Total Cubic Footage</span>
+        <div class="calc-row">
+          <div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="af-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Air Changes Per Hour</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="background:var(--output-bg);border:2px solid var(--gray-border);border-radius:8px;padding:8px 16px;font-size:18px;font-weight:700;color:var(--yellow-text);min-width:40px;text-align:center;">6</div>
+          <span style="color:#AAA;font-size:13px;font-style:italic;">Per IICRC standard of care</span>
+        </div>
+        <div style="color:#AAA;font-size:12px;margin-top:4px;">10.0 minutes per air change</div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Equipment</span>
+        <select class="calc-select" id="af-equip"></select>
+      </div>
+      <div class="output-box" id="af-outputs">
+        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="af-vol">--</span></div>
+        <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="af-cfm">--</span></div>
+        <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="af-units">--</span></div>
+        <div class="output-row"><span class="output-label">Est. Dwell Time</span><span class="output-value" id="af-dwell">--</span></div>
+        <div class="output-row"><span class="output-label">Est. Treatment Cycles</span><span class="output-value" id="af-cycles">--</span></div>
+      </div>
+      <div class="rooms-panel" id="af-rooms-panel">
+        <span class="calc-label">Saved Rooms</span>
+        <div id="af-rooms-list"></div>
+        <div class="rooms-total" id="af-rooms-total"></div>
+      </div>
+      <div class="specs-panel" id="af-specs-panel">
+        <span class="calc-label">Equipment Specs</span>
+        <div id="af-specs-list"></div>
+      </div>
+      <div class="bottom-bar" id="af-bottom">
+        <button class="bottom-btn disabled" title="Coming soon"><span class="bb-icon">&#9993;</span>Email</button>
+        <button class="bottom-btn" onclick="togglePanel('af-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
+        <button class="bottom-btn" onclick="togglePanel('af-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
+      </div>
+    </div>
+
+    <!-- 3. DRYING EQUIPMENT -->
+    <div class="screen calc-screen hidden" id="drying-screen">
+      <div class="calc-section">
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Project</label><input class="calc-input" type="text" id="dr-project" placeholder="Project name"></div>
+          <div class="calc-input-group"><label>Room/Chamber</label><input class="calc-input" type="text" id="dr-room" placeholder="Room name"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Water Damage Class</span>
+        <div class="btn-row">
+          <button class="btn btn-blue btn-full" onclick="setDryClass(0,this)">None</button>
+          <button class="btn btn-blue btn-full active" onclick="setDryClass(1,this)">Class 1</button>
+          <button class="btn btn-blue btn-full" onclick="setDryClass(2,this)">Class 2</button>
+          <button class="btn btn-blue btn-full" onclick="setDryClass(3,this)">Class 3</button>
+          <button class="btn btn-blue btn-full" onclick="setDryClass(4,this)">Class 4</button>
+        </div>
+        <div id="dr-class-desc" style="font-size:12px;color:#aaa;margin-top:8px;line-height:1.4;padding:0 4px;">Class 1 – Minor Amount of Water: Affects only part of a room with minimal evaporation demand.</div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Room Size (LWH) in Feet</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="dr-l" placeholder="L" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="dr-w" placeholder="W" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="dr-h" value="8" placeholder="H" inputmode="decimal"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>% Coverage</label><input class="calc-input" type="number" id="dr-cov" value="100" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Water Height (in)</label><input class="calc-input" type="number" id="dr-wh" value="0" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="dr-vol">--</span></div>
+        <div class="output-row"><span class="output-label">Standing Water</span><span class="output-value" id="dr-water">--</span></div>
+        <div class="output-row"><span class="output-label">Pints Per Day to Remove</span><span class="output-value" id="dr-aham">--</span></div>
+      </div>
+      <div class="calc-section"><span class="calc-label" style="color:var(--yellow-text);font-size:15px;">Equipment Recommendations</span></div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Quantity of Dehus Max.</span><span class="output-value" id="dr-dehu-max">--</span></div>
+        <div class="output-row"><span class="output-label">Qty PHX Small 80ppd</span><span class="output-value" id="dr-phx-sm">--</span></div>
+        <div class="output-row"><span class="output-label">Qty PHX XL 125ppd</span><span class="output-value" id="dr-phx-xl">--</span></div>
+        <div class="output-row"><span class="output-label">Qty Li6000 100ppd</span><span class="output-value" id="dr-d6">--</span></div>
+        <div class="output-row"><span class="output-label">Qty PHX DryMax 120ppd</span><span class="output-value" id="dr-dm">--</span></div>
+        <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Quantity of Air Scrubbers, Dri-Eze 500</span><span class="output-value" id="dr-scrubbers">--</span></div>
+        <div class="output-row"><span class="output-label">Quantity of Hydroxyl Generators</span><span class="output-value" id="dr-hydroxyl">--</span></div>
+        <div class="output-row" style="border-top:1px solid #555;padding-top:8px;margin-top:4px;"><span class="output-label">Air Movers (by area)</span><span class="output-value" id="dr-am-area">--</span></div>
+        <div class="output-row"><span class="output-label">Air Movers (by LF)</span><span class="output-value" id="dr-am-lf">--</span></div>
+      </div>
+      <div class="rooms-panel" id="dr-rooms-panel">
+        <span class="calc-label">Saved Rooms</span>
+        <div id="dr-rooms-list"></div>
+        <div class="rooms-total" id="dr-rooms-total"></div>
+      </div>
+      <div class="bottom-bar">
+        <button class="bottom-btn disabled"><span class="bb-icon">&#9993;</span>Email</button>
+        <button class="bottom-btn" onclick="togglePanel('dr-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
+      </div>
+    </div>
+
+    <!-- 4. AIR MOVERS S500 -->
+    <div class="screen calc-screen hidden uc-screen" id="airmovers-screen">
+      <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
+      <div class="calc-section">
+        <span class="calc-label">Room Size (LWH) in Feet</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="am-l" placeholder="L" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="am-w" placeholder="W" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="am-h" value="8" placeholder="H" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Water Damage Class</span>
+        <div class="btn-row" id="am-class-btns">
+          <button class="btn btn-blue btn-full active" onclick="setAmClass(1,this)">Class 1</button>
+          <button class="btn btn-blue btn-full" onclick="setAmClass(2,this)">Class 2</button>
+          <button class="btn btn-blue btn-full" onclick="setAmClass(3,this)">Class 3</button>
+          <button class="btn btn-blue btn-full" onclick="setAmClass(4,this)">Class 4</button>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Material Type</span>
+        <div class="btn-row" id="am-mat-btns">
+          <button class="btn btn-blue btn-full active" onclick="setAmMat('carpet',this)">Carpet/Pad</button>
+          <button class="btn btn-blue btn-full" onclick="setAmMat('hard',this)">Hard Floor</button>
+          <button class="btn btn-blue btn-full" onclick="setAmMat('struct',this)">Structural</button>
+        </div>
+      </div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Floor Area</span><span class="output-value" id="am-area">--</span></div>
+        <div class="output-row"><span class="output-label">Perimeter</span><span class="output-value" id="am-perim">--</span></div>
+        <div class="output-row"><span class="output-label">Air Movers (by area)</span><span class="output-value" id="am-by-area">--</span></div>
+        <div class="output-row"><span class="output-label">Air Movers (by LF)</span><span class="output-value" id="am-by-lf">--</span></div>
+      </div>
+      <div class="guide-box" id="am-guide">
+        <h4>Placement Guidelines</h4>
+        <div id="am-guide-text"></div>
+      </div>
+    </div>
+
+    <!-- 5. HEATING / COOLING BTU -->
+    <div class="screen calc-screen hidden uc-screen" id="btu-screen">
+      <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
+      <div class="calc-section">
+        <span class="calc-label">Room Size (LWH) in Feet</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Length</label><input class="calc-input" type="number" id="btu-l" placeholder="L" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Width</label><input class="calc-input" type="number" id="btu-w" placeholder="W" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Height</label><input class="calc-input" type="number" id="btu-h" value="8" placeholder="H" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Room Insulation</span>
+        <div class="btn-row" id="btu-ins-btns">
+          <button class="btn btn-blue btn-full" onclick="setBtuIns('poor',this)">Poor</button>
+          <button class="btn btn-blue btn-full active" onclick="setBtuIns('avg',this)">Average</button>
+          <button class="btn btn-blue btn-full" onclick="setBtuIns('good',this)">Good</button>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Temperature</span>
+        <div class="calc-row">
+          <div class="calc-input-group">
+            <label>Current &deg;F</label>
+            <input class="calc-input" type="number" id="btu-cur-f" inputmode="decimal">
+          </div>
+          <div class="calc-input-group">
+            <label>Current &deg;C</label>
+            <input class="calc-input" type="text" id="btu-cur-c" readonly>
+          </div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-input-group">
+            <label>Desired &deg;F</label>
+            <input class="calc-input" type="number" id="btu-des-f" inputmode="decimal">
+          </div>
+          <div class="calc-input-group">
+            <label>Desired &deg;C</label>
+            <input class="calc-input" type="text" id="btu-des-c" readonly>
+          </div>
+        </div>
+      </div>
+      <div class="warning-box">&#9888; Rough Estimate Only</div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="btu-vol">--</span></div>
+        <div class="output-row"><span class="output-label">BTU/Hr</span><span class="output-value" id="btu-btu">--</span></div>
+        <div class="output-row"><span class="output-label">Tons HVAC</span><span class="output-value" id="btu-tons">--</span></div>
+        <div class="output-row"><span class="output-label">Watts</span><span class="output-value" id="btu-watts">--</span></div>
+      </div>
+      <div class="rooms-panel" id="btu-rooms-panel">
+        <span class="calc-label">Saved Rooms</span>
+        <div id="btu-rooms-list"></div>
+        <div class="rooms-total" id="btu-rooms-total"></div>
+      </div>
+      <div style="padding-top:8px;">
+        <button class="btn btn-blue btn-full" onclick="togglePanel('btu-rooms-panel')">&#9633; MultiRoom</button>
+      </div>
+    </div>
+
+    <!-- 6. POWER CALCULATOR -->
+    <div class="screen calc-screen hidden uc-screen" id="power-screen">
+      <div class="uc-overlay"><span class="uc-x">&#10005;</span><div class="uc-label"><span>Under Construction</span><small>Coming Soon</small></div></div>
+      <div id="power-rows"></div>
+      <div style="padding:4px 0 8px;">
+        <button class="btn btn-blue btn-full" onclick="addPowerRow()" id="power-add-btn">+ Add Equipment</button>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Settings</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Cost/kWh (cents)</label><input class="calc-input" type="number" id="pw-cost" value="12" inputmode="decimal"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Hours/Day</label><input class="calc-input" type="number" id="pw-hours" value="24" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Days</label><input class="calc-input" type="number" id="pw-days" value="3" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Total Amps</span><span class="output-value" id="pw-amps">--</span></div>
+        <div class="output-row"><span class="output-label">Power Needed</span><span class="output-value" id="pw-kw">--</span></div>
+        <div class="output-row"><span class="output-label">Run Cost</span><span class="output-value" id="pw-runcost">--</span></div>
+      </div>
+    </div>
+
+  </div><!-- /screen-container -->
+</div><!-- /app-wrap -->
+
+<!-- INFO MODAL -->
+<div class="modal-overlay" id="info-modal" onclick="if(event.target===this)closeInfo()">
+  <div class="modal-box">
+    <h3>PDQ Sycorp Calculator</h3>
+    <p>Water Damage Restoration Calculator</p>
+    <p><strong>PDQ Restoration</strong><br>
+    <a href="https://pdqfirewaterdamage.com" target="_blank">pdqfirewaterdamage.com</a><br>
+    <a href="tel:9733166014">973-316-6014</a></p>
+    <p style="font-size:12px;color:#999;">Calculations are estimates. Always verify with project-specific conditions and manufacturer specifications.</p>
+    <button class="modal-close" onclick="closeInfo()">Close</button>
+  </div>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const hydroxylEquip = [
+  {name:'Hydroxyl Boss 3', cfm:750, amps:2.5, lbs:35, coverage:3000},
+  {name:'Hydroxyl Boss 2', cfm:500, amps:1.8, lbs:28, coverage:2000},
+  {name:'Hydroxyl Boss 1', cfm:250, amps:1.2, lbs:18, coverage:1000},
+  {name:'Titan 4000', cfm:800, amps:3.0, lbs:42, coverage:4000},
+  {name:'Titan 2000', cfm:400, amps:2.0, lbs:30, coverage:2000}
+];
+const hepaEquip = hydroxylEquip;
+const dehuEquip = [
+  {name:'Dri-Eaz Evolution', pints:84, cfm:400, amps:6.2},
+  {name:'Dri-Eaz 2800i', pints:130, cfm:410, amps:8.2},
+  {name:'Dri-Eaz LGR 3500i', pints:170, cfm:413, amps:9.5},
+  {name:'Dri-Eaz LGR 6000 (D6)', pints:100, cfm:235, amps:5.8},
+  {name:'Phoenix R200', pints:140, cfm:325, amps:8.0},
+  {name:'Phoenix R175', pints:118, cfm:300, amps:7.5},
+  {name:'Phoenix D385', pints:185, cfm:400, amps:10.0},
+  {name:'Phoenix 200 MAX', pints:160, cfm:357, amps:9.0},
+  {name:'Phoenix DryMax (DM)', pints:120, cfm:300, amps:7.0},
+  {name:'B-Air VG-1400', pints:84, cfm:180, amps:6.0}
+];
+const allEquipPower = hydroxylEquip.map(e=>({name:e.name+' (Hydroxyl)',amps:e.amps})).concat(
+  dehuEquip.map(e=>({name:e.name+' (Dehu)',amps:e.amps}))
+);
+
+
+/* ===== STATE ===== */
+let currentScreen = 'home';
+let afSeverity = 'moderate';
+let dryClass = 1;
+let amClass = 1;
+let amMat = 'carpet';
+let btuIns = 'avg';
+let powerRowCount = 0;
+const afRooms = [];
+const drRooms = [];
+const btuRooms = [];
+
+/* ===== INIT ===== */
+function init() {
+  // Populate hydroxyl dropdown
+  const afSel = document.getElementById('af-equip');
+  hydroxylEquip.forEach((e,i) => {
+    const o = document.createElement('option'); o.value = i; o.textContent = e.name + ' (' + e.cfm + ' cfm)';
+    afSel.appendChild(o);
+  });
+  // Populate specs
+  renderAfSpecs();
+  // Add power row
+  addPowerRow();
+  // Bind inputs
+  bindCalc('af-totalcf af-equip', calcAirflow);
+  bindCalc('dr-l dr-w dr-h dr-cov dr-wh', calcDrying);
+  bindCalc('am-l am-w am-h', calcAirMovers);
+  bindCalc('btu-l btu-w btu-h btu-cur-f btu-des-f', calcBtu);
+  bindCalc('pw-cost pw-hours pw-days', calcPower);
+  // Load saved state
+  loadState();
+  calcAirflow(); calcDrying(); calcAirMovers(); calcBtu(); calcPower();
+  updateAmGuide();
+}
+
+function bindCalc(ids, fn) {
+  ids.split(' ').forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', fn);
+  });
+}
+
+/* ===== NAVIGATION ===== */
+const screenNames = {
+  home:'PDQ Sycorp Calculator', airflow:'Hydroxyl',
+  drying:'Drying Equipment', airmovers:'Air Movers (S500)',
+  btu:'Heating / Cooling BTU', power:'Power Calculator',
+};
+
+function showScreen(name) {
+  if (name === currentScreen) return;
+  const oldEl = document.getElementById(currentScreen + '-screen');
+  const newEl = document.getElementById(name + '-screen');
+  oldEl.classList.add('slide-out-left');
+  newEl.classList.remove('hidden');
+  newEl.classList.add('slide-in-right');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      newEl.classList.remove('slide-in-right');
+      setTimeout(() => { oldEl.classList.add('hidden'); oldEl.classList.remove('slide-out-left'); }, 300);
+    });
+  });
+  currentScreen = name;
+  document.getElementById('header-title').textContent = screenNames[name] || 'PDQ Sycorp Calculator';
+  document.getElementById('btn-home').classList.toggle('hidden', name === 'home');
+  saveState();
+}
+
+function goHome() {
+  if (currentScreen === 'home') return;
+  const oldEl = document.getElementById(currentScreen + '-screen');
+  const newEl = document.getElementById('home-screen');
+  oldEl.classList.add('slide-out-left');
+  newEl.classList.remove('hidden');
+  newEl.classList.add('slide-in-right');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      newEl.classList.remove('slide-in-right');
+      setTimeout(() => { oldEl.classList.add('hidden'); oldEl.classList.remove('slide-out-left'); }, 300);
+    });
+  });
+  currentScreen = 'home';
+  document.getElementById('header-title').textContent = 'PDQ Sycorp Calculator';
+  document.getElementById('btn-home').classList.add('hidden');
+  saveState();
+}
+
+/* ===== INFO MODAL ===== */
+function showInfo() { document.getElementById('info-modal').classList.add('open'); }
+function closeInfo() { document.getElementById('info-modal').classList.remove('open'); }
+
+/* ===== PANEL TOGGLE ===== */
+function togglePanel(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+/* ===== HELPERS ===== */
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function s(id, val) { document.getElementById(id).textContent = val; }
+function si(id, val) { document.getElementById(id).value = val; }
+function r(n, d) { return d === undefined ? Math.round(n*100)/100 : (Math.round(n * Math.pow(10,d)) / Math.pow(10,d)); }
+
+/* ===== 1. HYDROXYL CALC ===== */
+function setAfSev(sev, btn) {
+  afSeverity = sev;
+  document.getElementById('af-sev-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function calcAirflow() {
+  const vol = v('af-totalcf');
+  const ach = 6;
+  const ei = parseInt(document.getElementById('af-equip').value);
+  const equip = hydroxylEquip[ei];
+  const volM3 = vol * 0.0283168;
+  const cfmNeeded = vol * ach / 60;
+  const m3hr = cfmNeeded * 1.69901;
+  const units = vol > 0 && equip ? Math.ceil(cfmNeeded / equip.cfm) : 0;
+  s('af-vol', vol > 0 ? r(vol,0) + ' ft\u00B3 (' + r(volM3,1) + ' m\u00B3)' : '--');
+  s('af-cfm', cfmNeeded > 0 ? r(cfmNeeded,0) + ' cfm (' + r(m3hr,0) + ' m\u00B3/hr)' : '--');
+  s('af-units', units > 0 ? units : '--');
+  // Dwell time = volume / equip cfm (in minutes per cycle)
+  const dwellMin = vol > 0 && equip ? r(vol / equip.cfm, 1) : 0;
+  s('af-dwell', dwellMin > 0 ? dwellMin + ' min' : '--');
+  // Estimate treatment cycles (typically 3-5 passes)
+  s('af-cycles', units > 0 ? '3 \u2013 5 passes' : '--');
+}
+
+function renderAfSpecs() {
+  const c = document.getElementById('af-specs-list');
+  c.innerHTML = hydroxylEquip.map(e =>
+    '<div class="spec-row"><span class="spec-name">'+e.name+'</span><span class="spec-val">'+e.cfm+' cfm | '+e.coverage+' ft\u00B3 | '+e.amps+'A</span></div>'
+  ).join('');
+}
+
+/* ===== AF ROOMS ===== */
+document.querySelector('#af-bottom .bottom-btn:nth-child(2)').addEventListener('click', function() {
+  // handled by togglePanel
+});
+function addAfRoom() {
+  const vol = v('af-totalcf');
+  if (!vol) return;
+  const ach = 6;
+  const ei = parseInt(document.getElementById('af-equip').value);
+  const equip = hydroxylEquip[ei];
+  const cfm = vol*ach/60;
+  const units = equip ? Math.ceil(cfm/equip.cfm) : 0;
+  afRooms.push({vol,ach,equip:equip.name,units,cfm:r(cfm,0)});
+  renderAfRooms();
+}
+function renderAfRooms() {
+  const c = document.getElementById('af-rooms-list');
+  if (!afRooms.length) { c.innerHTML='<div style="color:#888;font-size:13px;">No rooms saved. Calculate and add rooms.</div>'; document.getElementById('af-rooms-total').textContent=''; return; }
+  c.innerHTML = afRooms.map((rm,i) =>
+    '<div class="room-entry"><span class="room-name">'+rm.l+'x'+rm.w+'x'+rm.h+'</span><span class="room-units">'+rm.units+' units ('+rm.cfm+' cfm)</span><span class="room-del" onclick="afRooms.splice('+i+',1);renderAfRooms();">&times;</span></div>'
+  ).join('');
+  const total = afRooms.reduce((s,r)=>s+r.units,0);
+  document.getElementById('af-rooms-total').textContent = 'Total: ' + total + ' units';
+}
+
+/* ===== 3. DRYING EQUIPMENT ===== */
+const classDescs = {
+  0:'No class selected \u2013 Air scrubbers and hydroxyl generators will still be calculated based on room volume.',
+  1:'Class 1 \u2013 Minor Amount of Water: Affects only part of a room with minimal evaporation demand.',
+  2:'Class 2 \u2013 Large Amount of Water: Affects an entire room or area; water has wicked into structural materials with moderate evaporation demand.',
+  3:'Class 3 \u2013 Greatest Amount of Water: Water has saturated ceilings, walls, insulation, and flooring, creating the highest evaporation demand.',
+  4:'Class 4 \u2013 Specialty Drying: Involves materials with very low permeance/porosity (hardwood, concrete, stone). Requires extended drying time and special methods.'
+};
+function setDryClass(c, btn) {
+  dryClass = c;
+  btn.parentElement.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('dr-class-desc').textContent = classDescs[c];
+  calcDrying();
+}
+function calcDrying() {
+  const l=v('dr-l'), w=v('dr-w'), h=v('dr-h'), cov=v('dr-cov')/100, wh=v('dr-wh');
+  const vol = l*w*h;
+  const area = l*w*cov;
+  const perim = 2*(l+w);
+  s('dr-vol', vol>0 ? r(vol,0)+' ft\u00B3' : '--');
+  // Standing water
+  const galWater = l*w*(wh/12)*7.48;
+  const litWater = galWater*3.785;
+  s('dr-water', wh>0 ? r(galWater,1)+' gal ('+r(litWater,1)+' L)' : '--');
+  // PPD (Pints Per Day) per IICRC table: Base PPD = volume / 100
+  // Class 1: 1x base, Class 2: 2x base, Class 3: 2.5x base, Class 4: 3x base
+  const ppdFactors = {0:0, 1:1, 2:2, 3:2.5, 4:3};
+  const basePPD = vol / 100;
+  const ppdNeeded = Math.ceil(basePPD * ppdFactors[dryClass]);
+  s('dr-aham', (vol>0 && dryClass>0) ? ppdNeeded : (vol>0 ? '0' : '--'));
+  // Equipment recommendations - show qty for each common dehu type
+  const phxSm = ppdNeeded>0 ? Math.ceil(ppdNeeded / 80) : 0;
+  const phxXl = ppdNeeded>0 ? Math.ceil(ppdNeeded / 125) : 0;
+  const d6 = ppdNeeded>0 ? Math.ceil(ppdNeeded / 100) : 0;
+  const dm = ppdNeeded>0 ? Math.ceil(ppdNeeded / 120) : 0;
+  const dehuMax = Math.max(phxSm, phxXl, d6, dm);
+  s('dr-dehu-max', vol>0 ? dehuMax : '--');
+  s('dr-phx-sm', vol>0 ? phxSm : '--');
+  s('dr-phx-xl', vol>0 ? phxXl : '--');
+  s('dr-d6', vol>0 ? d6 : '--');
+  s('dr-dm', vol>0 ? dm : '--');
+  // Air Scrubbers (Dri-Eaz 500 @ 500 cfm, 6 ACH) - always calc based on volume
+  const scrubberCfm = vol * 6 / 60;
+  const numScrubbers = vol>0 ? Math.max(Math.ceil(scrubberCfm / 500), 1) : 0;
+  s('dr-scrubbers', numScrubbers>0 ? numScrubbers : '--');
+  // Hydroxyl Generators (same as scrubbers)
+  s('dr-hydroxyl', numScrubbers>0 ? numScrubbers : '--');
+  // Air movers by area (only when class is set)
+  if (dryClass > 0) {
+    const amAreaDiv = (dryClass===3) ? 50 : 70;
+    const amArea = area>0 ? Math.ceil(area/amAreaDiv) : 0;
+    s('dr-am-area', amArea>0 ? amArea : '--');
+    const amLfDiv = (dryClass>=3) ? 7 : 10;
+    const amLf = perim>0 ? Math.ceil(perim/amLfDiv) : 0;
+    s('dr-am-lf', amLf>0 ? amLf : '--');
+  } else {
+    s('dr-am-area', '--');
+    s('dr-am-lf', '--');
+  }
+}
+
+/* ===== 4. AIR MOVERS S500 ===== */
+function setAmClass(c, btn) {
+  amClass = c;
+  document.getElementById('am-class-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  calcAirMovers(); updateAmGuide();
+}
+function setAmMat(m, btn) {
+  amMat = m;
+  document.getElementById('am-mat-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  calcAirMovers(); updateAmGuide();
+}
+function calcAirMovers() {
+  const l=v('am-l'), w=v('am-w'), h=v('am-h');
+  const area = l*w;
+  const perim = 2*(l+w);
+  s('am-area', area>0 ? r(area,0)+' sq ft' : '--');
+  s('am-perim', perim>0 ? r(perim,0)+' LF' : '--');
+  // By area
+  let areaDiv = 70;
+  if (amClass === 3) areaDiv = 50;
+  if (amClass === 4) areaDiv = 40;
+  if (amMat === 'struct') areaDiv = 40;
+  const byArea = area>0 ? Math.ceil(area/areaDiv) : 0;
+  s('am-by-area', byArea>0 ? byArea : '--');
+  // By LF
+  let lfDiv = 10;
+  if (amClass >= 3) lfDiv = 7;
+  if (amMat === 'struct') lfDiv = 6;
+  const byLf = perim>0 ? Math.ceil(perim/lfDiv) : 0;
+  s('am-by-lf', byLf>0 ? byLf : '--');
+}
+function updateAmGuide() {
+  const guides = {
+    1: {
+      carpet:'<b>Class 1 - Carpet/Pad:</b> Place air movers at 10-foot intervals along wet perimeter walls. Angle at 15-45 degrees toward the wall. One air mover per 70 sq ft of affected area.',
+      hard:'<b>Class 1 - Hard Floor:</b> Place air movers along the wet perimeter at 10-foot intervals. Direct airflow across the wet floor surface.',
+      struct:'<b>Class 1 - Structural:</b> Direct air movers at wet structural components. Focus on the specific affected areas.'
+    },
+    2: {
+      carpet:'<b>Class 2 - Carpet/Pad:</b> Place air movers at 10-foot intervals along perimeter. Ensure airflow reaches walls where wicking occurs (up to 24"). One per 70 sq ft.',
+      hard:'<b>Class 2 - Hard Floor:</b> Air movers every 10 feet along perimeter. Consider wall cavity drying if moisture has migrated behind baseboards.',
+      struct:'<b>Class 2 - Structural:</b> Focus on walls with moisture wicking. Position air movers to maximize wall surface airflow. Consider wall cavity drying systems.'
+    },
+    3: {
+      carpet:'<b>Class 3 - Carpet/Pad:</b> Maximum air mover coverage. One per 50 sq ft or 7 LF. Address ceiling and overhead areas. Floating may be necessary.',
+      hard:'<b>Class 3 - Hard Floor:</b> Maximum coverage with air movers every 7 feet along walls. Address overhead water sources and ceiling damage.',
+      struct:'<b>Class 3 - Structural:</b> Comprehensive coverage. Air movers directed at all affected surfaces including walls, ceilings, and structural members.'
+    },
+    4: {
+      carpet:'<b>Class 4 - Specialty Drying:</b> Low-permeance materials require extended drying. Use desiccant dehumidifiers, heat injection, or injectidry systems. Standard air movers may not be sufficient alone.',
+      hard:'<b>Class 4 - Hard Floor:</b> Specialty drying for hardwood, VCT, concrete. May require above/below drying systems, mat systems, or heat injection.',
+      struct:'<b>Class 4 - Structural:</b> Plaster, concrete, stone, hardwood require specialty drying. Consider desiccant dehumidifiers and directed heat. Extended monitoring necessary.'
+    }
+  };
+  document.getElementById('am-guide-text').innerHTML = guides[amClass][amMat];
+}
+
+/* ===== 5. BTU CALC ===== */
+function setBtuIns(ins, btn) {
+  btuIns = ins;
+  document.getElementById('btu-ins-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  calcBtu();
+}
+function calcBtu() {
+  const l=v('btu-l'), w=v('btu-w'), h=v('btu-h');
+  const curF=v('btu-cur-f'), desF=v('btu-des-f');
+  si('btu-cur-c', curF ? r((curF-32)*5/9,1) : '');
+  si('btu-des-c', desF ? r((desF-32)*5/9,1) : '');
+  const vol = l*w*h;
+  const volM3 = vol*0.0283168;
+  s('btu-vol', vol>0 ? r(vol,0)+' ft\u00B3 ('+r(volM3,1)+' m\u00B3)' : '--');
+  const tempDiff = Math.abs(desF-curF);
+  const factors = {poor:1.5, avg:1.0, good:0.7};
+  const btu = vol*tempDiff*factors[btuIns]/60;
+  s('btu-btu', btu>0 ? r(btu,0)+' BTU/hr' : '--');
+  s('btu-tons', btu>0 ? r(btu/12000,2)+' tons' : '--');
+  s('btu-watts', btu>0 ? r(btu*0.293,0)+' W' : '--');
+}
+
+/* ===== 6. POWER CALC ===== */
+function addPowerRow() {
+  if (powerRowCount >= 3) return;
+  powerRowCount++;
+  const container = document.getElementById('power-rows');
+  const div = document.createElement('div');
+  div.className = 'power-equip-row';
+  div.id = 'pw-row-'+powerRowCount;
+  const n = powerRowCount;
+  let opts = '<option value="">-- Select --</option>';
+  allEquipPower.forEach((e,i) => { opts += '<option value="'+i+'">'+e.name+'</option>'; });
+  div.innerHTML = '<span class="calc-label">Equipment '+n+'</span>'+
+    '<div class="calc-row"><div class="calc-input-group" style="flex:2"><select class="calc-select" id="pw-eq-'+n+'" onchange="pwEqChange('+n+')">'+opts+'</select></div>'+
+    '<div class="calc-input-group"><label># Units</label><input class="calc-input" type="number" id="pw-num-'+n+'" value="1" min="1" inputmode="numeric" oninput="calcPower()"></div></div>'+
+    '<div class="calc-row"><div class="calc-input-group"><label>Amps</label><input class="calc-input" type="text" id="pw-amps-'+n+'" readonly></div></div>';
+  container.appendChild(div);
+  if (powerRowCount >= 3) document.getElementById('power-add-btn').style.display='none';
+}
+function pwEqChange(n) {
+  const idx = parseInt(document.getElementById('pw-eq-'+n).value);
+  if (!isNaN(idx) && allEquipPower[idx]) {
+    si('pw-amps-'+n, allEquipPower[idx].amps);
+  } else {
+    si('pw-amps-'+n, '');
+  }
+  calcPower();
+}
+function calcPower() {
+  let totalAmps = 0;
+  for (let i=1; i<=powerRowCount; i++) {
+    const ampsEl = document.getElementById('pw-amps-'+i);
+    const numEl = document.getElementById('pw-num-'+i);
+    if (ampsEl && numEl) {
+      totalAmps += (parseFloat(ampsEl.value)||0) * (parseInt(numEl.value)||1);
+    }
+  }
+  const costKwh = v('pw-cost');
+  const hours = v('pw-hours');
+  const days = v('pw-days');
+  const kw = totalAmps * 120 / 1000;
+  const totalHours = hours * days;
+  const runCost = kw * totalHours * costKwh / 100;
+  s('pw-amps', totalAmps>0 ? r(totalAmps,1)+' A' : '--');
+  s('pw-kw', kw>0 ? r(kw,2)+' kW' : '--');
+  s('pw-runcost', runCost>0 ? '$'+r(runCost,2) : '--');
+}
+
+
+/* ===== ROOMS (shared for AF and Drying) ===== */
+// Add room buttons in bottom bar need wiring - use the existing togglePanel approach
+// We add "Add Room" to rooms panels
+function initRoomPanels() {
+  ['af','dr','btu'].forEach(prefix => {
+    const panel = document.getElementById(prefix+'-rooms-panel');
+    if (!panel) return;
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn btn-green btn-full';
+    addBtn.style.marginTop = '8px';
+    addBtn.textContent = '+ Add Current Room';
+    addBtn.onclick = () => addRoom(prefix);
+    panel.appendChild(addBtn);
+  });
+  renderRooms('af'); renderRooms('dr'); renderRooms('btu');
+}
+function addRoom(prefix) {
+  let roomData = {};
+  if (prefix === 'af') {
+    const vol=v('af-totalcf');
+    if (!vol) return;
+    const ach=6;
+    const ei=parseInt(document.getElementById('af-equip').value);
+    const eq=hydroxylEquip[ei];
+    const cfm=vol*ach/60;
+    const units=eq?Math.ceil(cfm/eq.cfm):0;
+    roomData={vol,label:r(vol,0)+' ft\u00B3',val:units+' units ('+r(cfm,0)+' cfm)',numVal:units};
+    afRooms.push(roomData);
+  } else if (prefix === 'dr') {
+    const l=v('dr-l'),w=v('dr-w'),h=v('dr-h');
+    if (!l||!w) return;
+    const vol=l*w*h;
+    const ppdF={0:0,1:1,2:2,3:2.5,4:3};
+    const ppd=Math.ceil((vol/100)*(ppdF[dryClass]||0));
+    const proj=document.getElementById('dr-project').value||'';
+    const rm=document.getElementById('dr-room').value||'';
+    const lbl=(rm||proj?((rm||'Room')+' - '):'')+ l+'x'+w+'x'+h+(dryClass>0?' (Class '+dryClass+')':'');
+    roomData={l,w,h,label:lbl,val:ppd+' PPD',numVal:ppd};
+    drRooms.push(roomData);
+  } else if (prefix === 'btu') {
+    const l=v('btu-l'),w=v('btu-w'),h=v('btu-h');
+    if (!l||!w) return;
+    const curF=v('btu-cur-f'),desF=v('btu-des-f');
+    const vol=l*w*h, diff=Math.abs(desF-curF);
+    const factors={poor:1.5,avg:1.0,good:0.7};
+    const btu=vol*diff*factors[btuIns]/60;
+    roomData={l,w,h,label:l+'x'+w+'x'+h,val:r(btu,0)+' BTU/hr',numVal:btu};
+    btuRooms.push(roomData);
+  }
+  renderRooms(prefix);
+}
+function renderRooms(prefix) {
+  const rooms = prefix==='af'?afRooms : prefix==='dr'?drRooms : btuRooms;
+  const list = document.getElementById(prefix+'-rooms-list');
+  const totalEl = document.getElementById(prefix+'-rooms-total');
+  if (!rooms.length) {
+    list.innerHTML='<div style="color:#888;font-size:13px;">No rooms saved yet.</div>';
+    totalEl.textContent='';
+    return;
+  }
+  list.innerHTML = rooms.map((rm,i) =>
+    '<div class="room-entry"><span class="room-name">'+rm.label+'</span><span class="room-units">'+rm.val+'</span><span class="room-del" onclick="delRoom(\''+prefix+'\','+i+')">&times;</span></div>'
+  ).join('');
+  const total = rooms.reduce((s,r)=>s+r.numVal,0);
+  const label = prefix==='af'?'units':prefix==='dr'?'dehumidifiers':'BTU/hr';
+  totalEl.textContent = 'Total: '+r(total,0)+' '+label;
+}
+function delRoom(prefix,i) {
+  const rooms = prefix==='af'?afRooms:prefix==='dr'?drRooms:btuRooms;
+  rooms.splice(i,1);
+  renderRooms(prefix);
+}
+
+/* ===== LOCAL STORAGE ===== */
+function saveState() {
+  try {
+    const state = {
+      screen: currentScreen,
+      dryClass, amClass, amMat, btuIns,
+      inputs: {}
+    };
+    ['af-totalcf','af-equip','af-source','dr-l','dr-w','dr-h','dr-cov','dr-wh',
+     'am-l','am-w','am-h','btu-l','btu-w','btu-h','btu-cur-f','btu-des-f',
+     'pw-cost','pw-hours','pw-days'
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) state.inputs[id] = el.value;
+    });
+    localStorage.setItem('pdq-calc-state', JSON.stringify(state));
+  } catch(e) {}
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem('pdq-calc-state');
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    if (state.inputs) {
+      Object.keys(state.inputs).forEach(id => {
+        const el = document.getElementById(id);
+        if (el && state.inputs[id]) el.value = state.inputs[id];
+      });
+    }
+    if (state.dryClass) {
+      dryClass = state.dryClass;
+      const dryBtns = document.querySelectorAll('#drying-screen .btn-row:first-of-type .btn');
+      dryBtns.forEach((b,i) => { b.classList.toggle('active', i===dryClass-1); });
+    }
+    if (state.amClass) {
+      amClass = state.amClass;
+      document.getElementById('am-class-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',i===amClass-1));
+    }
+    if (state.amMat) {
+      amMat = state.amMat;
+      const mats = ['carpet','hard','struct'];
+      document.getElementById('am-mat-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',mats[i]===amMat));
+    }
+    if (state.btuIns) {
+      btuIns = state.btuIns;
+      const ins = ['poor','avg','good'];
+      document.getElementById('btu-ins-btns').querySelectorAll('.btn').forEach((b,i) => b.classList.toggle('active',ins[i]===btuIns));
+    }
+  } catch(e) {}
+}
+
+// Save on input changes
+document.addEventListener('input', () => { clearTimeout(window._saveTimer); window._saveTimer = setTimeout(saveState, 500); });
+
+/* ===== BOOT ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  initRoomPanels();
+  document.getElementById('btn-home').classList.add('hidden');
+  updateAmGuide();
+});
+</script>
+</body>
+</html>
+
