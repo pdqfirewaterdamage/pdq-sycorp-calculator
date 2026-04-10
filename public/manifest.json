@@ -1,7 +1,7 @@
 {
-  "name": "PDQ Sycorp Calculator",
-  "short_name": "PDQ Sycorp",
-  "description": "Water Damage Restoration Calculator by PDQ Restoration",
+  "name": "RestorationCalc Pro",
+  "short_name": "RestorationCalc",
+  "description": "IICRC S500 Compliant Water Damage Restoration Calculator",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",

@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<title>PDQ RestoreCalc - Water Damage Restoration</title>
+<title>RestorationCalc Pro™ - IICRC S500 Compliant Calculator</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root {
@@ -43,14 +43,20 @@ body { display: flex; flex-direction: column; }
 .header {
   background: var(--navy); color: var(--white);
   display: flex; align-items: center; padding: 0 14px;
-  height: 48px; min-height: 48px; z-index: 100; position: relative;
+  height: auto; min-height: 48px; z-index: 100; position: relative;
+  flex-wrap: wrap;
 }
 .header-logo {
   width: 28px; height: 28px; margin-right: 10px;
   display: flex; align-items: center; justify-content: center;
 }
 .header-logo svg { width: 24px; height: 24px; }
-.header-title { flex: 1; font-size: 18px; font-weight: 700; letter-spacing: 0.3px; }
+.header-title { flex: 1; font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
+.header-sub {
+  width: 100%; text-align: center; font-size: 10px; font-weight: 400;
+  color: rgba(255,255,255,0.7); letter-spacing: 0.4px; padding: 0 0 6px;
+  font-style: italic;
+}
 .header-btn {
   background: none; border: none; color: var(--white);
   font-size: 20px; cursor: pointer; padding: 6px;
@@ -85,7 +91,7 @@ body { display: flex; flex-direction: column; }
 .home-card-icon { font-size: 40px; line-height: 1; margin-bottom: 10px; }
 .home-card-label { font-size: 15px; font-weight: 700; color: var(--navy); text-align: center; line-height: 1.2; }
 .home-card-sub { font-size: 11px; color: var(--text-light); margin-top: 4px; }
-.home-footer { text-align: center; padding: 16px; color: #9ca3af; font-size: 11px; }
+.home-footer { text-align: center; padding: 16px 16px 12px; color: #9ca3af; font-size: 10px; line-height: 1.6; }
 .screen-container { flex: 1; position: relative; overflow: hidden; display: none; }
 .screen-container.visible { display: flex; flex-direction: column; flex: 1; }
 .screen {
@@ -270,7 +276,7 @@ body { display: flex; flex-direction: column; }
   cursor: pointer; font-family: var(--font);
 }
 .job-delete-btn:active { background: #fef2f2; }
-.app-footer { text-align: center; padding: 12px 16px; color: #9ca3af; font-size: 11px; }
+.app-footer { text-align: center; padding: 12px 16px; color: #9ca3af; font-size: 10px; line-height: 1.6; }
 .calc-screen { overflow-x: hidden; }
 .toast {
   position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
@@ -290,10 +296,11 @@ body { display: flex; flex-direction: column; }
   <div class="header">
     <button class="header-back" id="header-back" onclick="goBack()">&#8592; Back</button>
     <div class="header-logo" id="header-logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 20 2 20"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     </div>
-    <div class="header-title" id="header-title">PDQ RestoreCalc &copy;</div>
+    <div class="header-title" id="header-title">RestorationCalc Pro&trade;</div>
     <button class="header-btn" id="btn-info" onclick="showInfo()" title="Info">&#9432;</button>
+    <div class="header-sub" id="header-sub">Built on IICRC S500 Standard of Care Guidelines</div>
   </div>
 
   <div class="home-screen" id="home-screen">
@@ -316,15 +323,15 @@ body { display: flex; flex-direction: column; }
         <span class="home-card-sub" id="jobs-count-badge"></span>
       </div>
     </div>
-    <div class="home-footer">IICRC Standard of Care Requirements</div>
+    <div class="home-footer">Calculations based on IICRC S500 Standard of Care for Water Damage Restoration<br>Industry-standard psychrometric and drying science principles<br>For professional restoration use</div>
   </div>
 
   <div class="screen-container" id="screen-container">
     <!-- HYDROXYL -->
     <div class="screen calc-screen" id="airflow-screen">
       <div class="job-info-bar">
-        <div class="calc-input-group"><label>Dash Job #</label><input class="calc-input" type="text" id="af-job-number" placeholder="e.g. 12345"></div>
-        <div class="calc-input-group"><label>Customer Name</label><input class="calc-input" type="text" id="af-customer" placeholder="e.g. Smith"></div>
+        <div class="calc-input-group"><label>Job / Reference #</label><input class="calc-input" type="text" id="af-job-number" placeholder="e.g. 12345"></div>
+        <div class="calc-input-group"><label>Project Name</label><input class="calc-input" type="text" id="af-customer" placeholder="e.g. Smith Residence"></div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Odor Source &amp; Severity</span>
@@ -370,8 +377,6 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="af-vol">--</span></div>
         <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="af-cfm">--</span></div>
         <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="af-units">--</span></div>
-        <div class="output-row"><span class="output-label">Est. Dwell Time</span><span class="output-value" id="af-dwell">--</span></div>
-        <div class="output-row"><span class="output-label">Est. Treatment Cycles</span><span class="output-value" id="af-cycles">--</span></div>
       </div>
       <div class="rooms-panel" id="af-rooms-panel">
         <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Saved Rooms</span>
@@ -381,7 +386,7 @@ body { display: flex; flex-direction: column; }
         <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Equipment Specs</span>
         <div id="af-specs-list"></div>
       </div>
-      <div class="app-footer">IICRC Standard of Care Requirements</div>
+      <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air exchange &amp; drying science</div>
       <div class="bottom-bar">
         <button class="bottom-btn" onclick="togglePanel('af-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
         <button class="bottom-btn" onclick="togglePanel('af-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
@@ -393,8 +398,8 @@ body { display: flex; flex-direction: column; }
     <!-- HEPA -->
     <div class="screen calc-screen hidden" id="hepa-screen">
       <div class="job-info-bar">
-        <div class="calc-input-group"><label>Dash Job #</label><input class="calc-input" type="text" id="hepa-job-number" placeholder="e.g. 12345"></div>
-        <div class="calc-input-group"><label>Customer Name</label><input class="calc-input" type="text" id="hepa-customer" placeholder="e.g. Smith"></div>
+        <div class="calc-input-group"><label>Job / Reference #</label><input class="calc-input" type="text" id="hepa-job-number" placeholder="e.g. 12345"></div>
+        <div class="calc-input-group"><label>Project Name</label><input class="calc-input" type="text" id="hepa-customer" placeholder="e.g. Smith Residence"></div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Drying Chamber Size</span>
@@ -422,7 +427,7 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="hepa-cfm">--</span></div>
         <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="hepa-units">--</span></div>
       </div>
-      <div class="app-footer">IICRC Standard of Care Requirements</div>
+      <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air filtration &amp; containment science</div>
       <div class="bottom-bar">
         <button class="bottom-btn btn-calc" onclick="calcHepa()"><span class="bb-icon">&#9999;</span>Calculate</button>
         <button class="bottom-btn btn-save" onclick="saveCalc('hepa')"><span class="bb-icon">&#128190;</span>Save</button>
@@ -432,8 +437,8 @@ body { display: flex; flex-direction: column; }
     <!-- DEHU -->
     <div class="screen calc-screen hidden" id="drying-screen">
       <div class="job-info-bar">
-        <div class="calc-input-group"><label>Dash Job #</label><input class="calc-input" type="text" id="dr-job-number" placeholder="e.g. 12345"></div>
-        <div class="calc-input-group"><label>Customer Name</label><input class="calc-input" type="text" id="dr-customer" placeholder="e.g. Smith"></div>
+        <div class="calc-input-group"><label>Job / Reference #</label><input class="calc-input" type="text" id="dr-job-number" placeholder="e.g. 12345"></div>
+        <div class="calc-input-group"><label>Project Name</label><input class="calc-input" type="text" id="dr-customer" placeholder="e.g. Smith Residence"></div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Water Damage Class</span>
@@ -480,7 +485,7 @@ body { display: flex; flex-direction: column; }
         <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
         <div id="dr-specs-list"></div>
       </div>
-      <div class="app-footer">IICRC Standard of Care Requirements</div>
+      <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard dehumidification &amp; drying science</div>
       <div class="bottom-bar">
         <button class="bottom-btn btn-calc" onclick="calcDrying()"><span class="bb-icon">&#9999;</span>Calculate</button>
         <button class="bottom-btn btn-save" onclick="saveCalc('dehu')"><span class="bb-icon">&#128190;</span>Save</button>
@@ -499,10 +504,10 @@ body { display: flex; flex-direction: column; }
 
 <div class="modal-overlay" id="info-modal" onclick="if(event.target===this)closeInfo()">
   <div class="modal-box">
-    <h3>PDQ RestoreCalc&copy;</h3>
-    <p>Water Damage Restoration Calculator</p>
-    <p style="font-size:12px;color:#999;">Calculations are estimates. Always verify with project-specific conditions and manufacturer specifications.</p>
-    <p style="font-size:11px;color:#BBB;">v3.0.0</p>
+    <h3>RestorationCalc Pro&trade;</h3>
+    <p>IICRC S500 Compliant Restoration Calculator</p>
+    <p style="font-size:12px;color:#999;">Calculations follow IICRC S500 Standard of Care guidelines for water damage restoration. Always verify with project-specific conditions and manufacturer specifications.</p>
+    <p style="font-size:11px;color:#BBB;">v3.1.0</p>
     <button class="modal-close" onclick="closeInfo()">Close</button>
   </div>
 </div>
@@ -559,7 +564,8 @@ function showScreen(name){
   const el=document.getElementById(name+'-screen'); if(el)el.classList.remove('hidden');
   document.getElementById('header-back').classList.add('visible');
   document.getElementById('header-logo').style.display='none';
-  document.getElementById('header-title').textContent=screenTitles[name]||'PDQ RestoreCalc';
+  document.getElementById('header-title').textContent=screenTitles[name]||'RestorationCalc Pro';
+  document.getElementById('header-sub').style.display='none';
   if(name==='jobs')loadJobs(); saveState();
 }
 function goHome(){
@@ -568,14 +574,15 @@ function goHome(){
   document.getElementById('screen-container').classList.remove('visible');
   document.getElementById('header-back').classList.remove('visible');
   document.getElementById('header-logo').style.display='flex';
-  document.getElementById('header-title').innerHTML='PDQ RestoreCalc &copy;'; saveState();
+  document.getElementById('header-title').innerHTML='RestorationCalc Pro&trade;';
+  document.getElementById('header-sub').style.display=''; saveState();
 }
 function goBack(){
   navStack.pop(); if(!navStack.length){goHome();return;}
   const prev=navStack[navStack.length-1]; currentScreen=prev;
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   const el=document.getElementById(prev+'-screen'); if(el)el.classList.remove('hidden');
-  document.getElementById('header-title').textContent=screenTitles[prev]||'PDQ RestoreCalc';
+  document.getElementById('header-title').textContent=screenTitles[prev]||'RestorationCalc Pro';
   if(prev==='jobs')loadJobs();
 }
 
@@ -608,7 +615,6 @@ function calcAirflow(){
   const cfm=vol*6/60,units=vol>0&&eq?Math.ceil(cfm/eq.cfm):0;
   s('af-vol',vol>0?r(vol,0)+' ft\u00B3':'--'); s('af-cfm',cfm>0?r(cfm,0)+' cfm':'--');
   s('af-units',units>0?units:'--');
-  s('af-dwell',vol>0&&eq?r(vol/eq.cfm,1)+' min':'--'); s('af-cycles',units>0?'3 \u2013 5 passes':'--');
 }
 function calcHepa(){
   const vol=getVol('hepa'),cfm=vol*6/60,units=vol>0?Math.ceil(cfm/500):0;
@@ -667,8 +673,8 @@ async function saveCalc(calcType){
     inputs={volume:vol,waterClass:dryClass,equipment:eq?eq.name:''};
     results={ppdNeeded:ppd,dehuUnits:units,equipmentName:eq?eq.name:''};
   }
-  if(!jobNum){showToast('Enter a Dash Job # to save');return;}
-  if(!custName){showToast('Enter a Customer Name to save');return;}
+  if(!jobNum){showToast('Enter a Job / Reference # to save');return;}
+  if(!custName){showToast('Enter a Project Name to save');return;}
   let{data:existing}=await sb.from('calc_jobs').select('id').eq('job_number',jobNum).limit(1);
   let jobId;
   if(existing&&existing.length>0){
