@@ -272,6 +272,13 @@ body { display: flex; flex-direction: column; }
   cursor: pointer; font-family: var(--font);
 }
 .job-delete-btn:active { background: #fef2f2; }
+.output-grid { display: flex; gap: 8px; margin-bottom: 10px; }
+.output-card {
+  flex: 1; background: var(--gray-bg); border-radius: 10px; padding: 12px 8px;
+  text-align: center;
+}
+.output-card-value { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+.output-card-label { font-size: 11px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; }
 .app-footer {
   text-align: center; padding: 10px 12px; margin-top: 8px;
   background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 10px;
@@ -466,13 +473,11 @@ body { display: flex; flex-direction: column; }
           <option value="4">Dri-Eaz 3500i (70 PPD)</option>
         </select>
       </div>
-      <div class="output-box"><div class="output-row"><span class="output-label">AHAM Needed</span><span class="output-value" id="dr-aham">--</span></div></div>
-      <div class="output-box">
-        <div class="output-row"><span class="output-label">Pints Per Day</span><span class="output-value" id="dr-ppd">--</span></div>
-        <div class="output-row"><span class="output-label">Liters Per Day</span><span class="output-value" id="dr-lpd">--</span></div>
-        <div class="output-row"><span class="output-label">Gallons Per Day</span><span class="output-value" id="dr-gpd">--</span></div>
+      <div class="output-grid">
+        <div class="output-card"><div class="output-card-value" id="dr-aham">--</div><div class="output-card-label">AHAM Needed</div></div>
+        <div class="output-card"><div class="output-card-value" id="dr-ppd">--</div><div class="output-card-label">Pints Per Day</div></div>
+        <div class="output-card"><div class="output-card-value" id="dr-dehu-units">--</div><div class="output-card-label">Dehus Needed</div></div>
       </div>
-      <div class="output-box"><div class="output-row"><span class="output-label">Dehumidifier Units Needed</span><span class="output-value" id="dr-dehu-units">--</span></div></div>
       <div style="padding:4px 0;"><span class="dehu-specs-link" onclick="togglePanel('dr-specs-panel')">Click here for dehumidifier specs</span></div>
       <div class="specs-panel" id="dr-specs-panel">
         <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
@@ -615,11 +620,10 @@ const classDescs={1:'Class 1 \u2013 Minor Amount of Water: Affects only part of 
 function setDryClass(c,btn){dryClass=c;document.getElementById('dr-class-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('dr-class-desc').textContent=classDescs[c];calcDrying();}
 function calcDrying(){
   const vol=getVol('dr'),pf={1:1,2:2,3:2.5,4:3},ppd=vol>0?Math.ceil((vol/100)*pf[dryClass]):0;
-  s('dr-aham',ppd>0?ppd+' PPD':'--'); s('dr-ppd',ppd>0?ppd:'--');
-  s('dr-lpd',ppd>0?r(ppd*0.473176,1):'--'); s('dr-gpd',ppd>0?r(ppd/8,1):'--');
+  s('dr-aham',ppd>0?ppd:'--'); s('dr-ppd',ppd>0?ppd:'--');
   const ei=parseInt(document.getElementById('dr-equip').value),eq=dehuEquip[ei];
   const units=ppd>0&&eq?Math.ceil(ppd/eq.pints):0;
-  s('dr-dehu-units',units>0?units+' x '+eq.name:'--');
+  s('dr-dehu-units',units>0?units:'--');
 }
 
 
