@@ -51,7 +51,8 @@ body { display: flex; flex-direction: column; }
   display: flex; align-items: center; justify-content: center;
 }
 .header-logo svg { width: 24px; height: 24px; }
-.header-title { flex: 1; font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
+.header-title { flex: 1; font-size: 17px; font-weight: 700; letter-spacing: 0.3px; text-align: center; }
+.header-title.screen-title { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }
 .header-sub {
   width: 100%; text-align: center; font-size: 10px; font-weight: 400;
   color: rgba(255,255,255,0.7); letter-spacing: 0.4px; padding: 0 0 6px;
@@ -507,7 +508,7 @@ const dehuEquip=[
 ];
 
 let currentScreen='home', navStack=[], afSeverity='moderate', dryClass=1;
-const screenTitles={airflow:'Hydroxyl',drying:'Dehu',hepa:'HEPA',jobs:'All Calculations','job-detail':'Calculation Detail'};
+const screenTitles={airflow:'Hydroxyl',drying:'Dehumidifiers',hepa:'HEPA',jobs:'All Calculations','job-detail':'Calculation Detail'};
 
 function init(){
   const sel=document.getElementById('af-equip');
@@ -533,7 +534,9 @@ function showScreen(name){
   const el=document.getElementById(name+'-screen'); if(el)el.classList.remove('hidden');
   document.getElementById('header-back').classList.add('visible');
   document.getElementById('header-logo').style.display='none';
-  document.getElementById('header-title').textContent=screenTitles[name]||'RestorationCalc Pro';
+  const ht=document.getElementById('header-title');
+  ht.textContent=screenTitles[name]||'RestorationCalc Pro';
+  ht.classList.add('screen-title');
   document.getElementById('header-sub').style.display='none';
  saveState();
 }
@@ -543,7 +546,9 @@ function goHome(){
   document.getElementById('screen-container').classList.remove('visible');
   document.getElementById('header-back').classList.remove('visible');
   document.getElementById('header-logo').style.display='flex';
-  document.getElementById('header-title').innerHTML='RestorationCalc Pro&trade;';
+  const ht2=document.getElementById('header-title');
+  ht2.innerHTML='RestorationCalc Pro&trade;';
+  ht2.classList.remove('screen-title');
   document.getElementById('header-sub').style.display=''; saveState();
 }
 function goBack(){
@@ -551,7 +556,9 @@ function goBack(){
   const prev=navStack[navStack.length-1]; currentScreen=prev;
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   const el=document.getElementById(prev+'-screen'); if(el)el.classList.remove('hidden');
-  document.getElementById('header-title').textContent=screenTitles[prev]||'RestorationCalc Pro';
+  const ht3=document.getElementById('header-title');
+  ht3.textContent=screenTitles[prev]||'RestorationCalc Pro';
+  ht3.classList.add('screen-title');
   if(prev==='jobs')loadJobs();
 }
 
