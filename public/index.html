@@ -361,22 +361,31 @@ body { display: flex; flex-direction: column; }
         </div>
       </div>
       <div class="calc-section">
-        <span class="calc-label">Total Cubic Footage</span>
-        <div class="toggle-btn-row" id="af-mode-btns">
-          <button class="toggle-btn active" onclick="setModeBtn('af',false,this)">Enter total cu ft</button>
-          <button class="toggle-btn" onclick="setModeBtn('af',true,this)">Enter room size</button>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;border-bottom:1px solid #e5e7eb;padding-bottom:6px;">
+          <span style="font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:0.8px;font-weight:700;">Total Cubic Footage</span>
+          <span style="font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-left:auto;">Air Changes Per Hour</span>
         </div>
-        <div id="af-totalcf-wrap"><div class="calc-row"><div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="af-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div></div></div>
-        <div id="af-room-wrap" style="display:none;"><div class="calc-row">
-          <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="af-l" placeholder="L" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="af-w" placeholder="W" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="af-h" value="8" placeholder="H" inputmode="decimal"></div>
-        </div></div>
-      </div>
-      <div class="calc-section">
-        <span class="calc-label">Air Changes Per Hour</span>
-        <div class="ach-locked"><div class="ach-box">6</div><span class="ach-note">Per IICRC standard of care</span></div>
-        <div style="color:var(--text-light);font-size:12px;margin-top:4px;">10.0 minutes per air change</div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="flex:1;">
+            <div class="toggle-btn-row" id="af-mode-btns">
+              <button class="toggle-btn active" onclick="setModeBtn('af',false,this)">Enter total cu ft</button>
+              <button class="toggle-btn" onclick="setModeBtn('af',true,this)">Enter room size</button>
+            </div>
+            <div id="af-totalcf-wrap"><div class="calc-input-group"><label>Total cubic feet</label><input class="calc-input" type="number" id="af-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div></div>
+            <div id="af-room-wrap" style="display:none;"><div class="calc-row">
+              <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="af-l" placeholder="L" inputmode="decimal"></div>
+              <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="af-w" placeholder="W" inputmode="decimal"></div>
+              <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="af-h" value="8" placeholder="H" inputmode="decimal"></div>
+            </div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;padding-top:4px;">
+            <div class="ach-box">6</div>
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <span style="font-size:10px;color:var(--text-light);font-style:italic;line-height:1.2;">Per IICRC<br>standard of care</span>
+              <span style="font-size:10px;color:var(--text-light);line-height:1.2;">10.0 min per<br>air change</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="calc-section">
         <span class="calc-label">Equipment</span>
