@@ -317,7 +317,7 @@ body { display: flex; flex-direction: column; }
         <span class="home-card-icon">&#128168;</span>
         <span class="home-card-label">Hydroxyl</span>
       </div>
-      <div class="home-card" onclick="showScreen('jobs')">
+      <div class="home-card" style="cursor:default;pointer-events:none;">
         <span class="home-card-icon">&#128203;</span>
         <span class="home-card-label">All Calculations</span>
         <span class="home-card-sub">Based on IICRC S500 Standards</span>
@@ -387,7 +387,6 @@ body { display: flex; flex-direction: column; }
         <button class="bottom-btn" onclick="togglePanel('af-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
         <button class="bottom-btn" onclick="togglePanel('af-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
         <button class="bottom-btn btn-calc" onclick="calcAirflow()"><span class="bb-icon">&#9999;</span>Calc</button>
-        <button class="bottom-btn btn-save" onclick="saveCalc('hydroxyl')"><span class="bb-icon">&#128190;</span>Save</button>
       </div>
     </div>
 
@@ -422,7 +421,6 @@ body { display: flex; flex-direction: column; }
       <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air filtration &amp; containment science</div>
       <div class="bottom-bar">
         <button class="bottom-btn btn-calc" onclick="calcHepa()"><span class="bb-icon">&#9999;</span>Calculate</button>
-        <button class="bottom-btn btn-save" onclick="saveCalc('hepa')"><span class="bb-icon">&#128190;</span>Save</button>
       </div>
     </div>
 
@@ -476,15 +474,9 @@ body { display: flex; flex-direction: column; }
       <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard dehumidification &amp; drying science</div>
       <div class="bottom-bar">
         <button class="bottom-btn btn-calc" onclick="calcDrying()"><span class="bb-icon">&#9999;</span>Calculate</button>
-        <button class="bottom-btn btn-save" onclick="saveCalc('dehu')"><span class="bb-icon">&#128190;</span>Save</button>
       </div>
     </div>
 
-    <!-- PAST JOBS LIST -->
-    <div class="screen jobs-screen hidden" id="jobs-screen"><div id="jobs-list"></div></div>
-
-    <!-- JOB DETAIL -->
-    <div class="screen job-detail-screen hidden" id="job-detail-screen"><div id="job-detail-content"></div></div>
   </div>
 </div>
 
@@ -552,7 +544,7 @@ function showScreen(name){
   document.getElementById('header-logo').style.display='none';
   document.getElementById('header-title').textContent=screenTitles[name]||'RestorationCalc Pro';
   document.getElementById('header-sub').style.display='none';
-  if(name==='jobs')loadJobs(); saveState();
+ saveState();
 }
 function goHome(){
   currentScreen='home'; navStack=[];
@@ -638,106 +630,6 @@ function renderRooms(){
   tot.textContent='Total: '+afRooms.reduce((s,r)=>s+r.numVal,0)+' units';
 }
 
-/* SAVE TO SUPABASE */
-async function saveCalc(calcType){
-  let inputs,results;
-  const now=new Date();
-  const jobNum=calcType.toUpperCase()+'-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0')+String(now.getSeconds()).padStart(2,'0');
-  const custName=calcType.charAt(0).toUpperCase()+calcType.slice(1)+' Calculation';
-  if(calcType==='hydroxyl'){
-    const vol=getVol('af'),ei=parseInt(document.getElementById('af-equip').value),eq=hydroxylEquip[ei];
-    const cfm=vol*6/60,units=vol>0&&eq?Math.ceil(cfm/eq.cfm):0;
-    inputs={source:sv('af-source'),severity:afSeverity,volume:vol,equipment:eq?eq.name:''};
-    results={cfmNeeded:r(cfm,0),unitsNeeded:units};
-  }else if(calcType==='hepa'){
-    const vol=getVol('hepa'),cfm=vol*6/60,units=vol>0?Math.ceil(cfm/500):0;
-    inputs={volume:vol};results={cfmNeeded:r(cfm,0),unitsNeeded:units};
-  }else{
-    const vol=getVol('dr'),pf={1:1,2:2,3:2.5,4:3},ppd=vol>0?Math.ceil((vol/100)*pf[dryClass]):0;
-    const ei=parseInt(document.getElementById('dr-equip').value),eq=dehuEquip[ei];
-    const units=ppd>0&&eq?Math.ceil(ppd/eq.pints):0;
-    inputs={volume:vol,waterClass:dryClass,equipment:eq?eq.name:''};
-    results={ppdNeeded:ppd,dehuUnits:units,equipmentName:eq?eq.name:''};
-  }
-  let{data:existing}=await sb.from('calc_jobs').select('id').eq('job_number',jobNum).limit(1);
-  let jobId;
-  if(existing&&existing.length>0){
-    jobId=existing[0].id;
-    await sb.from('calc_jobs').update({customer_name:custName,updated_at:new Date().toISOString()}).eq('id',jobId);
-  }else{
-    const{data:nj,error}=await sb.from('calc_jobs').insert({job_number:jobNum,customer_name:custName}).select('id').single();
-    if(error){showToast('Error: '+error.message);return;}
-    jobId=nj.id;
-  }
-  const{error:ee}=await sb.from('calc_entries').insert({job_id:jobId,calc_type:calcType,inputs,results});
-  if(ee){showToast('Error: '+ee.message);return;}
-  showToast('Calculation saved');
-}
-
-/* LOAD JOBS */
-async function loadJobCount(){
-  const{count}=await sb.from('calc_jobs').select('*',{count:'exact',head:true});
-  document.getElementById('jobs-count-badge').textContent=count>0?count+' job'+(count!==1?'s':''):'';
-}
-async function loadJobs(){
-  const{data:jobs}=await sb.from('calc_jobs').select('*, calc_entries(id, calc_type, created_at)').order('updated_at',{ascending:false});
-  const container=document.getElementById('jobs-list');
-  if(!jobs||!jobs.length){
-    container.innerHTML='<div class="jobs-empty"><div class="jobs-empty-icon">&#128203;</div><p>No saved calculations yet.</p><p style="font-size:13px;margin-top:8px;">Run a calculation and tap Save to see it here.</p></div>';return;
-  }
-  container.innerHTML=jobs.map(job=>{
-    const entries=job.calc_entries||[],types={};
-    entries.forEach(e=>{types[e.calc_type]=(types[e.calc_type]||0)+1;});
-    const tags=Object.entries(types).map(([t,c])=>'<span class="job-tag job-tag-'+t+'">'+t+(c>1?' <span class="job-tag-count">x'+c+'</span>':'')+'</span>').join('');
-    const date=new Date(job.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    return '<div class="job-card" onclick="showJobDetail(\''+job.id+'\')"><div class="job-card-header"><span class="job-card-number">'+job.customer_name+'</span><span class="job-card-date">'+date+'</span></div><div class="job-card-tags">'+tags+'</div></div>';
-  }).join('');
-}
-
-/* JOB DETAIL */
-async function showJobDetail(jobId){
-  const{data:job}=await sb.from('calc_jobs').select('*, calc_entries(*)').eq('id',jobId).single();
-  if(!job)return;
-  navStack.push('job-detail');currentScreen='job-detail';
-  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
-  document.getElementById('job-detail-screen').classList.remove('hidden');
-  document.getElementById('header-title').textContent=job.customer_name||'Calculation Detail';
-  const date=new Date(job.created_at).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
-  const entries=(job.calc_entries||[]).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
-  let html='<div class="job-detail-header"><div class="job-detail-number">'+job.customer_name+'</div><div class="job-detail-date">'+date+'</div></div>';
-  entries.forEach(e=>{
-    const ed=new Date(e.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-    html+='<div class="entry-card"><div class="entry-card-type entry-card-type-'+e.calc_type+'">'+e.calc_type+' &mdash; '+ed+'</div>';
-    const inp=e.inputs||{},res=e.results||{};
-    if(e.calc_type==='dehu'){
-      if(inp.waterClass)html+=eRow('Water Class','Class '+inp.waterClass);
-      if(inp.volume)html+=eRow('Volume',r(inp.volume,0)+' ft\u00B3');
-      if(inp.equipment)html+=eRow('Equipment',inp.equipment);
-      if(res.ppdNeeded)html+=eRow('PPD Needed',res.ppdNeeded);
-      if(res.dehuUnits)html+=eRow('Units Needed',res.dehuUnits+(res.equipmentName?' x '+res.equipmentName:''));
-    }else if(e.calc_type==='hepa'){
-      if(inp.volume)html+=eRow('Volume',r(inp.volume,0)+' ft\u00B3');
-      if(res.cfmNeeded)html+=eRow('CFM Needed',res.cfmNeeded+' cfm');
-      if(res.unitsNeeded)html+=eRow('Units Needed',res.unitsNeeded);
-    }else{
-      if(inp.source)html+=eRow('Odor Source',inp.source);
-      if(inp.severity)html+=eRow('Severity',inp.severity);
-      if(inp.volume)html+=eRow('Volume',r(inp.volume,0)+' ft\u00B3');
-      if(inp.equipment)html+=eRow('Equipment',inp.equipment);
-      if(res.cfmNeeded)html+=eRow('CFM Needed',res.cfmNeeded+' cfm');
-      if(res.unitsNeeded)html+=eRow('Units Needed',res.unitsNeeded);
-    }
-    html+='</div>';
-  });
-  html+='<button class="job-delete-btn" onclick="deleteJob(\''+job.id+'\')">Delete This Job</button>';
-  document.getElementById('job-detail-content').innerHTML=html;
-}
-function eRow(l,v){return '<div class="entry-row"><span class="entry-row-label">'+l+'</span><span class="entry-row-value">'+v+'</span></div>';}
-async function deleteJob(jobId){
-  if(!confirm('Delete this job and all its calculations?'))return;
-  await sb.from('calc_jobs').delete().eq('id',jobId);
-  showToast('Job deleted');loadJobCount();goBack();
-}
 
 /* LOCAL STORAGE */
 function saveState(){
