@@ -319,8 +319,8 @@ body { display: flex; flex-direction: column; }
       </div>
       <div class="home-card" onclick="showScreen('jobs')">
         <span class="home-card-icon">&#128203;</span>
-        <span class="home-card-label">Past Jobs</span>
-        <span class="home-card-sub" id="jobs-count-badge"></span>
+        <span class="home-card-label">All Calculations</span>
+        <span class="home-card-sub">Based on IICRC S500 Standards</span>
       </div>
     </div>
     <div class="home-footer">Calculations based on IICRC S500 Standard of Care for Water Damage Restoration<br>Industry-standard psychrometric and drying science principles<br>For professional restoration use</div>
@@ -329,10 +329,6 @@ body { display: flex; flex-direction: column; }
   <div class="screen-container" id="screen-container">
     <!-- HYDROXYL -->
     <div class="screen calc-screen" id="airflow-screen">
-      <div class="job-info-bar">
-        <div class="calc-input-group"><label>Job / Reference #</label><input class="calc-input" type="text" id="af-job-number" placeholder="e.g. 12345"></div>
-        <div class="calc-input-group"><label>Project Name</label><input class="calc-input" type="text" id="af-customer" placeholder="e.g. Smith Residence"></div>
-      </div>
       <div class="calc-section">
         <span class="calc-label">Odor Source &amp; Severity</span>
         <div style="margin-bottom:10px;">
@@ -397,10 +393,6 @@ body { display: flex; flex-direction: column; }
 
     <!-- HEPA -->
     <div class="screen calc-screen hidden" id="hepa-screen">
-      <div class="job-info-bar">
-        <div class="calc-input-group"><label>Job / Reference #</label><input class="calc-input" type="text" id="hepa-job-number" placeholder="e.g. 12345"></div>
-        <div class="calc-input-group"><label>Project Name</label><input class="calc-input" type="text" id="hepa-customer" placeholder="e.g. Smith Residence"></div>
-      </div>
       <div class="calc-section">
         <span class="calc-label">Drying Chamber Size</span>
         <div class="toggle-btn-row" id="hepa-mode-btns">
@@ -436,10 +428,6 @@ body { display: flex; flex-direction: column; }
 
     <!-- DEHU -->
     <div class="screen calc-screen hidden" id="drying-screen">
-      <div class="job-info-bar">
-        <div class="calc-input-group"><label>Job / Reference #</label><input class="calc-input" type="text" id="dr-job-number" placeholder="e.g. 12345"></div>
-        <div class="calc-input-group"><label>Project Name</label><input class="calc-input" type="text" id="dr-customer" placeholder="e.g. Smith Residence"></div>
-      </div>
       <div class="calc-section">
         <span class="calc-label">Water Damage Class</span>
         <div class="btn-row" id="dr-class-btns">
@@ -533,7 +521,7 @@ const dehuEquip=[
 ];
 
 let currentScreen='home', navStack=[], afSeverity='moderate', dryClass=1;
-const screenTitles={airflow:'Hydroxyl',drying:'Dehu',hepa:'HEPA',jobs:'Past Job Calculations','job-detail':'Job Detail'};
+const screenTitles={airflow:'Hydroxyl',drying:'Dehu',hepa:'HEPA',jobs:'All Calculations','job-detail':'Calculation Detail'};
 
 function init(){
   const sel=document.getElementById('af-equip');
@@ -543,9 +531,7 @@ function init(){
   bindCalc('af-totalcf af-equip af-source af-l af-w af-h',calcAirflow);
   bindCalc('dr-totalcf dr-l dr-w dr-h dr-equip',calcDrying);
   bindCalc('hepa-totalcf hepa-l hepa-w hepa-h',calcHepa);
-  syncFields(['af-job-number','dr-job-number','hepa-job-number']);
-  syncFields(['af-customer','dr-customer','hepa-customer']);
-  loadState(); calcAirflow(); calcDrying(); calcHepa(); loadJobCount();
+  loadState(); calcAirflow(); calcDrying(); calcHepa();
 }
 function bindCalc(ids,fn){ids.split(' ').forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',fn);});}
 function renderSpecs(containerId,data,fmt){
@@ -654,27 +640,25 @@ function renderRooms(){
 
 /* SAVE TO SUPABASE */
 async function saveCalc(calcType){
-  let jobNum,custName,inputs,results;
+  let inputs,results;
+  const now=new Date();
+  const jobNum=calcType.toUpperCase()+'-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0')+String(now.getSeconds()).padStart(2,'0');
+  const custName=calcType.charAt(0).toUpperCase()+calcType.slice(1)+' Calculation';
   if(calcType==='hydroxyl'){
-    jobNum=sv('af-job-number');custName=sv('af-customer');
     const vol=getVol('af'),ei=parseInt(document.getElementById('af-equip').value),eq=hydroxylEquip[ei];
     const cfm=vol*6/60,units=vol>0&&eq?Math.ceil(cfm/eq.cfm):0;
     inputs={source:sv('af-source'),severity:afSeverity,volume:vol,equipment:eq?eq.name:''};
     results={cfmNeeded:r(cfm,0),unitsNeeded:units};
   }else if(calcType==='hepa'){
-    jobNum=sv('hepa-job-number');custName=sv('hepa-customer');
     const vol=getVol('hepa'),cfm=vol*6/60,units=vol>0?Math.ceil(cfm/500):0;
     inputs={volume:vol};results={cfmNeeded:r(cfm,0),unitsNeeded:units};
   }else{
-    jobNum=sv('dr-job-number');custName=sv('dr-customer');
     const vol=getVol('dr'),pf={1:1,2:2,3:2.5,4:3},ppd=vol>0?Math.ceil((vol/100)*pf[dryClass]):0;
     const ei=parseInt(document.getElementById('dr-equip').value),eq=dehuEquip[ei];
     const units=ppd>0&&eq?Math.ceil(ppd/eq.pints):0;
     inputs={volume:vol,waterClass:dryClass,equipment:eq?eq.name:''};
     results={ppdNeeded:ppd,dehuUnits:units,equipmentName:eq?eq.name:''};
   }
-  if(!jobNum){showToast('Enter a Job / Reference # to save');return;}
-  if(!custName){showToast('Enter a Project Name to save');return;}
   let{data:existing}=await sb.from('calc_jobs').select('id').eq('job_number',jobNum).limit(1);
   let jobId;
   if(existing&&existing.length>0){
@@ -687,7 +671,7 @@ async function saveCalc(calcType){
   }
   const{error:ee}=await sb.from('calc_entries').insert({job_id:jobId,calc_type:calcType,inputs,results});
   if(ee){showToast('Error: '+ee.message);return;}
-  showToast('Saved to Job #'+jobNum);loadJobCount();
+  showToast('Calculation saved');
 }
 
 /* LOAD JOBS */
@@ -706,7 +690,7 @@ async function loadJobs(){
     entries.forEach(e=>{types[e.calc_type]=(types[e.calc_type]||0)+1;});
     const tags=Object.entries(types).map(([t,c])=>'<span class="job-tag job-tag-'+t+'">'+t+(c>1?' <span class="job-tag-count">x'+c+'</span>':'')+'</span>').join('');
     const date=new Date(job.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    return '<div class="job-card" onclick="showJobDetail(\''+job.id+'\')"><div class="job-card-header"><span class="job-card-number">Job #'+job.job_number+'</span><span class="job-card-date">'+date+'</span></div><div class="job-card-name">'+job.customer_name+'</div><div class="job-card-tags">'+tags+'</div></div>';
+    return '<div class="job-card" onclick="showJobDetail(\''+job.id+'\')"><div class="job-card-header"><span class="job-card-number">'+job.customer_name+'</span><span class="job-card-date">'+date+'</span></div><div class="job-card-tags">'+tags+'</div></div>';
   }).join('');
 }
 
@@ -717,10 +701,10 @@ async function showJobDetail(jobId){
   navStack.push('job-detail');currentScreen='job-detail';
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById('job-detail-screen').classList.remove('hidden');
-  document.getElementById('header-title').textContent='Job #'+job.job_number;
+  document.getElementById('header-title').textContent=job.customer_name||'Calculation Detail';
   const date=new Date(job.created_at).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
   const entries=(job.calc_entries||[]).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
-  let html='<div class="job-detail-header"><div class="job-detail-number">Job #'+job.job_number+'</div><div class="job-detail-name">'+job.customer_name+'</div><div class="job-detail-date">'+date+'</div></div>';
+  let html='<div class="job-detail-header"><div class="job-detail-number">'+job.customer_name+'</div><div class="job-detail-date">'+date+'</div></div>';
   entries.forEach(e=>{
     const ed=new Date(e.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
     html+='<div class="entry-card"><div class="entry-card-type entry-card-type-'+e.calc_type+'">'+e.calc_type+' &mdash; '+ed+'</div>';
@@ -759,9 +743,9 @@ async function deleteJob(jobId){
 function saveState(){
   try{
     const state={screen:currentScreen,dryClass,inputs:{}};
-    ['af-totalcf','af-equip','af-source','af-l','af-w','af-h','af-job-number','af-customer',
-     'dr-totalcf','dr-l','dr-w','dr-h','dr-equip','dr-job-number','dr-customer',
-     'hepa-totalcf','hepa-l','hepa-w','hepa-h','hepa-job-number','hepa-customer'
+    ['af-totalcf','af-equip','af-source','af-l','af-w','af-h',
+     'dr-totalcf','dr-l','dr-w','dr-h','dr-equip',
+     'hepa-totalcf','hepa-l','hepa-w','hepa-h'
     ].forEach(id=>{const el=document.getElementById(id);if(el)state.inputs[id]=el.value;});
     localStorage.setItem('pdq-calc-state',JSON.stringify(state));
   }catch(e){}
