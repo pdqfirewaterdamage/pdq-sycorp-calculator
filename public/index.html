@@ -387,10 +387,10 @@ body { display: flex; flex-direction: column; }
         <span class="calc-label">Equipment</span>
         <select class="calc-select" id="af-equip"></select>
       </div>
-      <div class="output-box">
-        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="af-vol">--</span></div>
-        <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="af-cfm">--</span></div>
-        <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="af-units">--</span></div>
+      <div class="output-grid">
+        <div class="output-card"><div class="output-card-value" id="af-vol">--</div><div class="output-card-label">Volume</div></div>
+        <div class="output-card"><div class="output-card-value" id="af-cfm">--</div><div class="output-card-label">Airflow Needed</div></div>
+        <div class="output-card"><div class="output-card-value" id="af-units">--</div><div class="output-card-label">Units Needed</div></div>
       </div>
       <div class="specs-panel" id="af-specs-panel">
         <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Equipment Specs</span>
@@ -429,10 +429,10 @@ body { display: flex; flex-direction: column; }
         <span class="calc-label">Equipment</span>
         <select class="calc-select" id="hepa-equip"><option value="0">Dri-Eaz HEPA 500 (500 cfm)</option></select>
       </div>
-      <div class="output-box">
-        <div class="output-row"><span class="output-label">Volume</span><span class="output-value" id="hepa-vol">--</span></div>
-        <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="hepa-cfm">--</span></div>
-        <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="hepa-units">--</span></div>
+      <div class="output-grid">
+        <div class="output-card"><div class="output-card-value" id="hepa-vol">--</div><div class="output-card-label">Volume</div></div>
+        <div class="output-card"><div class="output-card-value" id="hepa-cfm">--</div><div class="output-card-label">Airflow Needed</div></div>
+        <div class="output-card"><div class="output-card-value" id="hepa-units">--</div><div class="output-card-label">Units Needed</div></div>
       </div>
       <div class="app-footer">
         <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
@@ -614,12 +614,12 @@ function setAfSev(sev,btn){afSeverity=sev;document.getElementById('af-sev-btns')
 function calcAirflow(){
   const vol=getVol('af'),ei=parseInt(document.getElementById('af-equip').value),eq=hydroxylEquip[ei];
   const cfm=vol*6/60,units=vol>0&&eq?Math.ceil(cfm/eq.cfm):0;
-  s('af-vol',vol>0?r(vol,0)+' ft\u00B3':'--'); s('af-cfm',cfm>0?r(cfm,0)+' cfm':'--');
+  s('af-vol',vol>0?r(vol,0):'--'); s('af-cfm',cfm>0?r(cfm,0):'--');
   s('af-units',units>0?units:'--');
 }
 function calcHepa(){
   const vol=getVol('hepa'),cfm=vol*6/60,units=vol>0?Math.ceil(cfm/500):0;
-  s('hepa-vol',vol>0?r(vol,0)+' ft\u00B3':'--'); s('hepa-cfm',cfm>0?r(cfm,0)+' cfm':'--');
+  s('hepa-vol',vol>0?r(vol,0):'--'); s('hepa-cfm',cfm>0?r(cfm,0):'--');
   s('hepa-units',units>0?units:'--');
 }
 const classDescs={1:'Class 1 \u2013 Minor Amount of Water: Affects only part of a room with minimal evaporation demand.',2:'Class 2 \u2013 Large Amount of Water: Affects an entire room or area; water has wicked into structural materials with moderate evaporation demand.',3:'Class 3 \u2013 Greatest Amount of Water: Water has saturated ceilings, walls, insulation, and flooring, creating the highest evaporation demand.',4:'Class 4 \u2013 Specialty Drying: Involves materials with very low permeance/porosity (hardwood, concrete, stone). Requires extended drying time and special methods.'};
