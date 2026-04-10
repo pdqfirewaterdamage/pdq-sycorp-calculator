@@ -53,11 +53,6 @@ body { display: flex; flex-direction: column; }
 .header-logo svg { width: 24px; height: 24px; }
 .header-title { flex: 1; font-size: 17px; font-weight: 700; letter-spacing: 0.3px; text-align: center; }
 .header-title.screen-title { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }
-.header-sub {
-  width: 100%; text-align: center; font-size: 10px; font-weight: 400;
-  color: rgba(255,255,255,0.7); letter-spacing: 0.4px; padding: 0 0 6px;
-  font-style: italic;
-}
 .header-btn {
   background: none; border: none; color: var(--white);
   font-size: 20px; cursor: pointer; padding: 6px;
@@ -277,7 +272,18 @@ body { display: flex; flex-direction: column; }
   cursor: pointer; font-family: var(--font);
 }
 .job-delete-btn:active { background: #fef2f2; }
-.app-footer { text-align: center; padding: 12px 16px; color: #9ca3af; font-size: 10px; line-height: 1.6; }
+.app-footer {
+  text-align: center; padding: 20px 16px; margin-top: 12px;
+  background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px;
+}
+.app-footer img { display: block; margin: 0 auto 10px; width: 180px; }
+.app-footer .iicrc-title {
+  font-size: 15px; font-weight: 800; color: var(--navy); letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+.app-footer .iicrc-standards {
+  font-size: 12px; font-weight: 600; color: var(--text-light); line-height: 1.5;
+}
 .calc-screen { overflow-x: hidden; }
 .toast {
   position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
@@ -301,7 +307,6 @@ body { display: flex; flex-direction: column; }
     </div>
     <div class="header-title" id="header-title">RestorationCalc Pro&trade;</div>
     <button class="header-btn" id="btn-info" onclick="showInfo()" title="Info">&#9432;</button>
-    <div class="header-sub" id="header-sub">Built on IICRC S500 Standard of Care Guidelines</div>
   </div>
 
   <div class="home-screen" id="home-screen">
@@ -318,13 +323,12 @@ body { display: flex; flex-direction: column; }
         <span class="home-card-icon">&#128168;</span>
         <span class="home-card-label">Hydroxyl</span>
       </div>
-      <div class="home-card" style="cursor:default;pointer-events:none;">
-        <span class="home-card-icon">&#128203;</span>
-        <span class="home-card-label">All Calculations</span>
-        <span class="home-card-sub">Based on IICRC S500 Standards</span>
+      <div class="home-card" style="cursor:default;pointer-events:none;padding:12px;">
+        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC" style="width:120px;margin-bottom:8px;">
+        <span class="home-card-label" style="font-size:11px;line-height:1.4;">Based on IICRC S500, S520, S540, S700 Standards</span>
       </div>
     </div>
-    <div class="home-footer">Calculations based on IICRC S500 Standard of Care for Water Damage Restoration<br>Industry-standard psychrometric and drying science principles<br>For professional restoration use</div>
+    <div class="home-footer">For professional restoration use</div>
   </div>
 
   <div class="screen-container" id="screen-container">
@@ -379,7 +383,11 @@ body { display: flex; flex-direction: column; }
         <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Equipment Specs</span>
         <div id="af-specs-list"></div>
       </div>
-      <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air exchange &amp; drying science</div>
+      <div class="app-footer">
+        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
+        <div class="iicrc-title">Calculations Based on IICRC Standards</div>
+        <div class="iicrc-standards">S500 &bull; S520 &bull; S540 &bull; S700<br>Industry-Standard Restoration Science</div>
+      </div>
       <div class="bottom-bar">
         <button class="bottom-btn btn-calc" onclick="calcAirflow()"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
@@ -413,7 +421,11 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="hepa-cfm">--</span></div>
         <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="hepa-units">--</span></div>
       </div>
-      <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air filtration &amp; containment science</div>
+      <div class="app-footer">
+        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
+        <div class="iicrc-title">Calculations Based on IICRC Standards</div>
+        <div class="iicrc-standards">S500 &bull; S520 &bull; S540 &bull; S700<br>Industry-Standard Restoration Science</div>
+      </div>
       <div class="bottom-bar">
         <button class="bottom-btn btn-calc" onclick="calcHepa()"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
@@ -466,7 +478,11 @@ body { display: flex; flex-direction: column; }
         <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
         <div id="dr-specs-list"></div>
       </div>
-      <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard dehumidification &amp; drying science</div>
+      <div class="app-footer">
+        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
+        <div class="iicrc-title">Calculations Based on IICRC Standards</div>
+        <div class="iicrc-standards">S500 &bull; S520 &bull; S540 &bull; S700<br>Industry-Standard Restoration Science</div>
+      </div>
       <div class="bottom-bar">
         <button class="bottom-btn btn-calc" onclick="calcDrying()"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
@@ -537,7 +553,6 @@ function showScreen(name){
   const ht=document.getElementById('header-title');
   ht.textContent=screenTitles[name]||'RestorationCalc Pro';
   ht.classList.add('screen-title');
-  document.getElementById('header-sub').style.display='none';
  saveState();
 }
 function goHome(){
@@ -549,7 +564,7 @@ function goHome(){
   const ht2=document.getElementById('header-title');
   ht2.innerHTML='RestorationCalc Pro&trade;';
   ht2.classList.remove('screen-title');
-  document.getElementById('header-sub').style.display=''; saveState();
+ saveState();
 }
 function goBack(){
   navStack.pop(); if(!navStack.length){goHome();return;}
