@@ -99,7 +99,7 @@ body { display: flex; flex-direction: column; }
   overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
 }
 .screen.hidden { display: none; }
-.calc-screen { background: var(--white); padding: 16px 16px 24px; }
+.calc-screen { background: var(--white); padding: 16px 16px 90px; }
 .calc-section { margin-bottom: 18px; }
 .calc-label {
   font-size: 12px; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px;
@@ -379,6 +379,9 @@ body { display: flex; flex-direction: column; }
         <div id="af-specs-list"></div>
       </div>
       <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air exchange &amp; drying science</div>
+      <div class="bottom-bar">
+        <button class="bottom-btn btn-calc" onclick="calcAirflow()"><span class="bb-icon">&#9999;</span>Calculate</button>
+      </div>
     </div>
 
     <!-- HEPA -->
@@ -410,6 +413,9 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="hepa-units">--</span></div>
       </div>
       <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air filtration &amp; containment science</div>
+      <div class="bottom-bar">
+        <button class="bottom-btn btn-calc" onclick="calcHepa()"><span class="bb-icon">&#9999;</span>Calculate</button>
+      </div>
     </div>
 
     <!-- DEHU -->
@@ -460,6 +466,9 @@ body { display: flex; flex-direction: column; }
         <div id="dr-specs-list"></div>
       </div>
       <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard dehumidification &amp; drying science</div>
+      <div class="bottom-bar">
+        <button class="bottom-btn btn-calc" onclick="calcDrying()"><span class="bb-icon">&#9999;</span>Calculate</button>
+      </div>
     </div>
 
   </div>
@@ -505,10 +514,7 @@ function init(){
   hydroxylEquip.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=e.name+' ('+e.cfm+' cfm)';sel.appendChild(o);});
   renderSpecs('af-specs-list',hydroxylEquip,e=>e.cfm+' cfm | '+e.coverage+' ft\u00B3 | '+e.amps+'A');
   renderSpecs('dr-specs-list',dehuEquip,e=>e.pints+' PPD | '+e.amps+' Amps');
-  bindCalc('af-totalcf af-equip af-source af-l af-w af-h',calcAirflow);
-  bindCalc('dr-totalcf dr-l dr-w dr-h dr-equip',calcDrying);
-  bindCalc('hepa-totalcf hepa-l hepa-w hepa-h',calcHepa);
-  loadState(); calcAirflow(); calcDrying(); calcHepa();
+  loadState();
 }
 function bindCalc(ids,fn){ids.split(' ').forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',fn);});}
 function renderSpecs(containerId,data,fmt){
@@ -559,7 +565,6 @@ function setModeBtn(prefix,roomMode,btn){
   btn.classList.add('active');
   document.getElementById(prefix+'-totalcf-wrap').style.display=roomMode?'none':'block';
   document.getElementById(prefix+'-room-wrap').style.display=roomMode?'block':'none';
-  if(prefix==='af')calcAirflow(); else if(prefix==='hepa')calcHepa(); else calcDrying();
 }
 
 function v(id){return parseFloat(document.getElementById(id).value)||0;}
