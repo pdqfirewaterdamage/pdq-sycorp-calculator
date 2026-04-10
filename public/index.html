@@ -99,7 +99,7 @@ body { display: flex; flex-direction: column; }
   overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
 }
 .screen.hidden { display: none; }
-.calc-screen { background: var(--white); padding: 16px 16px 90px; }
+.calc-screen { background: var(--white); padding: 16px 16px 24px; }
 .calc-section { margin-bottom: 18px; }
 .calc-label {
   font-size: 12px; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px;
@@ -374,20 +374,11 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label">Airflow Needed</span><span class="output-value" id="af-cfm">--</span></div>
         <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="af-units">--</span></div>
       </div>
-      <div class="rooms-panel" id="af-rooms-panel">
-        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Saved Rooms</span>
-        <div id="af-rooms-list"></div><div class="rooms-total" id="af-rooms-total"></div>
-      </div>
       <div class="specs-panel" id="af-specs-panel">
         <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Equipment Specs</span>
         <div id="af-specs-list"></div>
       </div>
       <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air exchange &amp; drying science</div>
-      <div class="bottom-bar">
-        <button class="bottom-btn" onclick="togglePanel('af-rooms-panel')"><span class="bb-icon">&#9633;</span>Rooms</button>
-        <button class="bottom-btn" onclick="togglePanel('af-specs-panel')"><span class="bb-icon">&#9881;</span>Specs</button>
-        <button class="bottom-btn btn-calc" onclick="calcAirflow()"><span class="bb-icon">&#9999;</span>Calc</button>
-      </div>
     </div>
 
     <!-- HEPA -->
@@ -419,9 +410,6 @@ body { display: flex; flex-direction: column; }
         <div class="output-row"><span class="output-label"># Units Needed</span><span class="output-value" id="hepa-units">--</span></div>
       </div>
       <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard air filtration &amp; containment science</div>
-      <div class="bottom-bar">
-        <button class="bottom-btn btn-calc" onclick="calcHepa()"><span class="bb-icon">&#9999;</span>Calculate</button>
-      </div>
     </div>
 
     <!-- DEHU -->
@@ -472,9 +460,6 @@ body { display: flex; flex-direction: column; }
         <div id="dr-specs-list"></div>
       </div>
       <div class="app-footer">Calculations based on IICRC S500 Standard of Care<br>Industry-standard dehumidification &amp; drying science</div>
-      <div class="bottom-bar">
-        <button class="bottom-btn btn-calc" onclick="calcDrying()"><span class="bb-icon">&#9999;</span>Calculate</button>
-      </div>
     </div>
 
   </div>
@@ -610,25 +595,6 @@ function calcDrying(){
   s('dr-dehu-units',units>0?units+' x '+eq.name:'--');
 }
 
-/* ROOMS */
-const afRooms=[];
-function initRoomPanels(){
-  const p=document.getElementById('af-rooms-panel'); if(!p)return;
-  const b=document.createElement('button');b.className='btn btn-green btn-full';b.style.marginTop='8px';
-  b.textContent='+ Add Current Room';b.onclick=()=>{
-    const vol=getVol('af'); if(!vol)return;
-    const ei=parseInt(document.getElementById('af-equip').value),eq=hydroxylEquip[ei];
-    const cfm=vol*6/60,units=eq?Math.ceil(cfm/eq.cfm):0;
-    afRooms.push({vol,label:r(vol,0)+' ft\u00B3',val:units+' units ('+r(cfm,0)+' cfm)',numVal:units});
-    renderRooms();
-  };p.appendChild(b);renderRooms();
-}
-function renderRooms(){
-  const list=document.getElementById('af-rooms-list'),tot=document.getElementById('af-rooms-total');
-  if(!afRooms.length){list.innerHTML='<div style="color:#9ca3af;font-size:13px;">No rooms saved yet.</div>';tot.textContent='';return;}
-  list.innerHTML=afRooms.map((rm,i)=>'<div class="room-entry"><span class="room-name">'+rm.label+'</span><span class="room-units">'+rm.val+'</span><span class="room-del" onclick="afRooms.splice('+i+',1);renderRooms();">&times;</span></div>').join('');
-  tot.textContent='Total: '+afRooms.reduce((s,r)=>s+r.numVal,0)+' units';
-}
 
 
 /* LOCAL STORAGE */
@@ -652,7 +618,7 @@ function loadState(){
   }catch(e){}
 }
 document.addEventListener('input',()=>{clearTimeout(window._st);window._st=setTimeout(saveState,500);});
-document.addEventListener('DOMContentLoaded',()=>{init();initRoomPanels();});
+document.addEventListener('DOMContentLoaded',()=>{init();});
 </script>
 </body>
 </html>
