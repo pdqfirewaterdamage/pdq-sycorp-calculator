@@ -660,7 +660,7 @@ async function saveCalc(calcType){
     const vol=getVol('af'),ei=parseInt(document.getElementById('af-equip').value),eq=hydroxylEquip[ei];
     const cfm=vol*6/60,units=vol>0&&eq?Math.ceil(cfm/eq.cfm):0;
     inputs={source:sv('af-source'),severity:afSeverity,volume:vol,equipment:eq?eq.name:''};
-    results={cfmNeeded:r(cfm,0),unitsNeeded:units,dwellTime:vol>0&&eq?r(vol/eq.cfm,1)+' min':'--'};
+    results={cfmNeeded:r(cfm,0),unitsNeeded:units};
   }else if(calcType==='hepa'){
     jobNum=sv('hepa-job-number');custName=sv('hepa-customer');
     const vol=getVol('hepa'),cfm=vol*6/60,units=vol>0?Math.ceil(cfm/500):0;
@@ -742,7 +742,6 @@ async function showJobDetail(jobId){
       if(inp.equipment)html+=eRow('Equipment',inp.equipment);
       if(res.cfmNeeded)html+=eRow('CFM Needed',res.cfmNeeded+' cfm');
       if(res.unitsNeeded)html+=eRow('Units Needed',res.unitsNeeded);
-      if(res.dwellTime)html+=eRow('Dwell Time',res.dwellTime);
     }
     html+='</div>';
   });
