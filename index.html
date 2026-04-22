@@ -316,8 +316,8 @@ body { display: flex; flex-direction: column; }
   flex: 0 0 auto;
 }
 .ps-inputs-grid {
-  display: grid; grid-template-columns: 62px 1fr 1fr 1fr;
-  gap: clamp(3px, 0.5vh, 6px) 6px; align-items: center;
+  display: grid; grid-template-columns: 82px 1fr 1fr;
+  gap: clamp(4px, 0.8vh, 10px) 8px; align-items: center;
 }
 .ps-inp-col-label { font-size: clamp(9px, 1.2vh, 11px); color: var(--text-light); text-align: center; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
 .ps-side-label { font-size: clamp(12px, 1.6vh, 14px); color: var(--navy); font-weight: 700; }
@@ -336,7 +336,7 @@ body { display: flex; flex-direction: column; }
   display: flex; flex-direction: column;
 }
 .ps-results-header, .ps-results-row {
-  display: grid; grid-template-columns: 1fr 56px 56px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
   gap: 6px; align-items: center;
 }
 .ps-results-header {
@@ -348,13 +348,13 @@ body { display: flex; flex-direction: column; }
 .ps-results-header div { text-align: center; }
 .ps-results-header div:first-child { text-align: left; }
 .ps-results-row {
-  padding: clamp(2px, 0.5vh, 10px) 0;
-  font-size: clamp(12px, 1.6vh, 15px);
-  flex: 1 1 0; min-height: 24px;
+  padding: clamp(6px, 1.2vh, 18px) 4px;
+  font-size: clamp(14px, 2.2vh, 20px);
+  flex: 1 1 0; min-height: 48px;
 }
 .ps-results-row + .ps-results-row { border-top: 1px solid #e8e8e4; }
-.ps-row-label { color: var(--text-light); font-weight: 500; }
-.ps-row-val { color: var(--navy); font-weight: 700; text-align: center; font-size: clamp(13px, 1.8vh, 17px); }
+.ps-row-label { color: var(--text-light); font-weight: 600; font-size: clamp(13px, 1.9vh, 18px); }
+.ps-row-val { color: var(--navy); font-weight: 800; text-align: center; font-size: clamp(26px, 5vh, 48px); line-height: 1.1; }
 .ps-depression-row {
   display: flex; justify-content: center; align-items: baseline; gap: 10px;
   background: var(--gray-bg); border-radius: 10px;
@@ -537,16 +537,16 @@ body { display: flex; flex-direction: column; }
         <span class="calc-label">Conditions</span>
         <div class="ps-inputs-grid">
           <div></div>
-          <div class="ps-inp-col-label">Temp &deg;F</div>
-          <div class="ps-inp-col-label">Temp &deg;C</div>
-          <div class="ps-inp-col-label">RH %</div>
-          <div class="ps-side-label">Inside</div>
+          <div class="ps-inp-col-label">Inside</div>
+          <div class="ps-inp-col-label">Outside</div>
+          <div class="ps-side-label">Temp &deg;F</div>
           <input class="ps-inp" type="number" id="ps-tf-in" value="73" inputmode="decimal">
-          <input class="ps-inp" type="number" id="ps-tc-in" value="23" inputmode="decimal">
-          <input class="ps-inp" type="number" id="ps-rh-in" value="46" inputmode="decimal">
-          <div class="ps-side-label">Outside</div>
           <input class="ps-inp" type="number" id="ps-tf-out" value="83" inputmode="decimal">
+          <div class="ps-side-label">Temp &deg;C</div>
+          <input class="ps-inp" type="number" id="ps-tc-in" value="23" inputmode="decimal">
           <input class="ps-inp" type="number" id="ps-tc-out" value="28" inputmode="decimal">
+          <div class="ps-side-label">RH %</div>
+          <input class="ps-inp" type="number" id="ps-rh-in" value="46" inputmode="decimal">
           <input class="ps-inp" type="number" id="ps-rh-out" value="36" inputmode="decimal">
         </div>
       </div>
@@ -563,34 +563,9 @@ body { display: flex; flex-direction: column; }
             <div class="ps-row-val" id="ps-gpp-out">--</div>
           </div>
           <div class="ps-results-row">
-            <div class="ps-row-label">Grains (g/kg)</div>
-            <div class="ps-row-val" id="ps-gkg-in">--</div>
-            <div class="ps-row-val" id="ps-gkg-out">--</div>
-          </div>
-          <div class="ps-results-row">
             <div class="ps-row-label">Dew Point (&deg;F)</div>
             <div class="ps-row-val" id="ps-dpf-in">--</div>
             <div class="ps-row-val" id="ps-dpf-out">--</div>
-          </div>
-          <div class="ps-results-row">
-            <div class="ps-row-label">Dew Point (&deg;C)</div>
-            <div class="ps-row-val" id="ps-dpc-in">--</div>
-            <div class="ps-row-val" id="ps-dpc-out">--</div>
-          </div>
-          <div class="ps-results-row">
-            <div class="ps-row-label">Sat. VP (hPa)</div>
-            <div class="ps-row-val" id="ps-es-in">--</div>
-            <div class="ps-row-val" id="ps-es-out">--</div>
-          </div>
-          <div class="ps-results-row">
-            <div class="ps-row-label">Actual VP (hPa)</div>
-            <div class="ps-row-val" id="ps-ea-in">--</div>
-            <div class="ps-row-val" id="ps-ea-out">--</div>
-          </div>
-          <div class="ps-results-row">
-            <div class="ps-row-label">Thirst / VPD (hPa)</div>
-            <div class="ps-row-val" id="ps-vpd-in">--</div>
-            <div class="ps-row-val" id="ps-vpd-out">--</div>
           </div>
         </div>
       </div>
