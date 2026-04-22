@@ -74,9 +74,10 @@ body { display: flex; flex-direction: column; }
 }
 .home-screen.hidden { display: none; }
 .home-grid {
-  flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+  flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr auto;
   gap: 12px; padding: 16px;
 }
+.home-grid .home-card.iicrc-card { grid-column: 1 / -1; }
 .home-card {
   background: var(--white); border: 1px solid var(--gray-border); border-radius: 16px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -331,9 +332,13 @@ body { display: flex; flex-direction: column; }
         <span class="home-card-icon">&#128168;</span>
         <span class="home-card-label">Hydroxyl</span>
       </div>
-      <div class="home-card" style="cursor:default;pointer-events:none;padding:12px;">
-        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC" style="width:120px;margin-bottom:8px;">
-        <span class="home-card-label" style="font-size:11px;line-height:1.4;">Based on IICRC S500, S520, S540, S700 Standards</span>
+      <div class="home-card" onclick="showScreen('psychro')">
+        <span class="home-card-icon">&#127777;&#65039;</span>
+        <span class="home-card-label">Psychrometric</span>
+      </div>
+      <div class="home-card iicrc-card" style="cursor:default;pointer-events:none;padding:12px;flex-direction:row;gap:12px;justify-content:center;">
+        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC" style="width:100px;">
+        <span class="home-card-label" style="font-size:11px;line-height:1.4;text-align:left;">Based on IICRC S500, S520,<br>S540, S700 Standards</span>
       </div>
     </div>
     <div class="home-footer">For professional restoration use</div>
@@ -448,6 +453,86 @@ body { display: flex; flex-direction: column; }
       </div>
     </div>
 
+    <!-- PSYCHROMETRIC -->
+    <div class="screen calc-screen hidden" id="psychro-screen">
+      <div class="calc-section">
+        <span class="calc-label">Inside Conditions</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Temperature &deg;F</label><input class="calc-input" type="number" id="ps-tf-in" value="73" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Temperature &deg;C</label><input class="calc-input" type="number" id="ps-tc-in" value="23" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Rel. Humidity (%)</label><input class="calc-input" type="number" id="ps-rh-in" value="46" inputmode="decimal"></div>
+        </div>
+      </div>
+      <div class="calc-section">
+        <span class="calc-label">Outside Conditions</span>
+        <div class="calc-row">
+          <div class="calc-input-group"><label>Temperature &deg;F</label><input class="calc-input" type="number" id="ps-tf-out" value="83" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Temperature &deg;C</label><input class="calc-input" type="number" id="ps-tc-out" value="28" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Rel. Humidity (%)</label><input class="calc-input" type="number" id="ps-rh-out" value="36" inputmode="decimal"></div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <span class="calc-label">Grains</span>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="ps-gpp-in">--</div><div class="output-card-label">Inside (gpp)</div></div>
+          <div class="output-card"><div class="output-card-value" id="ps-gpp-out">--</div><div class="output-card-label">Outside (gpp)</div></div>
+        </div>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="ps-gkg-in">--</div><div class="output-card-label">Inside (g/kg)</div></div>
+          <div class="output-card"><div class="output-card-value" id="ps-gkg-out">--</div><div class="output-card-label">Outside (g/kg)</div></div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <span class="calc-label">Dew Point</span>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="ps-dpf-in">--</div><div class="output-card-label">Inside (&deg;F)</div></div>
+          <div class="output-card"><div class="output-card-value" id="ps-dpf-out">--</div><div class="output-card-label">Outside (&deg;F)</div></div>
+        </div>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="ps-dpc-in">--</div><div class="output-card-label">Inside (&deg;C)</div></div>
+          <div class="output-card"><div class="output-card-value" id="ps-dpc-out">--</div><div class="output-card-label">Outside (&deg;C)</div></div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <span class="calc-label">Vapor Pressure</span>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="ps-es-in">--</div><div class="output-card-label">Sat. Inside (hPa)</div></div>
+          <div class="output-card"><div class="output-card-value" id="ps-es-out">--</div><div class="output-card-label">Sat. Outside (hPa)</div></div>
+        </div>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="ps-ea-in">--</div><div class="output-card-label">Actual Inside (hPa)</div></div>
+          <div class="output-card"><div class="output-card-value" id="ps-ea-out">--</div><div class="output-card-label">Actual Outside (hPa)</div></div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <span class="calc-label">Thirst (VPD)</span>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="ps-vpd-in">--</div><div class="output-card-label">Inside (hPa)</div></div>
+          <div class="output-card"><div class="output-card-value" id="ps-vpd-out">--</div><div class="output-card-label">Outside (hPa)</div></div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <span class="calc-label">Grain Depression (In &minus; Out)</span>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="ps-depression">--</div><div class="output-card-label">Depression (gpp)</div></div>
+        </div>
+      </div>
+
+      <div class="app-footer">
+        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
+        <div class="iicrc-title">Calculations Based on IICRC Standards</div>
+        <div class="iicrc-standards">S500 &bull; S520 &bull; S540 &bull; S700<br>Industry-Standard Restoration Science</div>
+      </div>
+      <div class="bottom-bar">
+        <button class="bottom-btn btn-calc" onclick="calcPsychro()"><span class="bb-icon">&#9999;</span>Calculate</button>
+      </div>
+    </div>
+
     <!-- DEHU -->
     <div class="screen calc-screen hidden" id="drying-screen">
       <div class="calc-section">
@@ -539,13 +624,19 @@ const dehuEquip=[
 ];
 
 let currentScreen='home', navStack=[], afSeverity='moderate', dryClass=1;
-const screenTitles={airflow:'Hydroxyl',drying:'Dehumidifiers',hepa:'HEPA Air Scrubbers',jobs:'All Calculations','job-detail':'Calculation Detail'};
+const screenTitles={airflow:'Hydroxyl',drying:'Dehumidifiers',hepa:'HEPA Air Scrubbers',psychro:'Psychrometric',jobs:'All Calculations','job-detail':'Calculation Detail'};
 
 function init(){
   const sel=document.getElementById('af-equip');
   hydroxylEquip.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=e.name+' ('+e.cfm+' cfm)';sel.appendChild(o);});
   renderSpecs('af-specs-list',hydroxylEquip,e=>e.cfm+' cfm | '+e.coverage+' ft\u00B3 | '+e.amps+'A');
   renderSpecs('dr-specs-list',dehuEquip,e=>e.pints+' PPD | '+e.amps+' Amps');
+  // Psychrometric: wire F<->C sync + live recalc on input
+  [['ps-tf-in','f-in'],['ps-tc-in','c-in'],['ps-tf-out','f-out'],['ps-tc-out','c-out']].forEach(([id,which])=>{
+    const el=document.getElementById(id);if(el)el.addEventListener('input',()=>psSyncFC(which));
+  });
+  ['ps-rh-in','ps-rh-out'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',calcPsychro);});
+  calcPsychro();
   loadState();
 }
 function bindCalc(ids,fn){ids.split(' ').forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',fn);});}
@@ -636,6 +727,61 @@ function calcDrying(){
   s('dr-dehu-units',units>0?units:'--');
 }
 
+/* PSYCHROMETRIC — Magnus formula, standard atmosphere */
+const PS_P_HPA=1013.25; // standard sea-level atmospheric pressure
+function psVals(tC,rh){
+  if(!isFinite(tC)||!isFinite(rh))return null;
+  const es=6.112*Math.exp(17.67*tC/(tC+243.5));    // hPa saturation VP (Magnus)
+  const e=es*(rh/100);                              // hPa actual VP
+  const W=0.622*e/(PS_P_HPA-e);                     // humidity ratio kg/kg
+  const gkg=W*1000;                                 // g water / kg dry air
+  const gpp=W*7000;                                 // grains / lb dry air
+  // inverse Magnus for dew point
+  let tdC=null;
+  if(e>0){const a=Math.log(e/6.112);tdC=243.5*a/(17.67-a);}
+  const vpd=es-e;                                   // thirst / VPD hPa
+  const tdF=tdC!==null?tdC*9/5+32:null;
+  return {es,e,W,gkg,gpp,tdC,tdF,vpd,tC};
+}
+function psSetCell(id,val,dec){
+  const el=document.getElementById(id);if(!el)return;
+  el.textContent=(val===null||!isFinite(val))?'--':(dec===0?Math.round(val):val.toFixed(dec));
+}
+function psSyncFC(which){
+  // which: 'f-in','c-in','f-out','c-out' — fired on input
+  const [u,side]=which.split('-'),fId='ps-tf-'+side,cId='ps-tc-'+side;
+  const fEl=document.getElementById(fId),cEl=document.getElementById(cId);
+  if(u==='f'){const f=parseFloat(fEl.value);if(isFinite(f))cEl.value=((f-32)*5/9).toFixed(1);else cEl.value='';}
+  else{const c=parseFloat(cEl.value);if(isFinite(c))fEl.value=(c*9/5+32).toFixed(1);else fEl.value='';}
+  calcPsychro();
+}
+function calcPsychro(){
+  const tfIn=parseFloat(document.getElementById('ps-tf-in').value);
+  const tfOut=parseFloat(document.getElementById('ps-tf-out').value);
+  const rhIn=parseFloat(document.getElementById('ps-rh-in').value);
+  const rhOut=parseFloat(document.getElementById('ps-rh-out').value);
+  const tCin=isFinite(tfIn)?(tfIn-32)*5/9:NaN;
+  const tCout=isFinite(tfOut)?(tfOut-32)*5/9:NaN;
+  const IN=psVals(tCin,rhIn),OUT=psVals(tCout,rhOut);
+  const pick=(o,k)=>o?o[k]:null;
+  psSetCell('ps-gpp-in',pick(IN,'gpp'),0);
+  psSetCell('ps-gpp-out',pick(OUT,'gpp'),0);
+  psSetCell('ps-gkg-in',pick(IN,'gkg'),1);
+  psSetCell('ps-gkg-out',pick(OUT,'gkg'),1);
+  psSetCell('ps-dpf-in',pick(IN,'tdF'),0);
+  psSetCell('ps-dpf-out',pick(OUT,'tdF'),0);
+  psSetCell('ps-dpc-in',pick(IN,'tdC'),0);
+  psSetCell('ps-dpc-out',pick(OUT,'tdC'),0);
+  psSetCell('ps-es-in',pick(IN,'es'),1);
+  psSetCell('ps-es-out',pick(OUT,'es'),1);
+  psSetCell('ps-ea-in',pick(IN,'e'),1);
+  psSetCell('ps-ea-out',pick(OUT,'e'),1);
+  psSetCell('ps-vpd-in',pick(IN,'vpd'),1);
+  psSetCell('ps-vpd-out',pick(OUT,'vpd'),1);
+  const dep=(IN&&OUT)?(IN.gpp-OUT.gpp):null;
+  psSetCell('ps-depression',dep,0);
+}
+
 
 
 /* LOCAL STORAGE */
@@ -644,7 +790,8 @@ function saveState(){
     const state={screen:currentScreen,dryClass,inputs:{}};
     ['af-totalcf','af-equip','af-source','af-l','af-w','af-h',
      'dr-totalcf','dr-l','dr-w','dr-h','dr-equip',
-     'hepa-totalcf','hepa-l','hepa-w','hepa-h'
+     'hepa-totalcf','hepa-l','hepa-w','hepa-h',
+     'ps-tf-in','ps-tc-in','ps-rh-in','ps-tf-out','ps-tc-out','ps-rh-out'
     ].forEach(id=>{const el=document.getElementById(id);if(el)state.inputs[id]=el.value;});
     localStorage.setItem('pdq-calc-state',JSON.stringify(state));
   }catch(e){}
@@ -656,6 +803,7 @@ function loadState(){
     if(state.inputs)Object.keys(state.inputs).forEach(id=>{const el=document.getElementById(id);if(el&&state.inputs[id])el.value=state.inputs[id];});
     if(state.dryClass){dryClass=state.dryClass;document.getElementById('dr-class-btns').querySelectorAll('.btn').forEach((b,i)=>b.classList.toggle('active',(i+1)===dryClass));document.getElementById('dr-class-desc').textContent=classDescs[dryClass];}
     if(state.screen&&state.screen!=='home'&&state.screen!=='jobs'&&state.screen!=='job-detail')showScreen(state.screen);
+    calcPsychro();
   }catch(e){}
 }
 document.addEventListener('input',()=>{clearTimeout(window._st);window._st=setTimeout(saveState,500);});
