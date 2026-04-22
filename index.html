@@ -298,7 +298,7 @@ body { display: flex; flex-direction: column; }
 
 /* Psychrometric — fills viewport via flex, content scales with phone height */
 #psychro-screen {
-  padding: clamp(8px, 1.2vh, 14px) 12px clamp(8px, 1.2vh, 14px);
+  padding: clamp(8px, 1.2vh, 14px) 12px calc(clamp(16px, 2.5vh, 24px) + env(safe-area-inset-bottom, 0px));
   display: flex; flex-direction: column;
   gap: clamp(6px, 1vh, 12px);
 }
