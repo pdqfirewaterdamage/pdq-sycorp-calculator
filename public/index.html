@@ -294,6 +294,54 @@ body { display: flex; flex-direction: column; }
   font-size: 10px; font-weight: 600; color: var(--text-light); line-height: 1.4;
 }
 .calc-screen { overflow-x: hidden; }
+
+/* Psychrometric — compact single-screen layout */
+#psychro-screen { padding: 10px 12px 12px; }
+#psychro-screen .calc-section { margin-bottom: 8px; }
+#psychro-screen .calc-label { margin-bottom: 6px; padding-bottom: 4px; font-size: 11px; }
+.ps-inputs-grid {
+  display: grid; grid-template-columns: 62px 1fr 1fr 1fr;
+  gap: 4px 6px; align-items: center;
+}
+.ps-inp-col-label { font-size: 10px; color: var(--text-light); text-align: center; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.ps-side-label { font-size: 13px; color: var(--navy); font-weight: 700; }
+.ps-inp {
+  height: 36px; border-radius: 8px; border: 1px solid var(--gray-border);
+  padding: 0 6px; font-size: 15px; font-family: var(--font);
+  background: var(--white); color: var(--text); outline: none;
+  text-align: center; width: 100%; transition: border-color 0.2s;
+}
+.ps-inp:focus { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(26,58,92,0.12); }
+.ps-results { background: var(--gray-bg); border-radius: 10px; padding: 6px 12px; }
+.ps-results-header, .ps-results-row {
+  display: grid; grid-template-columns: 1fr 56px 56px;
+  gap: 6px; align-items: center;
+}
+.ps-results-header {
+  font-size: 10px; text-transform: uppercase; color: var(--text-light);
+  font-weight: 700; letter-spacing: 0.4px;
+  padding-bottom: 4px; border-bottom: 1px solid #e8e8e4; margin-bottom: 2px;
+}
+.ps-results-header div { text-align: center; }
+.ps-results-header div:first-child { text-align: left; }
+.ps-results-row { padding: 4px 0; font-size: 13px; }
+.ps-results-row + .ps-results-row { border-top: 1px solid #e8e8e4; }
+.ps-row-label { color: var(--text-light); font-weight: 500; }
+.ps-row-val { color: var(--navy); font-weight: 700; text-align: center; font-size: 14px; }
+.ps-depression-row {
+  display: flex; justify-content: center; align-items: baseline; gap: 10px;
+  background: var(--gray-bg); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;
+}
+.ps-dep-label { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+.ps-dep-value { font-size: 24px; font-weight: 800; color: var(--navy); line-height: 1; }
+.ps-dep-unit { font-size: 12px; color: var(--text-light); font-weight: 600; }
+.ps-footer {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 6px 10px;
+  background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px;
+  font-size: 11px; color: var(--text-light); font-weight: 600; text-align: center;
+}
+.ps-footer img { width: 56px; display: block; }
 .toast {
   position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
   background: var(--navy); color: var(--white);
@@ -456,80 +504,76 @@ body { display: flex; flex-direction: column; }
     <!-- PSYCHROMETRIC -->
     <div class="screen calc-screen hidden" id="psychro-screen">
       <div class="calc-section">
-        <span class="calc-label">Inside Conditions</span>
-        <div class="calc-row">
-          <div class="calc-input-group"><label>Temperature &deg;F</label><input class="calc-input" type="number" id="ps-tf-in" value="73" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Temperature &deg;C</label><input class="calc-input" type="number" id="ps-tc-in" value="23" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Rel. Humidity (%)</label><input class="calc-input" type="number" id="ps-rh-in" value="46" inputmode="decimal"></div>
-        </div>
-      </div>
-      <div class="calc-section">
-        <span class="calc-label">Outside Conditions</span>
-        <div class="calc-row">
-          <div class="calc-input-group"><label>Temperature &deg;F</label><input class="calc-input" type="number" id="ps-tf-out" value="83" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Temperature &deg;C</label><input class="calc-input" type="number" id="ps-tc-out" value="28" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Rel. Humidity (%)</label><input class="calc-input" type="number" id="ps-rh-out" value="36" inputmode="decimal"></div>
-        </div>
-      </div>
-
-      <div class="calc-section">
-        <span class="calc-label">Grains</span>
-        <div class="output-grid">
-          <div class="output-card"><div class="output-card-value" id="ps-gpp-in">--</div><div class="output-card-label">Inside (gpp)</div></div>
-          <div class="output-card"><div class="output-card-value" id="ps-gpp-out">--</div><div class="output-card-label">Outside (gpp)</div></div>
-        </div>
-        <div class="output-grid">
-          <div class="output-card"><div class="output-card-value" id="ps-gkg-in">--</div><div class="output-card-label">Inside (g/kg)</div></div>
-          <div class="output-card"><div class="output-card-value" id="ps-gkg-out">--</div><div class="output-card-label">Outside (g/kg)</div></div>
+        <span class="calc-label">Conditions</span>
+        <div class="ps-inputs-grid">
+          <div></div>
+          <div class="ps-inp-col-label">Temp &deg;F</div>
+          <div class="ps-inp-col-label">Temp &deg;C</div>
+          <div class="ps-inp-col-label">RH %</div>
+          <div class="ps-side-label">Inside</div>
+          <input class="ps-inp" type="number" id="ps-tf-in" value="73" inputmode="decimal">
+          <input class="ps-inp" type="number" id="ps-tc-in" value="23" inputmode="decimal">
+          <input class="ps-inp" type="number" id="ps-rh-in" value="46" inputmode="decimal">
+          <div class="ps-side-label">Outside</div>
+          <input class="ps-inp" type="number" id="ps-tf-out" value="83" inputmode="decimal">
+          <input class="ps-inp" type="number" id="ps-tc-out" value="28" inputmode="decimal">
+          <input class="ps-inp" type="number" id="ps-rh-out" value="36" inputmode="decimal">
         </div>
       </div>
 
       <div class="calc-section">
-        <span class="calc-label">Dew Point</span>
-        <div class="output-grid">
-          <div class="output-card"><div class="output-card-value" id="ps-dpf-in">--</div><div class="output-card-label">Inside (&deg;F)</div></div>
-          <div class="output-card"><div class="output-card-value" id="ps-dpf-out">--</div><div class="output-card-label">Outside (&deg;F)</div></div>
-        </div>
-        <div class="output-grid">
-          <div class="output-card"><div class="output-card-value" id="ps-dpc-in">--</div><div class="output-card-label">Inside (&deg;C)</div></div>
-          <div class="output-card"><div class="output-card-value" id="ps-dpc-out">--</div><div class="output-card-label">Outside (&deg;C)</div></div>
+        <span class="calc-label">Results</span>
+        <div class="ps-results">
+          <div class="ps-results-header">
+            <div>Metric</div><div>Inside</div><div>Outside</div>
+          </div>
+          <div class="ps-results-row">
+            <div class="ps-row-label">Grains (gpp)</div>
+            <div class="ps-row-val" id="ps-gpp-in">--</div>
+            <div class="ps-row-val" id="ps-gpp-out">--</div>
+          </div>
+          <div class="ps-results-row">
+            <div class="ps-row-label">Grains (g/kg)</div>
+            <div class="ps-row-val" id="ps-gkg-in">--</div>
+            <div class="ps-row-val" id="ps-gkg-out">--</div>
+          </div>
+          <div class="ps-results-row">
+            <div class="ps-row-label">Dew Point (&deg;F)</div>
+            <div class="ps-row-val" id="ps-dpf-in">--</div>
+            <div class="ps-row-val" id="ps-dpf-out">--</div>
+          </div>
+          <div class="ps-results-row">
+            <div class="ps-row-label">Dew Point (&deg;C)</div>
+            <div class="ps-row-val" id="ps-dpc-in">--</div>
+            <div class="ps-row-val" id="ps-dpc-out">--</div>
+          </div>
+          <div class="ps-results-row">
+            <div class="ps-row-label">Sat. VP (hPa)</div>
+            <div class="ps-row-val" id="ps-es-in">--</div>
+            <div class="ps-row-val" id="ps-es-out">--</div>
+          </div>
+          <div class="ps-results-row">
+            <div class="ps-row-label">Actual VP (hPa)</div>
+            <div class="ps-row-val" id="ps-ea-in">--</div>
+            <div class="ps-row-val" id="ps-ea-out">--</div>
+          </div>
+          <div class="ps-results-row">
+            <div class="ps-row-label">Thirst / VPD (hPa)</div>
+            <div class="ps-row-val" id="ps-vpd-in">--</div>
+            <div class="ps-row-val" id="ps-vpd-out">--</div>
+          </div>
         </div>
       </div>
 
-      <div class="calc-section">
-        <span class="calc-label">Vapor Pressure</span>
-        <div class="output-grid">
-          <div class="output-card"><div class="output-card-value" id="ps-es-in">--</div><div class="output-card-label">Sat. Inside (hPa)</div></div>
-          <div class="output-card"><div class="output-card-value" id="ps-es-out">--</div><div class="output-card-label">Sat. Outside (hPa)</div></div>
-        </div>
-        <div class="output-grid">
-          <div class="output-card"><div class="output-card-value" id="ps-ea-in">--</div><div class="output-card-label">Actual Inside (hPa)</div></div>
-          <div class="output-card"><div class="output-card-value" id="ps-ea-out">--</div><div class="output-card-label">Actual Outside (hPa)</div></div>
-        </div>
+      <div class="ps-depression-row">
+        <span class="ps-dep-label">Grain Depression (In &minus; Out)</span>
+        <span class="ps-dep-value" id="ps-depression">--</span>
+        <span class="ps-dep-unit">gpp</span>
       </div>
 
-      <div class="calc-section">
-        <span class="calc-label">Thirst (VPD)</span>
-        <div class="output-grid">
-          <div class="output-card"><div class="output-card-value" id="ps-vpd-in">--</div><div class="output-card-label">Inside (hPa)</div></div>
-          <div class="output-card"><div class="output-card-value" id="ps-vpd-out">--</div><div class="output-card-label">Outside (hPa)</div></div>
-        </div>
-      </div>
-
-      <div class="calc-section">
-        <span class="calc-label">Grain Depression (In &minus; Out)</span>
-        <div class="output-grid">
-          <div class="output-card"><div class="output-card-value" id="ps-depression">--</div><div class="output-card-label">Depression (gpp)</div></div>
-        </div>
-      </div>
-
-      <div class="app-footer">
+      <div class="ps-footer">
         <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
-        <div class="iicrc-title">Calculations Based on IICRC Standards</div>
-        <div class="iicrc-standards">S500 &bull; S520 &bull; S540 &bull; S700<br>Industry-Standard Restoration Science</div>
-      </div>
-      <div class="bottom-bar">
-        <button class="bottom-btn btn-calc" onclick="calcPsychro()"><span class="bb-icon">&#9999;</span>Calculate</button>
+        <span>Based on IICRC Standards &middot; S500 &middot; S520 &middot; S540 &middot; S700</span>
       </div>
     </div>
 
