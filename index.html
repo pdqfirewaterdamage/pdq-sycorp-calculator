@@ -574,9 +574,9 @@ body { display: flex; flex-direction: column; }
     <div class="screen calc-screen hidden" id="equip-screen" style="padding-bottom:24px;">
       <div class="calc-section">
         <div class="equip-select-row" id="eq-type-btns">
-          <button class="equip-chip active" data-type="dehu" onclick="toggleEquipType('dehu')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="dehu-icon" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true"><rect class="di-body" x="12" y="4" width="36" height="52" rx="5"/><rect class="di-lower" x="12" y="42" width="36" height="14" rx="5"/><rect class="di-lower" x="12" y="42" width="36" height="6"/><rect class="di-detail" x="30.5" y="45" width="3" height="8" rx="1.5"/><rect class="di-detail" x="17" y="21" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="26" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="31" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="36" width="26" height="2.6" rx="1.3"/><rect class="di-cap" x="12" y="4" width="36" height="14" rx="5"/><rect class="di-cap" x="12" y="12" width="36" height="6"/><rect class="di-slot" x="26" y="8" width="12" height="3" rx="1.5"/><rect class="di-cap" x="15" y="56" width="6" height="3.5" rx="1.5"/><rect class="di-cap" x="43" y="56" width="6" height="3.5" rx="1.5"/><circle class="di-badge-bg" cx="48" cy="44" r="14"/><circle class="di-badge-ring" cx="48" cy="44" r="11.5"/><path class="di-drop" d="M48 35.5c-3.6 4.6-5.6 7.4-5.6 10.2a5.6 5.6 0 0 0 11.2 0c0-2.8-2-5.6-5.6-10.2z"/><line class="di-slash" x1="40.5" y1="36.5" x2="55.5" y2="51.5"/></svg></span><span>Dehu</span></button>
-          <button class="equip-chip active" data-type="hepa" onclick="toggleEquipType('hepa')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="hepa-icon" viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 13v-3.5a2.5 2.5 0 0 1 2.5-2.5h11a2.5 2.5 0 0 1 2.5 2.5V13"/><rect x="6" y="13" width="42" height="40" rx="4"/><circle cx="27" cy="33" r="13"/><line x1="27" y1="20.5" x2="27" y2="45.5"/><line x1="21" y1="22" x2="21" y2="44"/><line x1="33" y1="22" x2="33" y2="44"/><line x1="15" y1="33" x2="39" y2="33"/><line x1="16.5" y1="27" x2="37.5" y2="27"/><line x1="16.5" y1="39" x2="37.5" y2="39"/><path d="M50 24q3-2.5 6 0t5 0"/><path d="M58 21l3 3-3 3"/><path d="M50 33q3-2.5 6 0t5 0"/><path d="M58 30l3 3-3 3"/><path d="M50 42q3-2.5 6 0t5 0"/><path d="M58 39l3 3-3 3"/></svg></span><span>HEPA</span></button>
-          <button class="equip-chip active" data-type="hydroxyl" onclick="toggleEquipType('hydroxyl')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="hyd-icon" viewBox="0 0 72 56" width="38" height="30" aria-hidden="true" stroke-width="3" stroke-linecap="round"><text x="1" y="26" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">R</text><line x1="22" y1="17" x2="33" y2="17"/><text x="35" y="26" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">O</text><line x1="52" y1="29" x2="58" y2="39"/><text x="52" y="55" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">H</text></svg></span><span>Hydroxyl</span></button>
+          <button class="equip-chip" data-type="dehu" onclick="toggleEquipType('dehu')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="dehu-icon" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true"><rect class="di-body" x="12" y="4" width="36" height="52" rx="5"/><rect class="di-lower" x="12" y="42" width="36" height="14" rx="5"/><rect class="di-lower" x="12" y="42" width="36" height="6"/><rect class="di-detail" x="30.5" y="45" width="3" height="8" rx="1.5"/><rect class="di-detail" x="17" y="21" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="26" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="31" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="36" width="26" height="2.6" rx="1.3"/><rect class="di-cap" x="12" y="4" width="36" height="14" rx="5"/><rect class="di-cap" x="12" y="12" width="36" height="6"/><rect class="di-slot" x="26" y="8" width="12" height="3" rx="1.5"/><rect class="di-cap" x="15" y="56" width="6" height="3.5" rx="1.5"/><rect class="di-cap" x="43" y="56" width="6" height="3.5" rx="1.5"/><circle class="di-badge-bg" cx="48" cy="44" r="14"/><circle class="di-badge-ring" cx="48" cy="44" r="11.5"/><path class="di-drop" d="M48 35.5c-3.6 4.6-5.6 7.4-5.6 10.2a5.6 5.6 0 0 0 11.2 0c0-2.8-2-5.6-5.6-10.2z"/><line class="di-slash" x1="40.5" y1="36.5" x2="55.5" y2="51.5"/></svg></span><span>Dehu</span></button>
+          <button class="equip-chip" data-type="hepa" onclick="toggleEquipType('hepa')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="hepa-icon" viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 13v-3.5a2.5 2.5 0 0 1 2.5-2.5h11a2.5 2.5 0 0 1 2.5 2.5V13"/><rect x="6" y="13" width="42" height="40" rx="4"/><circle cx="27" cy="33" r="13"/><line x1="27" y1="20.5" x2="27" y2="45.5"/><line x1="21" y1="22" x2="21" y2="44"/><line x1="33" y1="22" x2="33" y2="44"/><line x1="15" y1="33" x2="39" y2="33"/><line x1="16.5" y1="27" x2="37.5" y2="27"/><line x1="16.5" y1="39" x2="37.5" y2="39"/><path d="M50 24q3-2.5 6 0t5 0"/><path d="M58 21l3 3-3 3"/><path d="M50 33q3-2.5 6 0t5 0"/><path d="M58 30l3 3-3 3"/><path d="M50 42q3-2.5 6 0t5 0"/><path d="M58 39l3 3-3 3"/></svg></span><span>HEPA</span></button>
+          <button class="equip-chip" data-type="hydroxyl" onclick="toggleEquipType('hydroxyl')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="hyd-icon" viewBox="0 0 72 56" width="38" height="30" aria-hidden="true" stroke-width="3" stroke-linecap="round"><text x="1" y="26" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">R</text><line x1="22" y1="17" x2="33" y2="17"/><text x="35" y="26" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">O</text><line x1="52" y1="29" x2="58" y2="39"/><text x="52" y="55" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">H</text></svg></span><span>Hydroxyl</span></button>
         </div>
       </div>
 
@@ -596,10 +596,10 @@ body { display: flex; flex-direction: column; }
         </div></div>
       </div>
 
-      <div class="equip-empty" id="eq-empty" style="display:none;">Select at least one equipment type above to see results.</div>
+      <div class="equip-empty" id="eq-empty">Select equipment above to see results.</div>
 
       <!-- DEHU -->
-      <div class="equip-section on" id="eq-sec-dehu">
+      <div class="equip-section" id="eq-sec-dehu">
         <div class="equip-section-head"><span class="equip-section-title">Dehumidifiers</span><span class="equip-head-right">Water Damage Class</span></div>
         <div class="calc-section">
           <div class="dr-equip-row">
@@ -631,7 +631,7 @@ body { display: flex; flex-direction: column; }
       </div>
 
       <!-- HEPA -->
-      <div class="equip-section on" id="eq-sec-hepa">
+      <div class="equip-section" id="eq-sec-hepa">
         <div class="equip-section-head"><span class="equip-section-title">HEPA Air Scrubbers</span></div>
         <div class="calc-section">
           <select class="calc-select" id="hepa-equip"><option value="0">Dri-Eaz HEPA 500 (500 cfm)</option></select>
@@ -645,7 +645,7 @@ body { display: flex; flex-direction: column; }
       </div>
 
       <!-- HYDROXYL -->
-      <div class="equip-section on" id="eq-sec-hydroxyl">
+      <div class="equip-section" id="eq-sec-hydroxyl">
         <div class="equip-section-head"><span class="equip-section-title">Hydroxyl Generators</span></div>
         <div class="calc-section">
           <div class="af-odor-row">
@@ -717,7 +717,7 @@ const dehuEquip=[
 ];
 
 let currentScreen='home', navStack=[], afSeverity='moderate', dryClass=1;
-let equipTypes={dehu:true,hepa:true,hydroxyl:true};
+let equipTypes={dehu:false,hepa:false,hydroxyl:false};
 const EQUIP_TYPES=['dehu','hepa','hydroxyl'];
 const screenTitles={equip:'Equipment',psychro:'Psychrometric',jobs:'All Calculations','job-detail':'Calculation Detail'};
 // Legacy screen names (pre-combined) map onto the single equipment screen
@@ -751,6 +751,7 @@ function syncFields(ids){
 /* NAV */
 function showScreen(name){
   name=legacyScreens[name]||name;
+  if(name==='equip'){equipTypes={dehu:false,hepa:false,hydroxyl:false};applyEquipTypes();calcEquip();}
   currentScreen=name; navStack.push(name);
   document.getElementById('home-screen').classList.add('hidden');
   document.getElementById('screen-container').classList.add('visible');
@@ -914,7 +915,7 @@ function calcPsychro(){
 function saveState(){
   try{
     const roomMode=document.getElementById('eq-room-wrap').style.display!=='none';
-    const state={screen:currentScreen,dryClass,afSeverity,equipTypes,roomMode,inputs:{}};
+    const state={screen:currentScreen,dryClass,afSeverity,roomMode,inputs:{}};
     ['eq-totalcf','eq-l','eq-w','eq-h',
      'af-equip','dr-equip','hepa-equip',
      'ps-tf-in','ps-tc-in','ps-rh-in','ps-tf-out','ps-tc-out','ps-rh-out'
@@ -934,7 +935,6 @@ function loadState(){
     }
     if(state.dryClass){dryClass=state.dryClass;document.getElementById('dr-class-btns').querySelectorAll('.btn').forEach((b,i)=>b.classList.toggle('active',(i+1)===dryClass));}
     if(state.afSeverity){afSeverity=state.afSeverity;const sevs=['moderate','heavy','extreme'];document.getElementById('af-sev-btns').querySelectorAll('.btn').forEach((b,i)=>b.classList.toggle('active',sevs[i]===afSeverity));}
-    if(state.equipTypes){EQUIP_TYPES.forEach(t=>{if(typeof state.equipTypes[t]==='boolean')equipTypes[t]=state.equipTypes[t];});}
     if(typeof state.roomMode==='boolean'){const btns=document.getElementById('eq-mode-btns').querySelectorAll('.toggle-btn');setModeBtn('eq',state.roomMode,btns[state.roomMode?1:0]);}
     applyEquipTypes(); calcEquip();
     if(state.screen&&state.screen!=='home'&&state.screen!=='jobs'&&state.screen!=='job-detail')showScreen(state.screen);
