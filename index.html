@@ -618,6 +618,11 @@ body { display: flex; flex-direction: column; }
           <div class="output-card"><div class="output-card-value" id="dr-ppd">--</div><div class="output-card-label">Pints Per Day</div></div>
           <div class="output-card"><div class="output-card-value" id="dr-dehu-units">--</div><div class="output-card-label">Dehus Needed</div></div>
           <div class="output-card"><div class="output-card-value" id="dr-unit-ppd">--</div><div class="output-card-label">Dehu PPD</div></div>
+          <button class="output-card output-card-btn" id="dr-specs-btn" onclick="togglePanel('dr-specs-panel');this.classList.toggle('active')"><div class="output-card-value">&#9432;</div><div class="output-card-label">Specs</div></button>
+        </div>
+        <div class="specs-panel" id="dr-specs-panel">
+          <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
+          <div id="dr-specs-list"></div>
         </div>
       </div>
 
@@ -719,6 +724,7 @@ function init(){
   sel.appendChild(new Option('Select hydroxyl generator',''));
   hydroxylEquip.forEach((e,i)=>{sel.appendChild(new Option(e.name,i));});
   renderSpecs('af-specs-list',hydroxylEquip,e=>e.cfm+' cfm | '+e.coverage+' ft\u00B3 | '+e.amps+'A');
+  renderSpecs('dr-specs-list',dehuEquip,e=>e.pints+' PPD | '+e.amps+' Amps');
   const dsel=document.getElementById('dr-equip');
   dsel.appendChild(new Option('Select dehumidifier',''));
   dehuEquip.forEach((e,i)=>{dsel.appendChild(new Option(e.name,i));});
