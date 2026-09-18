@@ -340,6 +340,11 @@ body { display: flex; flex-direction: column; }
 }
 .equip-section.on { display: block; }
 .equip-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.dr-equip-row { display: flex; gap: 8px; align-items: center; }
+.dr-equip-row .calc-select { flex: 1 1 0; min-width: 0; }
+.dr-class-row { margin-bottom: 0; gap: 4px; flex-wrap: nowrap; flex: 0 0 auto; }
+.dr-class-btn { width: 40px; padding: 0; font-size: 14px; }
+@media (max-width: 380px) { .dr-class-btn { width: 36px; font-size: 13px; } .dr-class-row { gap: 3px; } }
 .af-odor-row { display: flex; gap: 8px; align-items: flex-end; }
 .af-odor-src { flex: 1 1 0; min-width: 0; }
 .af-odor-sev { flex: 0 0 auto; }
@@ -570,21 +575,21 @@ body { display: flex; flex-direction: column; }
       <div class="equip-section on" id="eq-sec-dehu">
         <div class="equip-section-head"><span class="equip-section-title">Dehumidifiers</span><span class="equip-head-right">Water Damage Class</span></div>
         <div class="calc-section">
-          <div class="btn-row" id="dr-class-btns">
-            <button class="btn btn-blue btn-full active" onclick="setDryClass(1,this)">Class 1</button>
-            <button class="btn btn-blue btn-full" onclick="setDryClass(2,this)">Class 2</button>
-            <button class="btn btn-blue btn-full" onclick="setDryClass(3,this)">Class 3</button>
-            <button class="btn btn-blue btn-full" onclick="setDryClass(4,this)">Class 4</button>
+          <div class="dr-equip-row">
+            <select class="calc-select" id="dr-equip">
+              <option value="0">Dri-Eaz LGR 6000Li (100 PPD)</option>
+              <option value="1">Phoenix DryMax XL 125 PPD</option>
+              <option value="2">XPower LGR Dehu (85 PPD)</option>
+              <option value="3">Dri-Eaz Evolution LGR (80 PPD)</option>
+              <option value="4">Dri-Eaz 3500i (70 PPD)</option>
+            </select>
+            <div class="btn-row dr-class-row" id="dr-class-btns">
+              <button class="btn btn-blue btn-sm dr-class-btn active" onclick="setDryClass(1,this)" aria-label="Class 1">1</button>
+              <button class="btn btn-blue btn-sm dr-class-btn" onclick="setDryClass(2,this)" aria-label="Class 2">2</button>
+              <button class="btn btn-blue btn-sm dr-class-btn" onclick="setDryClass(3,this)" aria-label="Class 3">3</button>
+              <button class="btn btn-blue btn-sm dr-class-btn" onclick="setDryClass(4,this)" aria-label="Class 4">4</button>
+            </div>
           </div>
-        </div>
-        <div class="calc-section">
-          <select class="calc-select" id="dr-equip">
-            <option value="0">Dri-Eaz LGR 6000Li (100 PPD)</option>
-            <option value="1">Phoenix DryMax XL 125 PPD</option>
-            <option value="2">XPower LGR Dehu (85 PPD)</option>
-            <option value="3">Dri-Eaz Evolution LGR (80 PPD)</option>
-            <option value="4">Dri-Eaz 3500i (70 PPD)</option>
-          </select>
         </div>
         <div class="output-grid">
           <div class="output-card"><div class="output-card-value" id="dr-aham">--</div><div class="output-card-label">AHAM Needed</div></div>
