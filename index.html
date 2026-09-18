@@ -335,6 +335,12 @@ body { display: flex; flex-direction: column; }
 }
 .equip-section.on { display: block; }
 .equip-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.af-odor-row { display: flex; gap: 8px; align-items: flex-end; }
+.af-odor-src { flex: 1 1 0; min-width: 0; }
+.af-odor-sev { flex: 0 0 auto; }
+.af-sev-row { margin-bottom: 0; gap: 4px; flex-wrap: nowrap; }
+.btn-sm { height: 44px; padding: 0 9px; font-size: 12px; min-width: 0; white-space: nowrap; }
+@media (max-width: 380px) { .btn-sm { padding: 0 7px; font-size: 11px; } .af-sev-row { gap: 3px; } }
 .equip-section-title { font-size: 15px; font-weight: 800; color: var(--navy); }
 .equip-head-right { margin-left: auto; font-size: 12px; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; }
 .equip-empty {
@@ -602,19 +608,21 @@ body { display: flex; flex-direction: column; }
       <div class="equip-section on" id="eq-sec-hydroxyl">
         <div class="equip-section-head"><span class="equip-section-title">Hydroxyl Generators</span></div>
         <div class="calc-section">
-          <div style="margin-bottom:10px;">
-            <label style="font-size:12px;color:var(--text-light);display:block;margin-bottom:4px;font-weight:500;">Odor source</label>
-            <select class="calc-select" id="af-source">
-              <option value="fire">Fire / Smoke</option><option value="sewage">Sewage</option>
-              <option value="skunk">Skunk</option><option value="oil">Oil</option><option value="other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:12px;color:var(--text-light);display:block;margin-bottom:6px;font-weight:500;">Severity</label>
-            <div class="btn-row" id="af-sev-btns">
-              <button class="btn btn-blue btn-full active" onclick="setAfSev('moderate',this)">Moderate</button>
-              <button class="btn btn-blue btn-full" onclick="setAfSev('heavy',this)">Heavy</button>
-              <button class="btn btn-blue btn-full" onclick="setAfSev('extreme',this)">Extreme</button>
+          <div class="af-odor-row">
+            <div class="calc-input-group af-odor-src">
+              <label>Odor source</label>
+              <select class="calc-select" id="af-source">
+                <option value="fire">Fire / Smoke</option><option value="sewage">Sewage</option>
+                <option value="skunk">Skunk</option><option value="oil">Oil</option><option value="other">Other</option>
+              </select>
+            </div>
+            <div class="calc-input-group af-odor-sev">
+              <label>Severity</label>
+              <div class="btn-row af-sev-row" id="af-sev-btns">
+                <button class="btn btn-blue btn-sm active" onclick="setAfSev('moderate',this)">Moderate</button>
+                <button class="btn btn-blue btn-sm" onclick="setAfSev('heavy',this)">Heavy</button>
+                <button class="btn btn-blue btn-sm" onclick="setAfSev('extreme',this)">Extreme</button>
+              </div>
             </div>
           </div>
         </div>
