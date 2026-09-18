@@ -654,9 +654,9 @@ body { display: flex; flex-direction: column; }
         </div>
         <div class="output-grid">
           <div class="output-card"><div class="output-card-value">6</div><div class="output-card-label">Air Changes / Hr</div></div>
-          <div class="output-card"><div class="output-card-value" id="af-vol">--</div><div class="output-card-label">Volume</div></div>
           <div class="output-card"><div class="output-card-value" id="af-cfm">--</div><div class="output-card-label">Airflow Needed</div></div>
           <div class="output-card"><div class="output-card-value" id="af-units">--</div><div class="output-card-label">Units Needed</div></div>
+          <div class="output-card"><div class="output-card-value" id="af-unit-cfm">--</div><div class="output-card-label">Unit CFM</div></div>
           <button class="output-card output-card-btn" id="af-specs-btn" onclick="togglePanel('af-specs-panel');this.classList.toggle('active')"><div class="output-card-value">&#9432;</div><div class="output-card-label">Specs</div></button>
         </div>
         <div class="specs-panel" id="af-specs-panel">
@@ -716,10 +716,12 @@ const legacyScreens={airflow:'equip',drying:'equip',hepa:'equip'};
 
 function init(){
   const sel=document.getElementById('af-equip');
-  hydroxylEquip.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=e.name+' ('+e.cfm+' cfm)';sel.appendChild(o);});
+  sel.appendChild(new Option('Select hydroxyl generator',''));
+  hydroxylEquip.forEach((e,i)=>{sel.appendChild(new Option(e.name,i));});
   renderSpecs('af-specs-list',hydroxylEquip,e=>e.cfm+' cfm | '+e.coverage+' ft\u00B3 | '+e.amps+'A');
   const dsel=document.getElementById('dr-equip');
-  dehuEquip.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=e.name;dsel.appendChild(o);});
+  dsel.appendChild(new Option('Select dehumidifier',''));
+  dehuEquip.forEach((e,i)=>{dsel.appendChild(new Option(e.name,i));});
   // Combined equipment screen: live recalc on any input/equipment change
   bindCalc('eq-totalcf eq-l eq-w eq-h dr-equip hepa-equip af-equip',calcEquip);
   ['dr-equip','hepa-equip','af-equip'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',calcEquip);});
@@ -743,7 +745,7 @@ function syncFields(ids){
 /* NAV */
 function showScreen(name){
   name=legacyScreens[name]||name;
-  if(name==='equip'){equipTypes={dehu:false,hepa:false,hydroxyl:false};applyEquipTypes();calcEquip();}
+  if(name==='equip'){equipTypes={dehu:false,hepa:false,hydroxyl:false};applyEquipTypes();document.getElementById('dr-equip').value='';document.getElementById('af-equip').value='';calcEquip();}
   currentScreen=name; navStack.push(name);
   document.getElementById('home-screen').classList.add('hidden');
   document.getElementById('screen-container').classList.add('visible');
@@ -827,8 +829,9 @@ function calcAirflow(vol){
   if(vol===undefined)vol=getVol('eq');
   const ei=parseInt(document.getElementById('af-equip').value),eq=hydroxylEquip[ei];
   const cfm=vol*6/60,units=vol>0&&eq?Math.ceil(cfm/eq.cfm):0;
-  s('af-vol',vol>0?r(vol,0):'--'); s('af-cfm',cfm>0?r(cfm,0):'--');
+  s('af-cfm',cfm>0?r(cfm,0):'--');
   s('af-units',units>0?units:'--');
+  s('af-unit-cfm',eq?eq.cfm:'--');
 }
 function calcHepa(vol){
   if(vol===undefined)vol=getVol('eq');
@@ -910,7 +913,7 @@ function saveState(){
     const roomMode=document.getElementById('eq-room-wrap').style.display!=='none';
     const state={screen:currentScreen,dryClass,afSeverity,roomMode,inputs:{}};
     ['eq-totalcf','eq-l','eq-w','eq-h',
-     'af-equip','dr-equip','hepa-equip',
+     'hepa-equip',
      'ps-tf-in','ps-tc-in','ps-rh-in','ps-tf-out','ps-tc-out','ps-rh-out'
     ].forEach(id=>{const el=document.getElementById(id);if(el)state.inputs[id]=el.value;});
     localStorage.setItem('pdq-calc-state',JSON.stringify(state));
