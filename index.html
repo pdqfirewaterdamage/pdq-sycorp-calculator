@@ -326,6 +326,11 @@ body { display: flex; flex-direction: column; }
 .equip-chip.active .ec-check { background: var(--green); border-color: var(--green); color: var(--white); }
 .equip-chip:active { opacity: 0.85; }
 .eq-room-head { display: flex; justify-content: space-between; align-items: baseline; }
+.eq-mode-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.eq-mode-row .toggle-btn-row { margin-bottom: 0; flex: 0 0 auto; }
+.eq-mode-row #eq-totalcf-wrap { flex: 1 1 0; min-width: 0; }
+.eq-mode-row .calc-input { height: 40px; padding: 0 10px; }
+@media (max-width: 380px) { .eq-mode-row .toggle-btn { padding: 8px 10px; font-size: 12px; } }
 .eq-vol-inline { font-size: 11px; color: var(--text-light); text-transform: none; letter-spacing: 0; font-weight: 500; }
 .eq-vol-inline strong { color: var(--navy); font-size: 16px; font-weight: 800; margin-left: 4px; }
 .equip-section {
@@ -544,11 +549,13 @@ body { display: flex; flex-direction: column; }
 
       <div class="calc-section">
         <div class="calc-label eq-room-head"><span>Room Size</span><span class="eq-vol-inline">Total volume <strong id="eq-vol">--</strong> ft&sup3;</span></div>
-        <div class="toggle-btn-row" id="eq-mode-btns">
-          <button class="toggle-btn active" onclick="setModeBtn('eq',false,this)">Enter total cu ft</button>
-          <button class="toggle-btn" onclick="setModeBtn('eq',true,this)">Enter room size</button>
+        <div class="eq-mode-row">
+          <div class="toggle-btn-row" id="eq-mode-btns">
+            <button class="toggle-btn active" onclick="setModeBtn('eq',false,this)">Enter total cu ft</button>
+            <button class="toggle-btn" onclick="setModeBtn('eq',true,this)">Enter room size</button>
+          </div>
+          <div id="eq-totalcf-wrap"><input class="calc-input" type="number" id="eq-totalcf" placeholder="Total cu ft" inputmode="decimal" aria-label="Total cubic feet"></div>
         </div>
-        <div id="eq-totalcf-wrap"><div class="calc-row"><div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="eq-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div></div></div>
         <div id="eq-room-wrap" style="display:none;"><div class="calc-row">
           <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="eq-l" placeholder="L" inputmode="decimal"></div>
           <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="eq-w" placeholder="W" inputmode="decimal"></div>
