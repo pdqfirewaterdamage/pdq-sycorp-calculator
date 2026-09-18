@@ -604,13 +604,7 @@ body { display: flex; flex-direction: column; }
         <div class="equip-section-head"><span class="equip-section-title">Dehumidifiers</span><span class="equip-head-right">Water Damage Class</span></div>
         <div class="calc-section">
           <div class="dr-equip-row">
-            <select class="calc-select" id="dr-equip">
-              <option value="0">Dri-Eaz LGR 6000Li (100 PPD)</option>
-              <option value="1">Phoenix DryMax XL 125 PPD</option>
-              <option value="2">XPower LGR Dehu (85 PPD)</option>
-              <option value="3">Dri-Eaz Evolution LGR (80 PPD)</option>
-              <option value="4">Dri-Eaz 3500i (70 PPD)</option>
-            </select>
+            <select class="calc-select" id="dr-equip"></select>
             <div class="btn-row dr-class-row" id="dr-class-btns">
               <button class="btn btn-blue btn-sm dr-class-btn active" onclick="setDryClass(1,this)" aria-label="Class 1">1</button>
               <button class="btn btn-blue btn-sm dr-class-btn" onclick="setDryClass(2,this)" aria-label="Class 2">2</button>
@@ -623,11 +617,7 @@ body { display: flex; flex-direction: column; }
           <div class="output-card"><div class="output-card-value" id="dr-aham">--</div><div class="output-card-label">AHAM Needed</div></div>
           <div class="output-card"><div class="output-card-value" id="dr-ppd">--</div><div class="output-card-label">Pints Per Day</div></div>
           <div class="output-card"><div class="output-card-value" id="dr-dehu-units">--</div><div class="output-card-label">Dehus Needed</div></div>
-          <button class="output-card output-card-btn" id="dr-specs-btn" onclick="togglePanel('dr-specs-panel');this.classList.toggle('active')"><div class="output-card-value">&#9432;</div><div class="output-card-label">Dehu Specs</div></button>
-        </div>
-        <div class="specs-panel" id="dr-specs-panel">
-          <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
-          <div id="dr-specs-list"></div>
+          <div class="output-card"><div class="output-card-value" id="dr-unit-ppd">--</div><div class="output-card-label">Dehu PPD</div></div>
         </div>
       </div>
 
@@ -711,7 +701,7 @@ const hydroxylEquip=[
 ];
 const dehuEquip=[
   {name:'Dri-Eaz LGR 6000Li',pints:100,amps:7.8},
-  {name:'Phoenix DryMax XL 125 PPD',pints:125,amps:9.0},
+  {name:'Phoenix DryMax XL',pints:125,amps:9.0},
   {name:'XPower LGR Dehu',pints:85,amps:6.5},
   {name:'Dri-Eaz Evolution LGR',pints:80,amps:7.5},
   {name:'Dri-Eaz 3500i',pints:70,amps:5.8}
@@ -728,7 +718,8 @@ function init(){
   const sel=document.getElementById('af-equip');
   hydroxylEquip.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=e.name+' ('+e.cfm+' cfm)';sel.appendChild(o);});
   renderSpecs('af-specs-list',hydroxylEquip,e=>e.cfm+' cfm | '+e.coverage+' ft\u00B3 | '+e.amps+'A');
-  renderSpecs('dr-specs-list',dehuEquip,e=>e.pints+' PPD | '+e.amps+' Amps');
+  const dsel=document.getElementById('dr-equip');
+  dehuEquip.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=e.name;dsel.appendChild(o);});
   // Combined equipment screen: live recalc on any input/equipment change
   bindCalc('eq-totalcf eq-l eq-w eq-h dr-equip hepa-equip af-equip',calcEquip);
   ['dr-equip','hepa-equip','af-equip'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',calcEquip);});
@@ -853,6 +844,7 @@ function calcDrying(vol){
   const ei=parseInt(document.getElementById('dr-equip').value),eq=dehuEquip[ei];
   const units=ppd>0&&eq?Math.ceil(ppd/eq.pints):0;
   s('dr-dehu-units',units>0?units:'--');
+  s('dr-unit-ppd',eq?eq.pints:'--');
 }
 
 /* PSYCHROMETRIC — Magnus formula, standard atmosphere */
