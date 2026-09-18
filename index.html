@@ -78,7 +78,7 @@ body { display: flex; flex-direction: column; }
 }
 .home-screen.hidden { display: none; }
 .home-grid {
-  flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr auto;
+  flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto;
   gap: 12px; padding: 16px;
 }
 .home-grid .home-card.iicrc-card { grid-column: 1 / -1; }
@@ -285,6 +285,15 @@ body { display: flex; flex-direction: column; }
 }
 .output-card-value { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
 .output-card-label { font-size: 9px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.2px; line-height: 1.3; }
+@media (max-width: 380px) { .output-grid { gap: 4px; } .output-card { padding: 8px 3px; } .output-card-label { font-size: 8px; } }
+.output-card-btn {
+  border: 1.5px solid var(--navy); background: var(--white); cursor: pointer; font-family: var(--font);
+  user-select: none; transition: background 0.15s, color 0.15s;
+}
+.output-card-btn .output-card-value, .output-card-btn .output-card-label { color: var(--navy); }
+.output-card-btn:active { opacity: 0.85; }
+.output-card-btn.active { background: var(--navy); }
+.output-card-btn.active .output-card-value, .output-card-btn.active .output-card-label { color: var(--white); }
 .app-footer {
   text-align: center; padding: 10px 12px; margin-top: 8px;
   background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 10px;
@@ -298,6 +307,85 @@ body { display: flex; flex-direction: column; }
   font-size: 10px; font-weight: 600; color: var(--text-light); line-height: 1.4;
 }
 .calc-screen { overflow-x: hidden; }
+
+/* Combined equipment screen */
+.equip-select-row { display: flex; gap: 8px; }
+.equip-chip {
+  flex: 1; min-height: 52px; border: 1.5px solid var(--gray-border); border-radius: 12px;
+  display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 7px;
+  padding: 0 14px 0 8px;
+  background: var(--white); color: var(--text-light); font-family: var(--font);
+  font-size: 13px; font-weight: 700; cursor: pointer; user-select: none; position: relative;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.equip-chip .ec-icon { font-size: 22px; line-height: 1; }
+.equip-chip .ec-icon-svg { display: flex; align-items: center; justify-content: center; height: 26px; }
+.hepa-icon { stroke: var(--navy); }
+.hyd-icon text { fill: var(--navy); } .hyd-icon line { stroke: var(--navy); }
+.equip-chip.active .hyd-icon text { fill: var(--white); } .equip-chip.active .hyd-icon line { stroke: var(--white); }
+.equip-chip.active .hepa-icon { stroke: var(--white); }
+.dehu-icon .di-body { fill: #c9d6e3; }
+.dehu-icon .di-lower { fill: var(--navy-light); }
+.dehu-icon .di-cap, .dehu-icon .di-detail { fill: var(--navy); }
+.dehu-icon .di-slot { fill: var(--white); }
+.dehu-icon .di-badge-bg { fill: var(--white); }
+.dehu-icon .di-badge-ring { fill: none; stroke: var(--navy); stroke-width: 3; }
+.dehu-icon .di-drop { fill: var(--navy-light); }
+.dehu-icon .di-slash { stroke: var(--navy); stroke-width: 3; stroke-linecap: round; }
+.equip-chip.active .hepa-icon { stroke: var(--navy); }
+.hyd-icon text { fill: var(--navy); } .hyd-icon line { stroke: var(--navy); }
+.equip-chip.active .hyd-icon text { fill: var(--white); } .equip-chip.active .hyd-icon line { stroke: var(--white); }
+.equip-chip.active .hepa-icon { stroke: var(--white); }
+.dehu-icon .di-body { fill: #c9d6e3; }
+.equip-chip.active .dehu-icon .di-lower { fill: var(--white); }
+.equip-chip.active .dehu-icon .di-cap { fill: var(--white); }
+.equip-chip.active .dehu-icon .di-detail { fill: var(--navy); }
+.equip-chip.active .dehu-icon .di-slot { fill: var(--navy); }
+.equip-chip.active .dehu-icon .di-badge-bg { fill: var(--navy); }
+.equip-chip.active .dehu-icon .di-badge-ring { stroke: var(--white); }
+.equip-chip.active .dehu-icon .di-drop { fill: var(--white); }
+.equip-chip.active .dehu-icon .di-slash { stroke: var(--white); }
+.equip-chip .ec-check {
+  position: absolute; top: 5px; right: 7px; width: 16px; height: 16px; border-radius: 50%;
+  border: 1.5px solid var(--gray-border); background: var(--white);
+  display: flex; align-items: center; justify-content: center; font-size: 10px; color: transparent;
+}
+.equip-chip.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.equip-chip.active .ec-check { background: var(--green); border-color: var(--green); color: var(--white); }
+.equip-chip:active { opacity: 0.85; }
+.eq-room-head { display: flex; align-items: center; gap: 10px; }
+.eq-vol-inline { margin-left: auto; font-size: 11px; color: var(--text-light); text-transform: none; letter-spacing: 0; font-weight: 500; white-space: nowrap; }
+.eq-vol-inline strong { color: var(--navy); font-size: 16px; font-weight: 800; margin-left: 4px; }
+.eq-vol-short { display: none; }
+.eq-mode-toggle { margin-bottom: 0; flex: 0 0 auto; }
+.eq-mode-toggle .toggle-btn { padding: 5px 10px; font-size: 12px; text-transform: none; letter-spacing: 0; }
+@media (max-width: 440px) { .equip-chip { gap: 5px; padding: 0 16px 0 6px; font-size: 12px; } .equip-chip .ec-check { top: 2px; right: 2px; width: 14px; height: 14px; font-size: 9px; } .dehu-icon { width: 24px; height: 24px; } .hepa-icon { width: 26px; height: 26px; } .hyd-icon { width: 27px; height: 21px; } }
+@media (max-width: 380px) { .equip-chip { gap: 4px; padding: 0 14px 0 5px; font-size: 11.5px; } .hyd-icon { width: 25px; height: 19px; } }
+@media (max-width: 380px) { .eq-room-head { gap: 6px; } .eq-mode-toggle .toggle-btn { padding: 5px 6px; font-size: 11px; } .eq-vol-inline { font-size: 10px; } .eq-vol-inline strong { font-size: 14px; margin-left: 2px; } .eq-vol-long { display: none; } .eq-vol-short { display: inline; } }
+.equip-section {
+  display: none; border: 1px solid var(--gray-border); border-radius: 12px;
+  padding: 12px 12px 6px; margin-bottom: 12px; background: var(--white);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.equip-section.on { display: block; }
+.equip-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.dr-equip-row { display: flex; gap: 8px; align-items: center; }
+.dr-equip-row .calc-select { flex: 1 1 0; min-width: 0; }
+.dr-class-row { margin-bottom: 0; gap: 4px; flex-wrap: nowrap; flex: 0 0 auto; }
+.dr-class-btn { width: 40px; padding: 0; font-size: 14px; }
+@media (max-width: 380px) { .dr-class-btn { width: 36px; font-size: 13px; } .dr-class-row { gap: 3px; } }
+.af-odor-row { display: flex; gap: 8px; align-items: center; }
+.af-odor-src { flex: 1 1 0; min-width: 0; }
+.af-odor-sev { flex: 0 0 auto; }
+.af-sev-row { margin-bottom: 0; gap: 4px; flex-wrap: nowrap; }
+.btn-sm { height: 44px; padding: 0 9px; font-size: 12px; min-width: 0; white-space: nowrap; }
+@media (max-width: 380px) { .btn-sm { padding: 0 7px; font-size: 11px; } .af-sev-row { gap: 3px; } }
+.equip-section-title { font-size: 15px; font-weight: 800; color: var(--navy); }
+.equip-head-right { margin-left: auto; font-size: 12px; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; }
+.equip-empty {
+  text-align: center; padding: 28px 16px; color: var(--text-light); font-size: 14px;
+  border: 1px dashed var(--gray-border); border-radius: 12px; margin-bottom: 12px;
+}
 
 /* Psychrometric — fills viewport via flex, Conditions & Results rows equal-sized */
 #psychro-screen {
@@ -414,17 +502,10 @@ body { display: flex; flex-direction: column; }
 
   <div class="home-screen" id="home-screen">
     <div class="home-grid">
-      <div class="home-card" onclick="showScreen('drying')">
-        <span class="home-card-icon">&#128167;</span>
-        <span class="home-card-label">Dehu</span>
-      </div>
-      <div class="home-card" onclick="showScreen('hepa')">
-        <span class="home-card-icon">&#129531;</span>
-        <span class="home-card-label">HEPA</span>
-      </div>
-      <div class="home-card" onclick="showScreen('airflow')">
-        <span class="home-card-icon">&#128168;</span>
-        <span class="home-card-label">Hydroxyl</span>
+      <div class="home-card" onclick="showScreen('equip')">
+        <span class="home-card-icon">&#129520;</span>
+        <span class="home-card-label">Equipment</span>
+        <span class="home-card-sub">Dehu &middot; HEPA &middot; Hydroxyl</span>
       </div>
       <div class="home-card" onclick="showScreen('psychro')">
         <span class="home-card-icon">&#127777;&#65039;</span>
@@ -439,114 +520,6 @@ body { display: flex; flex-direction: column; }
   </div>
 
   <div class="screen-container" id="screen-container">
-    <!-- HYDROXYL -->
-    <div class="screen calc-screen" id="airflow-screen">
-      <div class="calc-section">
-        <span class="calc-label">Odor Source &amp; Severity</span>
-        <div style="margin-bottom:10px;">
-          <label style="font-size:12px;color:var(--text-light);display:block;margin-bottom:4px;font-weight:500;">Odor source</label>
-          <select class="calc-select" id="af-source">
-            <option value="fire">Fire / Smoke</option><option value="sewage">Sewage</option>
-            <option value="skunk">Skunk</option><option value="oil">Oil</option><option value="other">Other</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:12px;color:var(--text-light);display:block;margin-bottom:6px;font-weight:500;">Severity</label>
-          <div class="btn-row" id="af-sev-btns">
-            <button class="btn btn-blue btn-full active" onclick="setAfSev('moderate',this)">Moderate</button>
-            <button class="btn btn-blue btn-full" onclick="setAfSev('heavy',this)">Heavy</button>
-            <button class="btn btn-blue btn-full" onclick="setAfSev('extreme',this)">Extreme</button>
-          </div>
-        </div>
-      </div>
-      <div class="calc-section">
-        <div style="display:flex;align-items:baseline;margin-bottom:8px;border-bottom:1px solid #e5e7eb;padding-bottom:6px;">
-          <span style="font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:0.8px;font-weight:700;">Total Cubic Footage</span>
-          <span style="font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-left:auto;">Air Changes Per Hour</span>
-        </div>
-        <div style="display:flex;align-items:stretch;">
-          <div class="toggle-btn-row" id="af-mode-btns" style="margin-bottom:0;">
-            <button class="toggle-btn active" onclick="setModeBtn('af',false,this)">Enter total cu ft</button>
-            <button class="toggle-btn" onclick="setModeBtn('af',true,this)">Enter room size</button>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;margin-left:auto;">
-            <div class="ach-box" style="display:flex;align-items:center;justify-content:center;margin:0;">6</div>
-            <div style="display:flex;flex-direction:column;justify-content:center;gap:1px;">
-              <span style="font-size:10px;color:var(--text-light);font-style:italic;line-height:1.2;">Per IICRC<br>standard of care</span>
-            </div>
-            <div style="display:flex;flex-direction:column;justify-content:center;">
-              <span style="font-size:10px;color:var(--text-light);line-height:1.2;">10.0 min per<br>air change</span>
-            </div>
-          </div>
-        </div>
-        <div id="af-totalcf-wrap" style="margin-top:8px;"><div class="calc-input-group"><label>Total cubic feet</label><input class="calc-input" type="number" id="af-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div></div>
-        <div id="af-room-wrap" style="display:none;margin-top:8px;"><div class="calc-row">
-          <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="af-l" placeholder="L" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="af-w" placeholder="W" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="af-h" value="8" placeholder="H" inputmode="decimal"></div>
-        </div></div>
-      </div>
-      <div class="calc-section">
-        <span class="calc-label">Equipment</span>
-        <select class="calc-select" id="af-equip"></select>
-      </div>
-      <div class="output-grid">
-        <div class="output-card"><div class="output-card-value" id="af-vol">--</div><div class="output-card-label">Volume</div></div>
-        <div class="output-card"><div class="output-card-value" id="af-cfm">--</div><div class="output-card-label">Airflow Needed</div></div>
-        <div class="output-card"><div class="output-card-value" id="af-units">--</div><div class="output-card-label">Units Needed</div></div>
-      </div>
-      <div class="specs-panel" id="af-specs-panel">
-        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Equipment Specs</span>
-        <div id="af-specs-list"></div>
-      </div>
-      <div class="app-footer">
-        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
-        <div class="iicrc-title">Calculations Based on IICRC Standards</div>
-        <div class="iicrc-standards">S500 &bull; S520 &bull; S540 &bull; S700<br>Industry-Standard Restoration Science</div>
-      </div>
-      <div class="bottom-bar">
-        <button class="bottom-btn btn-calc" onclick="calcAirflow()"><span class="bb-icon">&#9999;</span>Calculate</button>
-      </div>
-    </div>
-
-    <!-- HEPA -->
-    <div class="screen calc-screen hidden" id="hepa-screen">
-      <div class="calc-section">
-        <span class="calc-label">Drying Chamber Size</span>
-        <div class="toggle-btn-row" id="hepa-mode-btns">
-          <button class="toggle-btn active" onclick="setModeBtn('hepa',false,this)">Enter total cu ft</button>
-          <button class="toggle-btn" onclick="setModeBtn('hepa',true,this)">Enter room size</button>
-        </div>
-        <div id="hepa-totalcf-wrap"><div class="calc-row"><div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="hepa-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div></div></div>
-        <div id="hepa-room-wrap" style="display:none;"><div class="calc-row">
-          <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="hepa-l" placeholder="L" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="hepa-w" placeholder="W" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="hepa-h" value="8" placeholder="H" inputmode="decimal"></div>
-        </div></div>
-      </div>
-      <div class="calc-section">
-        <span class="calc-label">Air Changes Per Hour</span>
-        <div class="ach-locked"><div class="ach-box">6</div><span class="ach-note">Per IICRC standard of care</span></div>
-      </div>
-      <div class="calc-section">
-        <span class="calc-label">Equipment</span>
-        <select class="calc-select" id="hepa-equip"><option value="0">Dri-Eaz HEPA 500 (500 cfm)</option></select>
-      </div>
-      <div class="output-grid">
-        <div class="output-card"><div class="output-card-value" id="hepa-vol">--</div><div class="output-card-label">Volume</div></div>
-        <div class="output-card"><div class="output-card-value" id="hepa-cfm">--</div><div class="output-card-label">Airflow Needed</div></div>
-        <div class="output-card"><div class="output-card-value" id="hepa-units">--</div><div class="output-card-label">Units Needed</div></div>
-      </div>
-      <div class="app-footer">
-        <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
-        <div class="iicrc-title">Calculations Based on IICRC Standards</div>
-        <div class="iicrc-standards">S500 &bull; S520 &bull; S540 &bull; S700<br>Industry-Standard Restoration Science</div>
-      </div>
-      <div class="bottom-bar">
-        <button class="bottom-btn btn-calc" onclick="calcHepa()"><span class="bb-icon">&#9999;</span>Calculate</button>
-      </div>
-    </div>
-
     <!-- PSYCHROMETRIC -->
     <div class="screen calc-screen hidden" id="psychro-screen">
       <div class="calc-section">
@@ -598,58 +571,109 @@ body { display: flex; flex-direction: column; }
       </div>
     </div>
 
-    <!-- DEHU -->
-    <div class="screen calc-screen hidden" id="drying-screen">
+    <!-- EQUIPMENT (Dehu / HEPA / Hydroxyl combined) -->
+    <div class="screen calc-screen hidden" id="equip-screen" style="padding-bottom:24px;">
       <div class="calc-section">
-        <span class="calc-label">Water Damage Class</span>
-        <div class="btn-row" id="dr-class-btns">
-          <button class="btn btn-blue btn-full active" onclick="setDryClass(1,this)">Class 1</button>
-          <button class="btn btn-blue btn-full" onclick="setDryClass(2,this)">Class 2</button>
-          <button class="btn btn-blue btn-full" onclick="setDryClass(3,this)">Class 3</button>
-          <button class="btn btn-blue btn-full" onclick="setDryClass(4,this)">Class 4</button>
+        <div class="equip-select-row" id="eq-type-btns">
+          <button class="equip-chip" data-type="dehu" onclick="toggleEquipType('dehu')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="dehu-icon" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true"><rect class="di-body" x="12" y="4" width="36" height="52" rx="5"/><rect class="di-lower" x="12" y="42" width="36" height="14" rx="5"/><rect class="di-lower" x="12" y="42" width="36" height="6"/><rect class="di-detail" x="30.5" y="45" width="3" height="8" rx="1.5"/><rect class="di-detail" x="17" y="21" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="26" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="31" width="26" height="2.6" rx="1.3"/><rect class="di-detail" x="17" y="36" width="26" height="2.6" rx="1.3"/><rect class="di-cap" x="12" y="4" width="36" height="14" rx="5"/><rect class="di-cap" x="12" y="12" width="36" height="6"/><rect class="di-slot" x="26" y="8" width="12" height="3" rx="1.5"/><rect class="di-cap" x="15" y="56" width="6" height="3.5" rx="1.5"/><rect class="di-cap" x="43" y="56" width="6" height="3.5" rx="1.5"/><circle class="di-badge-bg" cx="48" cy="44" r="14"/><circle class="di-badge-ring" cx="48" cy="44" r="11.5"/><path class="di-drop" d="M48 35.5c-3.6 4.6-5.6 7.4-5.6 10.2a5.6 5.6 0 0 0 11.2 0c0-2.8-2-5.6-5.6-10.2z"/><line class="di-slash" x1="40.5" y1="36.5" x2="55.5" y2="51.5"/></svg></span><span>Dehu</span></button>
+          <button class="equip-chip" data-type="hepa" onclick="toggleEquipType('hepa')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="hepa-icon" viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 13v-3.5a2.5 2.5 0 0 1 2.5-2.5h11a2.5 2.5 0 0 1 2.5 2.5V13"/><rect x="6" y="13" width="42" height="40" rx="4"/><circle cx="27" cy="33" r="13"/><line x1="27" y1="20.5" x2="27" y2="45.5"/><line x1="21" y1="22" x2="21" y2="44"/><line x1="33" y1="22" x2="33" y2="44"/><line x1="15" y1="33" x2="39" y2="33"/><line x1="16.5" y1="27" x2="37.5" y2="27"/><line x1="16.5" y1="39" x2="37.5" y2="39"/><path d="M50 24q3-2.5 6 0t5 0"/><path d="M58 21l3 3-3 3"/><path d="M50 33q3-2.5 6 0t5 0"/><path d="M58 30l3 3-3 3"/><path d="M50 42q3-2.5 6 0t5 0"/><path d="M58 39l3 3-3 3"/></svg></span><span>HEPA</span></button>
+          <button class="equip-chip" data-type="hydroxyl" onclick="toggleEquipType('hydroxyl')"><span class="ec-check">&#10003;</span><span class="ec-icon ec-icon-svg"><svg class="hyd-icon" viewBox="0 0 72 56" width="38" height="30" aria-hidden="true" stroke-width="3" stroke-linecap="round"><text x="1" y="26" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">R</text><line x1="22" y1="17" x2="33" y2="17"/><text x="35" y="26" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">O</text><line x1="52" y1="29" x2="58" y2="39"/><text x="52" y="55" font-size="27" font-weight="700" font-family="Arial, Helvetica, sans-serif">H</text></svg></span><span>Hydroxyl</span></button>
         </div>
-        <div id="dr-class-desc" style="font-size:12px;color:var(--text-light);margin-top:8px;line-height:1.4;padding:0 4px;">Class 1 &ndash; Minor Amount of Water: Affects only part of a room with minimal evaporation demand.</div>
       </div>
+
       <div class="calc-section">
-        <span class="calc-label">Room Size</span>
-        <div class="toggle-btn-row" id="dr-mode-btns">
-          <button class="toggle-btn active" onclick="setModeBtn('dr',false,this)">Enter total cu ft</button>
-          <button class="toggle-btn" onclick="setModeBtn('dr',true,this)">Enter room size</button>
+        <div class="calc-label eq-room-head">
+          <div class="toggle-btn-row eq-mode-toggle" id="eq-mode-btns">
+            <button class="toggle-btn active" onclick="setModeBtn('eq',false,this)">Total CU FT</button>
+            <button class="toggle-btn" onclick="setModeBtn('eq',true,this)">Room Size</button>
+          </div>
+          <span class="eq-vol-inline"><span class="eq-vol-long">Total Volume</span><span class="eq-vol-short">Volume</span> <strong id="eq-vol">--</strong> ft&sup3;</span>
         </div>
-        <div id="dr-totalcf-wrap"><div class="calc-row"><div class="calc-input-group" style="flex:1;"><label>Total cubic feet</label><input class="calc-input" type="number" id="dr-totalcf" placeholder="e.g. 12000" inputmode="decimal"></div></div></div>
-        <div id="dr-room-wrap" style="display:none;"><div class="calc-row">
-          <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="dr-l" placeholder="L" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="dr-w" placeholder="W" inputmode="decimal"></div>
-          <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="dr-h" value="8" placeholder="H" inputmode="decimal"></div>
+        <div id="eq-totalcf-wrap"><input class="calc-input" type="number" id="eq-totalcf" placeholder="Total cubic feet" inputmode="decimal" aria-label="Total cubic feet"></div>
+        <div id="eq-room-wrap" style="display:none;"><div class="calc-row">
+          <div class="calc-input-group"><label>Length (ft)</label><input class="calc-input" type="number" id="eq-l" placeholder="L" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="eq-w" placeholder="W" inputmode="decimal"></div>
+          <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="eq-h" value="8" placeholder="H" inputmode="decimal"></div>
         </div></div>
       </div>
-      <div class="calc-section">
-        <span class="calc-label">Equipment</span>
-        <select class="calc-select" id="dr-equip">
-          <option value="0">Dri-Eaz LGR 6000Li (100 PPD)</option>
-          <option value="1">Phoenix DryMax XL 125 PPD</option>
-          <option value="2">XPower LGR Dehu (85 PPD)</option>
-          <option value="3">Dri-Eaz Evolution LGR (80 PPD)</option>
-          <option value="4">Dri-Eaz 3500i (70 PPD)</option>
-        </select>
+
+      <div class="equip-empty" id="eq-empty">Select equipment above to see results.</div>
+
+      <!-- DEHU -->
+      <div class="equip-section" id="eq-sec-dehu">
+        <div class="equip-section-head"><span class="equip-section-title">Dehumidifiers</span><span class="equip-head-right">Water Damage Class</span></div>
+        <div class="calc-section">
+          <div class="dr-equip-row">
+            <select class="calc-select" id="dr-equip"></select>
+            <div class="btn-row dr-class-row" id="dr-class-btns">
+              <button class="btn btn-blue btn-sm dr-class-btn active" onclick="setDryClass(1,this)" aria-label="Class 1">1</button>
+              <button class="btn btn-blue btn-sm dr-class-btn" onclick="setDryClass(2,this)" aria-label="Class 2">2</button>
+              <button class="btn btn-blue btn-sm dr-class-btn" onclick="setDryClass(3,this)" aria-label="Class 3">3</button>
+              <button class="btn btn-blue btn-sm dr-class-btn" onclick="setDryClass(4,this)" aria-label="Class 4">4</button>
+            </div>
+          </div>
+        </div>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value" id="dr-aham">--</div><div class="output-card-label">AHAM Needed</div></div>
+          <div class="output-card"><div class="output-card-value" id="dr-ppd">--</div><div class="output-card-label">Pints Per Day</div></div>
+          <div class="output-card"><div class="output-card-value" id="dr-dehu-units">--</div><div class="output-card-label">Dehus Needed</div></div>
+          <div class="output-card"><div class="output-card-value" id="dr-unit-ppd">--</div><div class="output-card-label">Dehu PPD</div></div>
+          <button class="output-card output-card-btn" id="dr-specs-btn" onclick="togglePanel('dr-specs-panel');this.classList.toggle('active')"><div class="output-card-value">&#9432;</div><div class="output-card-label">Specs</div></button>
+        </div>
+        <div class="specs-panel" id="dr-specs-panel">
+          <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
+          <div id="dr-specs-list"></div>
+        </div>
       </div>
-      <div class="output-grid">
-        <div class="output-card"><div class="output-card-value" id="dr-aham">--</div><div class="output-card-label">AHAM Needed</div></div>
-        <div class="output-card"><div class="output-card-value" id="dr-ppd">--</div><div class="output-card-label">Pints Per Day</div></div>
-        <div class="output-card"><div class="output-card-value" id="dr-dehu-units">--</div><div class="output-card-label">Dehus Needed</div></div>
+
+      <!-- HEPA -->
+      <div class="equip-section" id="eq-sec-hepa">
+        <div class="equip-section-head"><span class="equip-section-title">HEPA Air Scrubbers</span></div>
+        <div class="calc-section">
+          <select class="calc-select" id="hepa-equip"><option value="0">Dri-Eaz HEPA 500 (500 cfm)</option></select>
+        </div>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value">6</div><div class="output-card-label">Air Changes / Hr</div></div>
+          <div class="output-card"><div class="output-card-value" id="hepa-vol">--</div><div class="output-card-label">Volume</div></div>
+          <div class="output-card"><div class="output-card-value" id="hepa-cfm">--</div><div class="output-card-label">Airflow Needed</div></div>
+          <div class="output-card"><div class="output-card-value" id="hepa-units">--</div><div class="output-card-label">Units Needed</div></div>
+        </div>
       </div>
-      <div style="padding:4px 0;"><span class="dehu-specs-link" onclick="togglePanel('dr-specs-panel')">Click here for dehumidifier specs</span></div>
-      <div class="specs-panel" id="dr-specs-panel">
-        <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Dehumidifier Specs</span>
-        <div id="dr-specs-list"></div>
+
+      <!-- HYDROXYL -->
+      <div class="equip-section" id="eq-sec-hydroxyl">
+        <div class="equip-section-head"><span class="equip-section-title">Hydroxyl Generators</span></div>
+        <div class="calc-section">
+          <div class="af-odor-row">
+            <div class="calc-input-group af-odor-src">
+              <select class="calc-select" id="af-equip" aria-label="Hydroxyl generator"></select>
+            </div>
+            <div class="calc-input-group af-odor-sev">
+              <div class="btn-row af-sev-row" id="af-sev-btns">
+                <button class="btn btn-blue btn-sm active" onclick="setAfSev('moderate',this)" aria-label="Moderate severity">Moderate</button>
+                <button class="btn btn-blue btn-sm" onclick="setAfSev('heavy',this)" aria-label="Heavy severity">Heavy</button>
+                <button class="btn btn-blue btn-sm" onclick="setAfSev('extreme',this)" aria-label="Extreme severity">Extreme</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="output-grid">
+          <div class="output-card"><div class="output-card-value">6</div><div class="output-card-label">Air Changes / Hr</div></div>
+          <div class="output-card"><div class="output-card-value" id="af-cfm">--</div><div class="output-card-label">Airflow Needed</div></div>
+          <div class="output-card"><div class="output-card-value" id="af-units">--</div><div class="output-card-label">Units Needed</div></div>
+          <div class="output-card"><div class="output-card-value" id="af-unit-cfm">--</div><div class="output-card-label">Unit CFM</div></div>
+          <button class="output-card output-card-btn" id="af-specs-btn" onclick="togglePanel('af-specs-panel');this.classList.toggle('active')"><div class="output-card-value">&#9432;</div><div class="output-card-label">Specs</div></button>
+        </div>
+        <div class="specs-panel" id="af-specs-panel">
+          <span class="calc-label" style="border-bottom:none;padding-bottom:0;">Hydroxyl Specs</span>
+          <div id="af-specs-list"></div>
+        </div>
       </div>
+
       <div class="app-footer">
         <img src="https://iicrc.org/wp-content/uploads/2020/12/cropped-colorlogo-01-scaled-3-300x100.jpg" alt="IICRC">
         <div class="iicrc-title">Calculations Based on IICRC Standards</div>
         <div class="iicrc-standards">S500 &bull; S520 &bull; S540 &bull; S700<br>Industry-Standard Restoration Science</div>
-      </div>
-      <div class="bottom-bar">
-        <button class="bottom-btn btn-calc" onclick="calcDrying()"><span class="bb-icon">&#9999;</span>Calculate</button>
       </div>
     </div>
 
@@ -663,7 +687,7 @@ body { display: flex; flex-direction: column; }
     <h3>RestorationCalc Pro&trade;</h3>
     <p>IICRC S500 Compliant Restoration Calculator</p>
     <p style="font-size:12px;color:#999;">Calculations follow IICRC S500 Standard of Care guidelines for water damage restoration. Always verify with project-specific conditions and manufacturer specifications.</p>
-    <p style="font-size:11px;color:#BBB;">v3.1.0</p>
+    <p style="font-size:11px;color:#BBB;">v3.2.0</p>
     <button class="modal-close" onclick="closeInfo()">Close</button>
   </div>
 </div>
@@ -682,26 +706,38 @@ const hydroxylEquip=[
 ];
 const dehuEquip=[
   {name:'Dri-Eaz LGR 6000Li',pints:100,amps:7.8},
-  {name:'Phoenix DryMax XL 125 PPD',pints:125,amps:9.0},
+  {name:'Phoenix DryMax XL',pints:125,amps:9.0},
   {name:'XPower LGR Dehu',pints:85,amps:6.5},
   {name:'Dri-Eaz Evolution LGR',pints:80,amps:7.5},
   {name:'Dri-Eaz 3500i',pints:70,amps:5.8}
 ];
 
 let currentScreen='home', navStack=[], afSeverity='moderate', dryClass=1;
-const screenTitles={airflow:'Hydroxyl',drying:'Dehumidifiers',hepa:'HEPA Air Scrubbers',psychro:'Psychrometric',jobs:'All Calculations','job-detail':'Calculation Detail'};
+let equipTypes={dehu:false,hepa:false,hydroxyl:false};
+const EQUIP_TYPES=['dehu','hepa','hydroxyl'];
+const screenTitles={equip:'Equipment',psychro:'Psychrometric',jobs:'All Calculations','job-detail':'Calculation Detail'};
+// Legacy screen names (pre-combined) map onto the single equipment screen
+const legacyScreens={airflow:'equip',drying:'equip',hepa:'equip'};
 
 function init(){
   const sel=document.getElementById('af-equip');
-  hydroxylEquip.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=e.name+' ('+e.cfm+' cfm)';sel.appendChild(o);});
+  sel.appendChild(new Option('Select hydroxyl generator',''));
+  hydroxylEquip.forEach((e,i)=>{sel.appendChild(new Option(e.name,i));});
   renderSpecs('af-specs-list',hydroxylEquip,e=>e.cfm+' cfm | '+e.coverage+' ft\u00B3 | '+e.amps+'A');
   renderSpecs('dr-specs-list',dehuEquip,e=>e.pints+' PPD | '+e.amps+' Amps');
+  const dsel=document.getElementById('dr-equip');
+  dsel.appendChild(new Option('Select dehumidifier',''));
+  dehuEquip.forEach((e,i)=>{dsel.appendChild(new Option(e.name,i));});
+  // Combined equipment screen: live recalc on any input/equipment change
+  bindCalc('eq-totalcf eq-l eq-w eq-h dr-equip hepa-equip af-equip',calcEquip);
+  ['dr-equip','hepa-equip','af-equip'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',calcEquip);});
   // Psychrometric: wire F<->C sync + live recalc on input
   [['ps-tf-in','f-in'],['ps-tc-in','c-in'],['ps-tf-out','f-out'],['ps-tc-out','c-out']].forEach(([id,which])=>{
     const el=document.getElementById(id);if(el)el.addEventListener('input',()=>psSyncFC(which));
   });
   ['ps-rh-in','ps-rh-out'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',calcPsychro);});
   calcPsychro();
+  applyEquipTypes(); calcEquip();
   loadState();
 }
 function bindCalc(ids,fn){ids.split(' ').forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',fn);});}
@@ -714,6 +750,8 @@ function syncFields(ids){
 
 /* NAV */
 function showScreen(name){
+  name=legacyScreens[name]||name;
+  if(name==='equip'){equipTypes={dehu:false,hepa:false,hydroxyl:false};applyEquipTypes();document.getElementById('dr-equip').value='';document.getElementById('af-equip').value='';calcEquip();}
   currentScreen=name; navStack.push(name);
   document.getElementById('home-screen').classList.add('hidden');
   document.getElementById('screen-container').classList.add('visible');
@@ -764,6 +802,7 @@ function setModeBtn(prefix,roomMode,btn){
   btn.classList.add('active');
   document.getElementById(prefix+'-totalcf-wrap').style.display=roomMode?'none':'block';
   document.getElementById(prefix+'-room-wrap').style.display=roomMode?'block':'none';
+  if(prefix==='eq')calcEquip();
 }
 
 function v(id){return parseFloat(document.getElementById(id).value)||0;}
@@ -776,26 +815,45 @@ function getVol(prefix){
 }
 
 /* CALCS */
-function setAfSev(sev,btn){afSeverity=sev;document.getElementById('af-sev-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-function calcAirflow(){
-  const vol=getVol('af'),ei=parseInt(document.getElementById('af-equip').value),eq=hydroxylEquip[ei];
-  const cfm=vol*6/60,units=vol>0&&eq?Math.ceil(cfm/eq.cfm):0;
-  s('af-vol',vol>0?r(vol,0):'--'); s('af-cfm',cfm>0?r(cfm,0):'--');
-  s('af-units',units>0?units:'--');
+function toggleEquipType(t){
+  equipTypes[t]=!equipTypes[t];
+  applyEquipTypes(); calcEquip(); saveState();
 }
-function calcHepa(){
-  const vol=getVol('hepa'),cfm=vol*6/60,units=vol>0?Math.ceil(cfm/500):0;
+function applyEquipTypes(){
+  document.querySelectorAll('#eq-type-btns .equip-chip').forEach(b=>b.classList.toggle('active',!!equipTypes[b.dataset.type]));
+  EQUIP_TYPES.forEach(t=>{const el=document.getElementById('eq-sec-'+t);if(el)el.classList.toggle('on',!!equipTypes[t]);});
+  const any=EQUIP_TYPES.some(t=>equipTypes[t]);
+  document.getElementById('eq-empty').style.display=any?'none':'block';
+}
+function calcEquip(){
+  const vol=getVol('eq');
+  s('eq-vol',vol>0?r(vol,0).toLocaleString():'--');
+  calcDrying(vol); calcHepa(vol); calcAirflow(vol);
+}
+function setAfSev(sev,btn){afSeverity=sev;document.getElementById('af-sev-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');calcEquip();}
+function calcAirflow(vol){
+  if(vol===undefined)vol=getVol('eq');
+  const ei=parseInt(document.getElementById('af-equip').value),eq=hydroxylEquip[ei];
+  const cfm=vol*6/60,units=vol>0&&eq?Math.ceil(cfm/eq.cfm):0;
+  s('af-cfm',cfm>0?r(cfm,0):'--');
+  s('af-units',units>0?units:'--');
+  s('af-unit-cfm',eq?eq.cfm:'--');
+}
+function calcHepa(vol){
+  if(vol===undefined)vol=getVol('eq');
+  const cfm=vol*6/60,units=vol>0?Math.ceil(cfm/500):0;
   s('hepa-vol',vol>0?r(vol,0):'--'); s('hepa-cfm',cfm>0?r(cfm,0):'--');
   s('hepa-units',units>0?units:'--');
 }
-const classDescs={1:'Class 1 \u2013 Minor Amount of Water: Affects only part of a room with minimal evaporation demand.',2:'Class 2 \u2013 Large Amount of Water: Affects an entire room or area; water has wicked into structural materials with moderate evaporation demand.',3:'Class 3 \u2013 Greatest Amount of Water: Water has saturated ceilings, walls, insulation, and flooring, creating the highest evaporation demand.',4:'Class 4 \u2013 Specialty Drying: Involves materials with very low permeance/porosity (hardwood, concrete, stone). Requires extended drying time and special methods.'};
-function setDryClass(c,btn){dryClass=c;document.getElementById('dr-class-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('dr-class-desc').textContent=classDescs[c];calcDrying();}
-function calcDrying(){
-  const vol=getVol('dr'),pf={1:1,2:2,3:2.5,4:3},ppd=vol>0?Math.ceil((vol/100)*pf[dryClass]):0;
+function setDryClass(c,btn){dryClass=c;document.getElementById('dr-class-btns').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');calcEquip();}
+function calcDrying(vol){
+  if(vol===undefined)vol=getVol('eq');
+  const pf={1:1,2:2,3:2.5,4:3},ppd=vol>0?Math.ceil((vol/100)*pf[dryClass]):0;
   s('dr-aham',ppd>0?ppd:'--'); s('dr-ppd',ppd>0?ppd:'--');
   const ei=parseInt(document.getElementById('dr-equip').value),eq=dehuEquip[ei];
   const units=ppd>0&&eq?Math.ceil(ppd/eq.pints):0;
   s('dr-dehu-units',units>0?units:'--');
+  s('dr-unit-ppd',eq?eq.pints:'--');
 }
 
 /* PSYCHROMETRIC — Magnus formula, standard atmosphere */
@@ -858,10 +916,10 @@ function calcPsychro(){
 /* LOCAL STORAGE */
 function saveState(){
   try{
-    const state={screen:currentScreen,dryClass,inputs:{}};
-    ['af-totalcf','af-equip','af-source','af-l','af-w','af-h',
-     'dr-totalcf','dr-l','dr-w','dr-h','dr-equip',
-     'hepa-totalcf','hepa-l','hepa-w','hepa-h',
+    const roomMode=document.getElementById('eq-room-wrap').style.display!=='none';
+    const state={screen:currentScreen,dryClass,afSeverity,roomMode,inputs:{}};
+    ['eq-totalcf','eq-l','eq-w','eq-h',
+     'hepa-equip',
      'ps-tf-in','ps-tc-in','ps-rh-in','ps-tf-out','ps-tc-out','ps-rh-out'
     ].forEach(id=>{const el=document.getElementById(id);if(el)state.inputs[id]=el.value;});
     localStorage.setItem('pdq-calc-state',JSON.stringify(state));
@@ -872,7 +930,15 @@ function loadState(){
     const raw=localStorage.getItem('pdq-calc-state');if(!raw)return;
     const state=JSON.parse(raw);
     if(state.inputs)Object.keys(state.inputs).forEach(id=>{const el=document.getElementById(id);if(el&&state.inputs[id])el.value=state.inputs[id];});
-    if(state.dryClass){dryClass=state.dryClass;document.getElementById('dr-class-btns').querySelectorAll('.btn').forEach((b,i)=>b.classList.toggle('active',(i+1)===dryClass));document.getElementById('dr-class-desc').textContent=classDescs[dryClass];}
+    // Migrate measurements saved by the old separate Dehu/HEPA/Hydroxyl screens
+    if(state.inputs){
+      const pick=k=>['dr','hepa','af'].map(p=>state.inputs[p+'-'+k]).find(x=>x);
+      ['totalcf','l','w','h'].forEach(k=>{const el=document.getElementById('eq-'+k);if(el&&!state.inputs['eq-'+k]){const val=pick(k);if(val)el.value=val;}});
+    }
+    if(state.dryClass){dryClass=state.dryClass;document.getElementById('dr-class-btns').querySelectorAll('.btn').forEach((b,i)=>b.classList.toggle('active',(i+1)===dryClass));}
+    if(state.afSeverity){afSeverity=state.afSeverity;const sevs=['moderate','heavy','extreme'];document.getElementById('af-sev-btns').querySelectorAll('.btn').forEach((b,i)=>b.classList.toggle('active',sevs[i]===afSeverity));}
+    if(typeof state.roomMode==='boolean'){const btns=document.getElementById('eq-mode-btns').querySelectorAll('.toggle-btn');setModeBtn('eq',state.roomMode,btns[state.roomMode?1:0]);}
+    applyEquipTypes(); calcEquip();
     if(state.screen&&state.screen!=='home'&&state.screen!=='jobs'&&state.screen!=='job-detail')showScreen(state.screen);
     calcPsychro();
   }catch(e){}
