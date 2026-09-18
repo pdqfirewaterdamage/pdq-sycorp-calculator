@@ -354,7 +354,6 @@ body { display: flex; flex-direction: column; }
 .equip-chip.active .ec-check { background: var(--green); border-color: var(--green); color: var(--white); }
 .equip-chip:active { opacity: 0.85; }
 .eq-room-head { display: flex; align-items: center; gap: 10px; }
-.eq-room-head > span:first-child { white-space: nowrap; }
 .eq-vol-inline { margin-left: auto; font-size: 11px; color: var(--text-light); text-transform: none; letter-spacing: 0; font-weight: 500; white-space: nowrap; }
 .eq-vol-inline strong { color: var(--navy); font-size: 16px; font-weight: 800; margin-left: 4px; }
 .eq-vol-short { display: none; }
@@ -583,7 +582,6 @@ body { display: flex; flex-direction: column; }
 
       <div class="calc-section">
         <div class="calc-label eq-room-head">
-          <span>Room Size</span>
           <div class="toggle-btn-row eq-mode-toggle" id="eq-mode-btns">
             <button class="toggle-btn active" onclick="setModeBtn('eq',false,this)">Total CU FT</button>
             <button class="toggle-btn" onclick="setModeBtn('eq',true,this)">Room Size</button>
