@@ -374,7 +374,7 @@ body { display: flex; flex-direction: column; }
 .dr-class-row { margin-bottom: 0; gap: 4px; flex-wrap: nowrap; flex: 0 0 auto; }
 .dr-class-btn { width: 40px; padding: 0; font-size: 14px; }
 @media (max-width: 380px) { .dr-class-btn { width: 36px; font-size: 13px; } .dr-class-row { gap: 3px; } }
-.af-odor-row { display: flex; gap: 8px; align-items: flex-end; }
+.af-odor-row { display: flex; gap: 8px; align-items: center; }
 .af-odor-src { flex: 1 1 0; min-width: 0; }
 .af-odor-sev { flex: 0 0 auto; }
 .af-sev-row { margin-bottom: 0; gap: 4px; flex-wrap: nowrap; }
@@ -585,8 +585,8 @@ body { display: flex; flex-direction: column; }
         <div class="calc-label eq-room-head">
           <span>Room Size</span>
           <div class="toggle-btn-row eq-mode-toggle" id="eq-mode-btns">
-            <button class="toggle-btn active" onclick="setModeBtn('eq',false,this)">Total cu ft</button>
-            <button class="toggle-btn" onclick="setModeBtn('eq',true,this)">Room size</button>
+            <button class="toggle-btn active" onclick="setModeBtn('eq',false,this)">Total CU FT</button>
+            <button class="toggle-btn" onclick="setModeBtn('eq',true,this)">Room Size</button>
           </div>
           <span class="eq-vol-inline"><span class="eq-vol-long">Total volume</span><span class="eq-vol-short">Volume</span> <strong id="eq-vol">--</strong> ft&sup3;</span>
         </div>
@@ -652,24 +652,16 @@ body { display: flex; flex-direction: column; }
         <div class="calc-section">
           <div class="af-odor-row">
             <div class="calc-input-group af-odor-src">
-              <label>Odor source</label>
-              <select class="calc-select" id="af-source">
-                <option value="fire">Fire / Smoke</option><option value="sewage">Sewage</option>
-                <option value="skunk">Skunk</option><option value="oil">Oil</option><option value="other">Other</option>
-              </select>
+              <select class="calc-select" id="af-equip" aria-label="Hydroxyl generator"></select>
             </div>
             <div class="calc-input-group af-odor-sev">
-              <label>Severity</label>
               <div class="btn-row af-sev-row" id="af-sev-btns">
-                <button class="btn btn-blue btn-sm active" onclick="setAfSev('moderate',this)">Moderate</button>
-                <button class="btn btn-blue btn-sm" onclick="setAfSev('heavy',this)">Heavy</button>
-                <button class="btn btn-blue btn-sm" onclick="setAfSev('extreme',this)">Extreme</button>
+                <button class="btn btn-blue btn-sm active" onclick="setAfSev('moderate',this)" aria-label="Moderate severity">Moderate</button>
+                <button class="btn btn-blue btn-sm" onclick="setAfSev('heavy',this)" aria-label="Heavy severity">Heavy</button>
+                <button class="btn btn-blue btn-sm" onclick="setAfSev('extreme',this)" aria-label="Extreme severity">Extreme</button>
               </div>
             </div>
           </div>
-        </div>
-        <div class="calc-section">
-          <select class="calc-select" id="af-equip"></select>
         </div>
         <div class="output-grid">
           <div class="output-card"><div class="output-card-value">6</div><div class="output-card-label">Air Changes / Hr</div></div>
@@ -929,7 +921,7 @@ function saveState(){
     const roomMode=document.getElementById('eq-room-wrap').style.display!=='none';
     const state={screen:currentScreen,dryClass,afSeverity,equipTypes,roomMode,inputs:{}};
     ['eq-totalcf','eq-l','eq-w','eq-h',
-     'af-equip','af-source','dr-equip','hepa-equip',
+     'af-equip','dr-equip','hepa-equip',
      'ps-tf-in','ps-tc-in','ps-rh-in','ps-tf-out','ps-tc-out','ps-rh-out'
     ].forEach(id=>{const el=document.getElementById(id);if(el)state.inputs[id]=el.value;});
     localStorage.setItem('pdq-calc-state',JSON.stringify(state));
