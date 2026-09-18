@@ -317,12 +317,9 @@ body { display: flex; flex-direction: column; }
 .equip-chip.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
 .equip-chip.active .ec-check { background: var(--green); border-color: var(--green); color: var(--white); }
 .equip-chip:active { opacity: 0.85; }
-.eq-volume-line {
-  display: flex; justify-content: space-between; align-items: center;
-  background: var(--gray-bg); border-radius: 8px; padding: 8px 12px; margin-top: 8px;
-  font-size: 13px; color: var(--text-light);
-}
-.eq-volume-line strong { color: var(--navy); font-size: 16px; font-weight: 800; }
+.eq-room-head { display: flex; justify-content: space-between; align-items: baseline; }
+.eq-vol-inline { font-size: 11px; color: var(--text-light); text-transform: none; letter-spacing: 0; font-weight: 500; }
+.eq-vol-inline strong { color: var(--navy); font-size: 16px; font-weight: 800; margin-left: 4px; }
 .equip-section {
   display: none; border: 1px solid var(--gray-border); border-radius: 12px;
   padding: 12px 12px 6px; margin-bottom: 12px; background: var(--white);
@@ -532,7 +529,7 @@ body { display: flex; flex-direction: column; }
       </div>
 
       <div class="calc-section">
-        <span class="calc-label">Room Size</span>
+        <div class="calc-label eq-room-head"><span>Room Size</span><span class="eq-vol-inline">Total volume <strong id="eq-vol">--</strong> ft&sup3;</span></div>
         <div class="toggle-btn-row" id="eq-mode-btns">
           <button class="toggle-btn active" onclick="setModeBtn('eq',false,this)">Enter total cu ft</button>
           <button class="toggle-btn" onclick="setModeBtn('eq',true,this)">Enter room size</button>
@@ -543,7 +540,6 @@ body { display: flex; flex-direction: column; }
           <div class="calc-input-group"><label>Width (ft)</label><input class="calc-input" type="number" id="eq-w" placeholder="W" inputmode="decimal"></div>
           <div class="calc-input-group"><label>Height (ft)</label><input class="calc-input" type="number" id="eq-h" value="8" placeholder="H" inputmode="decimal"></div>
         </div></div>
-        <div class="eq-volume-line"><span>Total volume</span><span><strong id="eq-vol">--</strong> ft&sup3;</span></div>
       </div>
 
       <div class="equip-empty" id="eq-empty" style="display:none;">Select at least one equipment type above to see results.</div>
