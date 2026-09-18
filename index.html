@@ -329,9 +329,10 @@ body { display: flex; flex-direction: column; }
 .eq-room-head > span:first-child { white-space: nowrap; }
 .eq-vol-inline { margin-left: auto; font-size: 11px; color: var(--text-light); text-transform: none; letter-spacing: 0; font-weight: 500; white-space: nowrap; }
 .eq-vol-inline strong { color: var(--navy); font-size: 16px; font-weight: 800; margin-left: 4px; }
+.eq-vol-short { display: none; }
 .eq-mode-toggle { margin-bottom: 0; flex: 0 0 auto; }
 .eq-mode-toggle .toggle-btn { padding: 5px 10px; font-size: 12px; text-transform: none; letter-spacing: 0; }
-@media (max-width: 380px) { .eq-room-head { gap: 6px; } .eq-mode-toggle .toggle-btn { padding: 5px 6px; font-size: 11px; } .eq-vol-inline { font-size: 10px; } .eq-vol-inline strong { font-size: 14px; margin-left: 2px; } }
+@media (max-width: 380px) { .eq-room-head { gap: 6px; } .eq-mode-toggle .toggle-btn { padding: 5px 6px; font-size: 11px; } .eq-vol-inline { font-size: 10px; } .eq-vol-inline strong { font-size: 14px; margin-left: 2px; } .eq-vol-long { display: none; } .eq-vol-short { display: inline; } }
 .equip-section {
   display: none; border: 1px solid var(--gray-border); border-radius: 12px;
   padding: 12px 12px 6px; margin-bottom: 12px; background: var(--white);
@@ -553,7 +554,7 @@ body { display: flex; flex-direction: column; }
             <button class="toggle-btn active" onclick="setModeBtn('eq',false,this)">Total cu ft</button>
             <button class="toggle-btn" onclick="setModeBtn('eq',true,this)">Room size</button>
           </div>
-          <span class="eq-vol-inline">Total volume <strong id="eq-vol">--</strong> ft&sup3;</span>
+          <span class="eq-vol-inline"><span class="eq-vol-long">Total volume</span><span class="eq-vol-short">Volume</span> <strong id="eq-vol">--</strong> ft&sup3;</span>
         </div>
         <div id="eq-totalcf-wrap"><input class="calc-input" type="number" id="eq-totalcf" placeholder="Total cubic feet" inputmode="decimal" aria-label="Total cubic feet"></div>
         <div id="eq-room-wrap" style="display:none;"><div class="calc-row">
